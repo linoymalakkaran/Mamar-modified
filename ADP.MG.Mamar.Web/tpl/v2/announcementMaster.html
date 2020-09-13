@@ -1,0 +1,309 @@
+﻿<style>
+    .clsUpload {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+
+    .pl0 {
+        padding-left: 0px;
+    }
+</style>
+<link href="../assets/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="../assets/js/bootstrap-datetimepicker.js"></script>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'Announcements' | translate}}</div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!--<div class="row g-grey-shade">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'Title' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" placeholder="" ng-model="searchString">
+                                    </div>
+                                    <button type="button" class="btn btn-green" ng-click="searchAnnouncement()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="pull-right">
+                                    <div class="pull-right">
+                                        <a class="btn btn-red" ng-click="openAnnouncementForm('add')">{{'AddNew' | translate}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="col-md-12 pull-right mt-20">
+                        <div class="pull-right">
+                            <a class="btn btn-red" title="{{'AddNewAnnouncement' | translate}}" ng-click="openAnnouncementForm(null,'add')">{{'AddNew' | translate}}</a>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width:45%;">{{'Title' | translate}}</th>
+                                        <th>{{'Role' | translate}}</th>
+                                        <th style="width:10%;">{{'StartDate' | translate}}</th>
+                                        <th style="width:10%;">{{'EndDate' | translate}}</th>
+                                        <th style="width:10%;">{{'CreatedDate' | translate}}</th>
+                                        <th>{{'Attachments' | translate}}</th>
+                                        <th style="width:7%;">{{'Status' | translate}}</th>
+                                        <th style="width:12%;">{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr pagination-id="announcementPagination" dir-paginate="item in customsAnnouncements | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+                                        <td>
+                                            {{item.title}}
+                                        </td>
+                                        <td>
+                                            {{item.role}}
+                                        </td>
+                                        <td>
+                                            {{item.startDate | date:'dd/MM/yyyy HH:mm'}}
+                                        </td>
+                                        <td>
+                                            {{item.endDate| date:'dd/MM/yyyy HH:mm'}}
+                                        </td>
+                                        <td>
+                                            {{item.createdDate| date:'dd/MM/yyyy HH:mm'}}
+                                        </td>
+                                        <td>
+                                            {{item.fileName}}
+                                        </td>
+                                        <td>
+                                            <span ng-show=" item.role == 'STOP'">{{'Stopped' | translate}}</span>
+                                            <span ng-show="currentDateandTime > item.endDate && item.role != 'STOP'">{{'Completed' | translate}} </span>
+                                            <span ng-show="currentDateandTime >= item.startDate && currentDateandTime <= item.endDate  && item.role != 'STOP'">{{'Inprogress' | translate}} </span>
+                                            <span ng-show="currentDateandTime < item.startDate && currentDateandTime < item.endDate  && item.role != 'STOP'">{{'NotStarted' | translate}} </span>
+                                        </td>
+                                        <td>
+                                            <fieldset>
+                                                <a ng-show="currentDateandTime >= item.startDate" title="{{'View' | translate}}" ng-click="openAnnouncementForm(item, 'view')"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                                <a ng-show="currentDateandTime >= item.startDate" title="{{'Clone' | translate}}" ng-click="openAnnouncementForm(item, 'clone')"><i class="fa fa-clone" aria-hidden="true"></i></a>
+                                                <a ng-show="currentDateandTime < item.startDate" title="{{'Edit' | translate}}" ng-click="openAnnouncementForm(item, 'edit')"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                                <a ng-show="(currentDateandTime < item.endDate) && item.role != 'STOP'" title="{{'Stop' | translate}}" ng-click="confirmStopAnnouncement(item)"><i class="fa fa-stop-circle" style="color:red" aria-hidden="true"></i></a>
+                                                <a title="{{'DownloadFileE' | translate}}" ng-click="downloadAnnouncementFile(item.id,item.fileName)" ng-show="item.fileName"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="customsAnnouncements == null">
+                                        <td colspan="8">
+                                            {{'NoItems' | translate}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20">
+                        <dir-pagination-controls pagination-id="announcementPagination" ng-show="customsAnnouncements && customsAnnouncements.length > 0"
+                                                 direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="customsAnnouncements.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+<div class="modal" id="newAnnouncementModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content minHt">
+            <form name="announcementForm" ng-submit="saveAnnouncement()">
+                <div class="modal-header modalAnnounce">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'CustomsAnnouncementsE' | translate }} / {{'CustomsAnnouncementsA' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <fieldset ng-disabled="mode=='view'">
+                        <div class="col-md-12">
+
+                            <label class="control-label col-md-2">{{'AnnouncementTitle' | translate }}<span>*</span></label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" name="title" ng-model="announcement.title" maxlength="100" required />
+                                <span class="validation-error-label" ng-show="!announcement.title && submitted">{{'Required' | translate}}</span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12 mt-10">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-4 no-padding-left">{{'StartDate' | translate}}<span>*</span></label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" required ng-model="startDate" name="startDate">
+                                            <span class="input-group-addon"><i class="icon-calendar22"></i></span>
+                                            <div class='input-group date' id='startTime'>
+                                                <input id="startTimeData" name="startTimeData" ng-model="announcestartTime" type='text' class="form-control" />
+                                                <span class="input-group-addon" ng-hide="mode=='view'">
+                                                    <span class="fa fa-clock"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="validation-error-label" ng-show="(!startDate) && submitted">{{'Required' | translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-4">{{'EndDate' | translate}}<span>*</span></label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" required ng-model="endDate" name="endDate">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            <div class='input-group date' id='endTime'>
+                                                <input id="endTimeData" name="endTimeData" ng-model="announceendTime" onkeydown="event.preventDefault();" type='text' class="form-control" />
+                                                <span class="input-group-addon" ng-hide="mode=='view'">
+                                                    <span class="fa fa-clock"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="validation-error-label" ng-show="(!endDate) && submitted">{{'Required' | translate}}</span>
+                                        <span class="validation-error-label" ng-show="invalidStartDate">{{'ErrInValidDateTime' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-10">
+                            <label class="control-label col-md-2">{{'MessageEn' | translate }}<span>*</span></label>
+                            <div class="col-md-10">
+                                <textarea name="messageA" rows="8" cols="5" class="form-control" ng-model="announcement.messageE" required maxlength="5000" placeholder=""></textarea>
+                                <span class="validation-error-label" ng-show="!announcement.messageE && submitted">{{'Required' | translate}}</span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="control-label col-md-2">{{'MessageInArabic' | translate }}</label>
+                            <div class="col-md-10">
+                                <textarea name="messageA" rows="8" cols="5" class="form-control" dir="rtl" ng-model="announcement.messageA" maxlength="5000" placeholder=""></textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-10">
+                            <label class="control-label col-md-2">{{'SelectRoleLabel' | translate}}<span>*</span></label>
+                            <div class="col-md-10">
+                                <div>
+                                    <div class="col-md-3 pl0">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckClearingAgent" id="chckClearingAgent" ng-model="announcementRoles.C" ng-change="checkChanged('CA')" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label class="mt-5">{{'ClearingAgent' | translate}}</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckPrivateCompany" id="chckPrivateCompany" ng-model="announcementRoles.P" ng-change="checkChanged('P')" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label class="mt-5">{{'PrivateCompany' | translate}}</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckLoaded" id="chckConsolidator" ng-model="announcementRoles.A" ng-change="checkChanged('C')" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label class="mt-5">{{'Consolidator' | translate}}</label>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckLoaded" id="chckAll" ng-model="announcementRoles.All" ng-change="checkChanged('All')" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label class="mt-5">{{'All' | translate}}</label>
+                                    </div>
+                                    <div class="col-md-2" ng-hide="mode == 'add'">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckLoaded" id="chckStop" ng-model="announcementRoles.STOP" ng-change="checkChanged('STOP')" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label class="mt-5">{{'Stop' | translate}}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="validation-error-label" ng-show="(!announcementRoles.C && !announcementRoles.A && !announcementRoles.P && !announcementRoles.STOP && !announcementRoles.All) && submitted">{{'RolesRequired' | translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt20" ng-show="announcement.fileName">
+                            <label class="control-label col-md-2">{{'Attachments' | translate }}</label>
+                            <div class="col-md-10">
+                                <div class="col-md-6 no-padding-left">
+                                    <a class="alwaysEnabled" title="{{'DownloadFileE' | translate}}" upload-Files ng-click="downloadAnnouncementFile(announcement.id,announcement.fileName)">{{announcement.fileName}} <i class="fa fa-download"></i> </a>
+                                    <a title="{{'Delete' | translate }}" ng-show="mode != 'view' && announcement.fileName" ng-click="removeFileAnnounce(announcement)"><i class="ml-10 fa fa-times"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt20" ng-hide="mode == 'view'">
+                            <div class="col-md-2">
+                                <div id="Attach" class="btn btn-green">
+                                    <label for="upfiles" class="fa fa-paperclip"></label>
+                                    {{'Upload' | translate }}
+                                    <input id="upfiles" type="file" upload-Files ng-model="attachedFile" name="attachment" value="" class="clsUpload" accept="{{acceptFiles}}">
+                                </div>
+                            </div>
+                            <div class="col-md-10" ng-show="filePresent">
+                                <label class="control-label mt-10">{{attachedFileName}}</label>
+                                <a title="{{'Delete' | translate }}" ng-show="attachedFileName"  ng-click="removeFile(announcement)" ><i class="ml-10 fa fa-times"></i></a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12  form-horizontal">
+                    <div class="pull-right m-20">
+                        <button type="button" class="btn btn-default mr-5" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                        <button type="submit" class="btn btn-green" ng-hide="mode == 'view'" ng-click="submitted = true">{{'Save' | translate}}</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    var yesterday = new Date(Date.now() - (24 * 60 * 60 * 1000))
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true,
+        disable: [{ from: [0, 0, 0], to: yesterday }]
+
+    });
+    $('#startTime').datetimepicker({
+        format: 'HH:mm',
+        allowInputToggle: true
+    });
+    $('#endTime').datetimepicker({
+        format: 'HH:mm',
+        allowInputToggle: true       
+    });
+   
+</script>

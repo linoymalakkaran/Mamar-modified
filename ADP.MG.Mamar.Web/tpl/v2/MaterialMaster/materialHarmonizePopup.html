@@ -1,0 +1,65 @@
+﻿   <div class="modal" id="harmonizeLookup" role="dialog">
+        <div style="width:70%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'HarmonizedCode' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input
+                        id="harmonizedSearchText"
+                        type="text"
+                        ng-model="searchPopUpModels.harmonizedSearchText"
+                        ng-change="onHarmonizeChangeClientFilter();"
+                        class="form-control disabledInputWithBorder col-md-12"
+                    >
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'HarmonizedCode'|translate}}</th>
+                                    <th>Description</th>
+                                    <th colspan="2">الوصف</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--HarmonizedCode,HarmonizeEngName,HarmonizeArbName-->
+                                <tr
+                                    ng-class="{selected: harmonizedItem.HarmonizedCode==harmonizedItemSelected.HarmonizedCode}"
+                                    ng-click="setHarmonized(harmonizedItem)"
+                                    dir-paginate="harmonizedItem in harmonisedListFiltered | itemsPerPage: 10"
+                                    pagination-id="harmonizedTypePager"
+                                >
+                                    <td>
+                                        {{harmonizedItem.HarmonizedCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{harmonizedItem.HarmonizeEngName}}
+                                    </td>
+                                    <td style="border-right: 1px solid #ffff;word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{harmonizedItem.HarmonizeArbName}}
+                                    </td>
+                                    <td style="min-width:100px; max-width:100px;">
+                                        <span class="showOnHover pull-right">
+                                            <a>
+                                                {{'ClickToSelect'|translate}}
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="harmonisedListFiltered == null">
+                                    <td colspan="4">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="harmonisedListFiltered == null">
+                        <dir-pagination-controls pagination-id="harmonizedTypePager" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,662 @@
+﻿<style>
+    #successModalDialog.modal-dialog {
+        vertical-align: middle;
+        padding-top: 15% !important;
+    }
+    .picker__select--year {
+        width: 25%;
+    }
+    .picker__select--month {
+        width: 39%;
+    }
+    .selectNw {
+        width: 99% !important;
+        /*height: 30px !important;*/
+    }
+    .picker--opened .picker__holder 
+    {
+        width:150% !important;
+    }
+</style>
+
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row" id="maqasaCreateJobDiv">
+        <div class="col-md-12 mt-20">
+            <h4>{{'MaqasaCreateBill' | translate}}</h4>
+            <div class="panel panel-flat bdr bdrt pb20">
+                <div class="panel-body">
+                    <div class="col-md-12 mt-20">
+                        <div class="pull-right mr-10">
+                            <button type="button" class="btn btn-default" tabindex="32" ng-click="gotoMaqasaReExport()">{{'Back' | translate}}</button>
+                            <button type="button" class="btn btn-red" tabindex="31" ng-disabled="maqasaCreateBill.FromCountry == null || maqasaCreateBill.DestinationCountry == null" ng-click="CreateJobNumber()">{{'CreateJob' | translate}}</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="panel bdr bdrt col-md-12 form-horizontal g-grey-shade mt-20">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 text-white">{{'FromCountry' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="maqasaSrchEntity.CountryCode" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="maqasaSrchEntity.CountryEngName" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="maqasaSrchEntity.CountryArbName" />
+                                        </div>
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validFromCountry">{{'FromCountryRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 text-white">{{'Destination' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="DestinationCountryCodeSelected" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="DestinationCountryEngNameSelected" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" ng-disabled="true" ng-model="DestinationCountryArbNameSelected" />
+                                        </div>
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validDestinationCountry">{{'DestCountryRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal mt-15 mb-15">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">{{'VoyageNumber' | translate}}<span>*</span></label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" ng-model="maqasaCreateBill.VoyageNumber" ng-change="ValidateVoyageNo()" maxlength="30" restrict-space tabindex="1" id="voyageNo" />
+                                        <label class="validation-error-label" ng-show="!validVoyageNo">{{'VoyageNoRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">{{'ArrivalDate' | translate}}<span>*</span></label>
+                                    <div class="col-md-6 input-group">
+                                        <input type="text" class="form-control pickadate" ng-model="maqasaCreateBill.ArrivalDate"  tabindex="2">
+                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6"></div>
+                                 <label class="col-md-6 validation-error-label" ng-show="!validArrivalDate">{{'ArrivalDateRequired' | translate}}</label>
+                           </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">{{'CargoType' | translate}}<span>*</span></label>
+                                    <div class="col-md-6">
+                                        <select id="ddlCargoType" class="form-control select selectNw" ng-show="language == 'en'" tabindex="3" 
+                                                ng-options="cargoType.Code as cargoType.EnglishName for cargoType in lookupCargoTpResult"
+                                                ng-model="maqasaCreateBill.CargoType"></select>
+                                        <select id="ddlCargoType" class="form-control select selectNw" ng-show="language == 'ae'" tabindex="3"
+                                                ng-options="cargoType.Code as cargoType.ArabicName for cargoType in lookupCargoTpResult"
+                                                ng-model="maqasaCreateBill.CargoType"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label col-md-6">{{'Cargo' | translate}}<span>*</span></label>
+                                    <div class="col-md-6">
+                                        <select id="ddlCargo" class="form-control select selectNw" ng-show="language == 'en'" ng-change="cargoChanged()"
+                                                ng-options="cargo.CargoCode as cargo.CargoEngName for cargo in lookupCargoResult" tabindex="4"
+                                                ng-model="maqasaCreateBill.CargoCode"></select>
+                                        <select id="ddlCargo" class="form-control select selectNw" ng-show="language == 'ae'" ng-change="cargoChanged()"
+                                                ng-options="cargo.CargoCode as cargo.CargoArbName for cargo in lookupCargoResult" tabindex="4"
+                                                ng-model="maqasaCreateBill.CargoCode"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal grey-shade  bdr bdrt mt-10" ng-show="showDriver">
+                            <div class="col-md-6">
+                                <div class="form-group" ng-show="showDriver">
+                                    <label class="control-label col-md-3">{{'TruckNationality' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <div angucomplete-alt id="truckNationalityLookup" pause="50" placeholder="{{'TruckNationalityph' | translate}}" ng-model="truckNationality"
+                                             local-data="truckNationalities" search-fields="Code,EngName,ArbName" show-title="true"
+                                             title-field="Code,EngName,ArbName" minlength="1" input-class="form-control" match-class="highlight" field-tabindex="5" 
+                                             input-name="truckNationalityLookup" selected-object="truckNationalityObj" maxlength="20">
+                                        </div>
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validTruckNationality">{{'TruckNationalityRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" ng-show="showDriver">
+                                    <label class="control-label col-md-3">{{'DriverNationality' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <div angucomplete-alt id="driverNationalityLookup" pause="50" placeholder="{{'DriverNationalityph' | translate}}" ng-model="driverNationality"
+                                             local-data="driverNationalities" search-fields="Code,EngName,ArbName" show-title="true"
+                                             title-field="Code,EngName,ArbName" minlength="1" input-class="form-control" match-class="highlight"
+                                             input-name="driverNationalityLookup" selected-object="driverNationalityObj" field-tabindex="6" maxlength="20">
+                                        </div>
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validDriverNationality">{{'DriverNationalityRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" ng-show="showDriver">
+                                    <label class="control-label col-lg-3">{{'TruckDriver' | translate}}<span>*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control" ng-model="maqasaCreateBill.TruckDriver" maxlength="25" tabindex="7" ng-change="ValidateDriver()" />
+                                        <label class="validation-error-label" ng-show="!validDriver">{{'DriverRequired' | translate}}</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel bdr bdrt col-md-12 form-horizontal grey-shade mt-5">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'VesselType' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <div ng-keydown="lookupKeyDown($event,'VesselType')" angucomplete-alt id="vesselTypeLookup" pause="50" placeholder="{{'vesselTypeph' | translate}}" ng-model="selectedVesselType"
+                                             local-data="vesselTypes" search-fields="VesselCode,VesselEngName,VesselArbName" show-title="true" class="col-md-10"
+                                             title-field="VesselCode,VesselEngName,VesselArbName" minlength="1" input-class="form-control" match-class="highlight"
+                                             input-name="vesselTypeLookup" selected-object="vesselTypeObj" field-tabindex="8" maxlength="25">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('VesselType')"></i></a>
+                                        <label id="basic-error" class="col-md-12 validation-error-label" for="basic" ng-show="!validVesselType">{{'VesselTypeRequired' | translate}}</label>
+                                    </div>
+                                    <!--<div class="col-md-3">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" id="vesselTypeLookup" placeholder="{{'Find'  | translate}}" title={{vesselTypeObj.originalObject.VesselCode}} ng-model="vesselTypeObj.originalObject.VesselCode" ng-trim="false" maxlength="6" tabindex="8" ng-blur="AddVesselType(vesselTypeObj.originalObject.VesselCode)" ng-keydown="lookupKeyDown($event,'VesselType')">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('VesselType')"></i></a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'English'  | translate}}" class="form-control" ng-model="vesselTypeObj.originalObject.VesselEngName" ng-disabled="true" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'Arabic'  | translate}}" class="form-control" ng-model="vesselTypeObj.originalObject.VesselArbName" ng-disabled="true" />
+                                    </div>
+                                    <span class="col-md-3"></span>
+                                    <span class="col-md-9 validation-error-label" ng-show="!validVesselType">{{'VesselTypeRequired' | translate}}</span>-->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'DischargePort' | translate}}<span>*</span></label>
+                                    <div ng-show="transMode == 'M'">
+                                        <div class="col-md-3">
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control" id="dischargePortLookup" placeholder="{{'Find'  | translate}}" title={{dischargePortObj.originalObject.PortCode}} ng-model="dischargePortObj.originalObject.PortCode" ng-trim="false" maxlength="6" tabindex="9" ng-blur="AddDischargePort(dischargePortObj.originalObject.PortCode)" ng-keydown="dischargePortKeyDown($event)">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openDischargePortLookup()"></i></a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" placeholder="{{'Name'  | translate}}" class="form-control" ng-model="dischargePortObj.originalObject.PortName" ng-disabled="true" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" placeholder="{{'Country'  | translate}}" class="form-control" ng-model="dischargePortObj.originalObject.CountryName" ng-disabled="true" />
+                                        </div>
+                                        <span class="col-md-3"></span>
+                                        <span class="col-md-9 validation-error-label" ng-show="!validDischargePort">{{'DischargePortRequired' | translate}}</span>
+                                    </div>
+                                    <div ng-show="transMode != 'M'" class="col-md-9">
+                                        <div angucomplete-alt id="dischargePortLookup" pause="50" ng-keydown="dischargePortKeyDown($event)" class="col-md-10" placeholder="{{'Portph' | translate}}" ng-model="dischargePort"
+                                             local-data="dischargePorts" search-fields="Code,PortNameEnglish,PortNameArabic" show-title="true" title-field="Code,PortNameEnglish,PortNameArabic" minlength="3" input-class="form-control" match-class="highlight"
+                                             input-name="dischargePortLookup" selected-object="dischargePortObj" field-tabindex="9"  maxlength="10">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openDischargePortLookup()"></i></a>
+                                        <label id="basic-error" class="validation-error-label col-md-12" for="basic" ng-show="!validDischargePort">{{'DischargePortRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'Shipper' | translate}}<span>*</span></label>
+                                    <div class="col-md-3">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" id="shipper" placeholder="{{'Find'  | translate}}" title={{shipperObj.originalObject.ImporterCode}} tabindex="10" ng-model="shipperObj.originalObject.ImporterCode" ng-trim="false" ng-blur="AddShipper(shipperObj.originalObject.ImporterCode)" ng-keydown="shipperKeyDown($event)">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openShipperLookup()"></i></a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'English'  | translate}}" class="form-control" ng-model="shipperObj.originalObject.ImporterEngName" ng-disabled="true" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'Arabic'  | translate}}" class="form-control" ng-model="shipperObj.originalObject.ImporterArbName" ng-disabled="true" />
+                                    </div>
+                                    <span class="col-md-3"></span>
+                                    <span class="col-md-9 validation-error-label" ng-show="!validShipper">{{'MaqasaShipperRequired' | translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'Unit' | translate}}<span>*</span></label>
+                                    <div class="col-md-3">
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" id="unitLookup" placeholder="{{'Find'  | translate}}" title={{unitObj.originalObject.Code}} ng-model="unitObj.originalObject.Code" ng-trim="false" tabindex="11" ng-blur="AddUnit(unitObj.originalObject.Code)" ng-keydown="lookupKeyDown($event,'Unit')">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Unit')"></i></a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'English'  | translate}}" class="form-control" ng-model="unitObj.originalObject.EnglishName" ng-disabled="true" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" placeholder="{{'Arabic'  | translate}}" class="form-control" ng-model="unitObj.originalObject.ArabicName" ng-disabled="true" />
+                                    </div>
+                                    <span class="col-md-3"></span>
+                                    <span class="col-md-9 validation-error-label" ng-show="!validUnit">{{'UnitRequired' | translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'ShipperInArabic' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control"  ng-model="maqasaCreateBill.ShipperInArabic" placeholder="{{'EnterArabic' | translate}}" tabindex="12" maxlength="100" ng-change="copyShipperToConsignee()"  />
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validShipperInArabic">{{'shipperInArabicRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">{{'ConsigneeInArabic' | translate}}<span>*</span></label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" ng-model="maqasaCreateBill.ConsigneeInArabic" placeholder="{{'EnterArabic' | translate}}" tabindex="13" maxlength="100" ng-change="ValidateConsignee()" />
+                                        <label id="basic-error" class="validation-error-label" for="basic" ng-show="!validConsignee">{{'MaqasaConsigneeRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <div class="notificationMsg">
+                            <div class="alert alert-danger fade in" ng-show="!validInvoice">
+                                {{'InvoiceRequired' | translate}}
+                            </div>
+                            <div class="alert alert-danger fade in" ng-show="!validContainer">
+                                {{'ContainerRequired' | translate}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-left">
+                                <button type="button" class="btn btn-green" tabindex="14" ng-click="openDescriptionImportLists()" id="cargobtn">{{'GetCargo' | translate}}</button>
+                            </div>
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'GoodsDescription'|translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="Item in selectedCargoDetails">
+                                            <td>
+                                                <!--{{Item.CargoDescription}}-->
+                                                <input type="text"  ng-model="Item.CargoDescription" class="form-control" ng-change="validateCargo(Item.CargoDescription)" tabindex="{{14+$index+1}}" id="cargoDesc_{{$index}}" />
+                                                <label class="validation-error-label" for="basic" ng-show="!validCargoDesc">{{'CargoDescExceededLength' | translate}}</label>
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="selectedCargoDetails == null || ( selectedCargoDetails && selectedCargoDetails.length == 0) "><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-left">
+                                <button type="button" class="btn btn-green" tabindex="16" ng-click="openContainerLists()" id="containerbtn" >{{'GetContainer' | translate}}</button>
+                            </div>
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr ng->
+                                            <th>{{'Container'|translate}}</th>
+                                            <th>{{'SealNumber'|translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="Item in selectedContainerDetails">
+                                            <td>
+                                                {{Item.ContainerNumber}}
+                                            </td>
+                                            <td>
+                                                {{Item.SealNumber}}
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="selectedContainerDetails == null || (selectedContainerDetails && selectedContainerDetails.length) == 0"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <button type="button" tabindex="17" ng-click="openInvoiceLists()" class="btn btn-green" id="invoicebtn">{{'GetInvoice' | translate}}</button>
+                            </div>
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'Item'|translate}}</th>
+                                            <th>{{'HSCODE'|translate}}</th>
+                                            <th>{{'UOM'|translate}}</th>
+                                            <th>{{'Weight'|translate}}</th>
+                                            <th>{{'Quantity'|translate}}</th>
+                                            <th>{{'Amount'|translate}}</th>
+                                            <th>{{'DutyPercent'|translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="Item in selectedInvoiceDetails">
+                                            <td>
+                                                {{Item.InvoiceSerialNumber}}
+                                            </td>
+                                            <td>
+                                                <input tabindex="{{17+$index*4+1}}" readonly type="text" ng-disabled="false" id="{{Item.HarmoniseCode +'Text'}}" value="{{Item.HarmoniseCode}}" ng-focus="openHarmonizeLookup(Item);" class="form-control" />
+                                            </td>
+                                            <td>
+                                                {{Item.UnitCode}}
+                                            </td>
+                                            <td>
+                                                <input style="width: 100%" tabindex="{{17+$index*4+2}}" id="{{Item.InvoiceSerialNumber +'_Weight'}}" type="number" class="arrowLessNumber" ng-model="Item.Weight" ng-change="CalculateTotalOnChange(Item, Item.Weight)"/>
+                                            </td>
+                                            <td>
+                                                <input style="width: 100%" tabindex="{{17+$index*4+3}}" type="number" class="arrowLessNumber" ng-model="Item.Quantity"  ng-change="CalculateTotalOnChange(Item, null)"/>
+                                            </td>
+                                            <td>
+                                                <input style="width: 100%" tabindex="{{17+$index*4+4}}" type="number" class="arrowLessNumber" ng-model="Item.CIFAmount"  ng-change="CalculateTotalOnChange(Item,null)"/>
+                                            </td>
+                                            <td>
+                                                <input style="width: 100%" tabindex="{{17+$index*4+5}}" type="number" class="arrowLessNumber" ng-model="Item.DutyPercent"  ng-change="CalculateTotalOnChange(Item, null)"/>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr class="no-records" ng-show="selectedInvoiceDetails == null || (selectedInvoiceDetails && selectedInvoiceDetails.length == 0)"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered mt-20" style="border:2px;border-color:lightgray;border-style:solid;" ng-show="selectedInvoiceDetails != null && selectedInvoiceDetails.length != 0">
+                                    <tr ng-show="selectedInvoiceDetails != null && selectedInvoiceDetails.length != 0">
+                                        <td style="font-weight:bold">
+                                            {{'NetWeight'|translate}}
+                                        </td>
+                                        <td>
+                                            <input style="width: 100%" tabindex="{{17+selectedInvoiceDetails.length*5+1}}" type="number" class="arrowLessNumber" ng-model="NetWeight" ng-change="validateNetWeightGrossWeight()" />
+                                            <label class="validation-error-label" ng-show="!validNetWeightGrossWeight">{{'InvalidNetGrossWeight' | translate}}</label>
+                                            <!--{{NetWeight | number : 3}}-->
+                                        </td>
+                                        <td style="font-weight:bold">
+                                            {{'GrossWeight'|translate}}
+                                        </td>
+                                        <td>
+                                            <input style="width: 100%" tabindex="{{17+selectedInvoiceDetails.length*5+2}}" type="number" class="arrowLessNumber" ng-model="TotalGrossWeight" ng-change="validateNetWeightGrossWeight()"/>
+
+                                            <!--{{TotalGrossWeight | number : 3}}-->
+                                        </td>
+                                        <td style="font-weight:bold">
+                                            {{'VolumeCBM'|translate}}
+                                        </td>
+                                        <td>
+                                            <input style="width: 100%" tabindex="{{17+selectedInvoiceDetails.length*5+3}}" type="number" class="arrowLessNumber" ng-model="VolumeCBM" />
+                                        </td>
+                                    </tr>
+                                    <tr ng-show="selectedInvoiceDetails != null && selectedInvoiceDetails.length != 0">
+                                        <td style="font-weight:bold">
+                                            {{'TotalQuantity'|translate}}
+                                        </td>
+                                        <td>
+                                            <input style="width: 100%" tabindex="{{17+selectedInvoiceDetails.length*5+4}}" type="number" class="arrowLessNumber" ng-model="TotalQuantity" />
+                                        </td>
+                                        <td style="font-weight:bold">
+                                            {{'TotalCIFinDHS'|translate}}
+                                        </td>
+                                        <td class="redbg-light">
+                                            {{TotalCIF | number : 2}}
+                                        </td>
+                                        <td style="font-weight:bold">
+                                            {{'DutyAmount'|translate}}
+                                        </td>
+                                        <td class="redbg-light">
+                                            {{DutyAmount}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="pull-left">
+                                <button type="button" tabindex="30" class="btn btn-green" ng-click="openChassisLists()" id="chassisbtn">{{'GetChassis' | translate}}</button>
+                            </div>
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'Chassis'|translate}}</th>
+                                            <th>{{'Color'|translate}}</th>
+                                            <th>{{'Model'|translate}}</th>
+                                            <th>{{'VehicleType'|translate}}</th>
+                                            <th>{{'SubType'|translate}}</th>
+                                            <th>{{'Amount'|translate}}</th>
+                                            <th>{{'CuurencyCode'|translate}}</th>
+                                            <th>{{'CIFinDHS'|translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="Item in selectedChassisDetails">
+                                            <td>{{Item.ChassisNumber}}</td>
+                                            <td>{{Item.ChassisColorEngName}} {{Item.ChassisColorArbName}}</td>
+                                            <td>{{Item.ChassisModelYear}}</td>
+                                            <td>{{Item.VehicleTypeEng}} {{Item.VehicleTypeArb}}</td>
+                                            <td>{{Item.SubTypeEngName}} {{Item.SubTypeArbName}}</td>
+                                            <td>{{Item.Price}}</td>
+                                            <td>{{Item.CurrencyCode}}</td>
+                                            <td>{{Item.INFO}}</td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="selectedChassisDetails == null || (selectedChassisDetails && selectedChassisDetails.length == 0)"><td colspan="8">{{'NoItems' | translate}}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Success Modal -->
+    <div id="billSuccessModal" class="modal fade" role="dialog">
+        <div id="successModalDialog" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="successOkay()">&times;</button>
+                    <h4 class="modal-title">{{'Success' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="noinput"><i class="fa fa-check" area-hidden="true"></i>{{'BillCreateSuccessMsg' | translate}} <strong>{{maqasaCreateBill.JobNumber}}</strong> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-green" data-dismiss="modal" ng-click="successOkay()">{{'OK' | translate}}</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" id="harmonizeLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="setfocusForWeight()">&times;</button>
+                    <h5 class="modal-title bold">{{'HarmonizedCode' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchText" type="text" ng-model="searchText" ng-change="onHarmonizeChange();" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'HarmonizeCode'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                <tr ng-class="{selected: harmonizedItem.ShortHarmCode==harmonizedItemSelected.ShortHarmCode}" ng-click="setHarmonized(harmonizedItem)" dir-paginate="harmonizedItem in harmonisedList | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="materialTypePager">
+                                    <td>
+                                        {{harmonizedItem.ShortHarmCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="language=='en'">
+                                        {{harmonizedItem.HarmonizeEngName}} <span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="language=='ae'">
+                                        {{harmonizedItem.HarmonizeArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="harmonisedList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="harmonisedList == null">
+                        <dir-pagination-controls pagination-id="materialTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="shipperLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeShipper()">&times;</button>
+                    <h5 class="modal-title bold">{{'Shipper' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchShipperText" type="text" ng-model="searchShipperText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: shipperItem.ImporterCode==shipperItemSelected.ImporterCode}" ng-click="setShipper(shipperItem)" dir-paginate="shipperItem in shippers | itemsPerPage: 10" current-page="shipperCurrentPage" pagination-id="shipperPager">
+                                    <td>
+                                        {{shipperItem.ImporterCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{shipperItem.ImporterEngName}}  {{shipperItem.ImporterArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="shippers == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="shippers == null">
+                        <dir-pagination-controls pagination-id="shipperPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="dischargePortLookupModal" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeDischargePort()">&times;</button>
+                    <h5 class="modal-title bold">{{'DischargePort' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="dischargePorts == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input id="searchDischargePortCode" type="text" ng-model="searchDischargePortCode" class="form-control disabledInputWithBorder" ng-change="portChange(searchDischargePortCode,null,null)" />
+                                    </th>
+                                    <th>
+                                        <input id="searchDischargePortName" type="text" ng-model="searchDischargePortName" class="form-control disabledInputWithBorder"  ng-change="portChange(null,searchDischargePortName,null)" />
+                                    </th>
+                                    <th>
+                                        <input id="searchDischargePortCountry" type="text" ng-model="searchDischargePortCountry" class="form-control disabledInputWithBorder"  ng-change="portChange(null,null,searchDischargePortCountry)" />
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'PortName'|translate}}</th>
+                                     <th>{{'Country'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: dischargePortItem.PortCode==dischargePortItemSelected.PortCode}" ng-click="setDischargePort(dischargePortItem)" dir-paginate="dischargePortItem in dischargePorts | itemsPerPage: 10" current-page="dischargePortCurrentPage" pagination-id="dischargePortPager">
+                                    <td>
+                                        {{dischargePortItem.PortCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{dischargePortItem.PortName}}   
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{dischargePortItem.CountryName}} <span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="dischargePorts == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="dischargePorts == null">
+                        <dir-pagination-controls pagination-id="dischargePortPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <!--#region Rendered Partial Views - InvoiceGrpnDetails, Chassis, Container, Goods Description -->
+    <div data-ng-include="'../tpl/maqasaInvoiceDetails.html'"></div>
+    <div data-ng-include="'../tpl/maqasaImportChassis.html'"></div>
+    <div data-ng-include="'../tpl/maqasaImportCargo.html'"></div>
+    <div data-ng-include="'../tpl/maqasaImportContainers.html'"></div>
+    <!--#endregion Rendered Partial Views - InvoiceGrpnDetails -->
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+</div>
+<script>
+    $("#alpaca-select2").alpaca({
+        "postRender": function (control) {
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
+        }
+    });
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true,
+        onClose: function (date) {
+            $('#ddlCargoType').focus();
+        }      
+    });
+   
+</script>
+
+

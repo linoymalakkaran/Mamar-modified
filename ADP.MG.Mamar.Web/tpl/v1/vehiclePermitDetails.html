@@ -1,0 +1,496 @@
+﻿<style>
+    .red {
+        background-color: red;
+    }
+
+    .green {
+        background-color: green;
+    }
+
+    .white {
+        background-color: white;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="col-md-12 mt-20">
+        <div class="panel panel-flat bdr bdrt pb20">
+            <div class="panel-body">
+                <div class="row g-grey-shade pb-20">
+                    <div class="col-md-12 form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'CarRefNo' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" disabled ng-model="searchParameter.PermitNo" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'KSAReferenceNo' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.KSARefNo" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'PlateNo' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="plateNo" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'PlateOrigin' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="plateOrigin" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'PlateColor' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="plateColor" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'PlateCategory' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="plateCategory" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="control-label col-md-4">{{'VehicleCategory' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="vehicleCategory" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-20">
+                    <div class="panel panel-flat bdr bdrt pb20 grey-shade">
+                        <div class="form-group mt-20">
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'Chasis' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.ChassisNo" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'VehicleOwner' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.OwnerName" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'Trailer' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.TrailerNo" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'OwnerName' | translate}}</label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" ng-model="permitDetails.OwnerName1" disabled />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" ng-model="permitDetails.OwnerName2" disabled />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" ng-model="permitDetails.OwnerName3" disabled />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" ng-model="permitDetails.OwnerName4" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'VehicleColor' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="vehicleColor" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'Nationality' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="ownerNationality" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'RegExpiry' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="carExpiryDate" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'Ticket' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.TripTicket" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'VehicleType' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="vehicleType" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label col-md-4">{{'Model' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-model="permitDetails.VehicleModel" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-20">
+                    <!--#region CLOSE/OPEN ENTRY-->
+                    <div class="col-md-6">
+                        <div class="panel bdr bdrt pb20">
+                            <div class="panel-heading">
+                                {{'OpenEntry' | translate}}
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'OpenDate' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DriverDateOpen" type="text" class="form-control" ng-model="dateOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverOpen' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input name="DriverNameOpen" type="text" class="form-control" ng-model="permitDetails.DriverNameOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverName' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input name="DriverNameOpen" type="text" class="form-control" ng-model="permitDetails.DriverNameOpen1" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameOpen2" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameOpen3" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameOpen4" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'Destination' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input name="destCountryOpen" type="text" class="form-control" ng-model="destCountryOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverNationality' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input name="driverNationality" type="text" class="form-control" ng-model="driverNationalityOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'NoOfPassengers' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="PassengerNoOpen" type="text" class="form-control" ng-model="permitDetails.PassengerNoOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'DocType' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DocumentTypeOpen" type="text" class="form-control" ng-model="permitDetails.DocumentTypeOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'DocNo' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DocumentIDOpen" type="text" class="form-control" ng-model="permitDetails.DocumentIDOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'ExpiryDate' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DocNoOpen" type="text" class="form-control" ng-model="carExpiryDate" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'JobNumber' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" ng-model="permitDetails.JobNumberOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'LoadType' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="LoadTypeOpen" type="text" class="form-control" ng-model="permitDetails.LoadTypeOpen" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mt-15">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckLoaded" id="chckLoaded" ng-model="permitDetails.LoadFlagOpen" ng-checked="permitDetails.LoadFlagOpen == 'Y'" ng-disabled="true" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label>{{'Loaded' | translate}}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12 mt-15">
+                                        <label class="control-label col-md-2">{{'Remarks' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <textarea class="form-control" ng-model="permitDetails.CarRemarksOpen" disabled></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel bdr bdrt pb20">
+                            <div class="panel-heading">
+                                {{'CloseEntry' | translate}}
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'CloseDate' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="CarDateClose" type="text" class="form-control" ng-model="carDateClose" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverClose' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input name="DriverNameClose" type="text" class="form-control" ng-model="permitDetails.DriverNameClose" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverName' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input name="DriverNameClose" type="text" class="form-control" ng-model="permitDetails.DriverNameClose1" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameClose2" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameClose3" disabled />
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" ng-model="permitDetails.DriverNameClose4" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'Destination' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input name="destCountryClose" type="text" class="form-control" ng-model="permitDetails.destCountryClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'DriverNationality' | translate}}</label>
+                                        <dis class="col-md-10">
+                                            <input name="driverNationalityClose" type="text" class="form-control" ng-model="driverNationalityClose" disabled />
+                                        </dis>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'NoOfPassengers' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="PassengerNoClose" type="text" class="form-control" ng-model="permitDetails.PassengerNoClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'DocType' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DocumentTypeClose" type="text" class="form-control" ng-model="permitDetails.DriverTypeClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'DocNo' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="DocumentIDClose" type="text" class="form-control" ng-model="permitDetails.DriverNoClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'ExpiryDate' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input name="CarDriverDateClose" type="text" class="form-control" ng-model="carDriverDateClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'JobNumber' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" ng-model="permitDetails.JobNumberClose" disabled />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-8">
+                                        <label class="control-label col-md-3">{{'LoadType' | translate}}</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" ng-model="permitDetails.LoadTypeClose" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mt-15">
+                                        <div class="form-checkbox fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckLoaded" id="chckLoaded" ng-model="permitDetails.LoadFlagClose" ng-checked="permitDetails.LoadFlagClose == 'Y'" ng-disabled="true" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                        <label>{{'Loaded' | translate}}</label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12 mt-15">
+                                        <label class="control-label col-md-2">{{'Remarks' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <textarea class="form-control" ng-model="permitDetails.RemarksClose" disabled></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--#endregion CLOSE/OPEN ENTRY-->
+                </div>
+                <div class="col-md-12 mt-20">
+                    <div class="col-md-6">
+                        <div class="panel bdr bdrt pb20">
+                            <div class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'AuditUserOpen' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" ng-model="permitDetails.AuditorUserIDOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'AuditOpenDate' | translate}}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="auditorDateOpen" disabled />
+                                        </div>
+                                        <div class="col-md-4" ng-class="permitDetails.ChannelColor == 'RED' ? red : (permitDetails.ChannelColor == 'GREEN' ? green : white)">
+                                            <input ng-show="permitDetails.ChannelRSLtFlag == 'Y'" type="text" class="form-control" ng-model="permitDetails.ChannelingResult" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'CenterOpen' | translate}}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="centerOpen" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'Responsible' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" ng-model="centerClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel bdr bdrt pb20">
+                            <div class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'AuditUserClose' | translate}}</label>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control" ng-model="permitDetails.AuditorUserIDClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'AuditCloseDate' | translate}}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="auditorDateClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label class="control-label col-md-2">{{'CenterClose' | translate}}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="centerClose" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right mt-15 mr-20">
+                <button type="button" class="btn btn-default" ng-click="gotoVehicleTracking()">{{'Back' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

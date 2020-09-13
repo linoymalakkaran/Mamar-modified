@@ -1,0 +1,90 @@
+﻿<style>
+    .lbl {
+        font-weight: bold;
+        padding-top: 13px;
+        font-family: 'Roboto';
+    }
+
+    .gridLnk {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: red !important;
+    }
+
+    .selectNw {
+        height: 30px !important;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'TransactionBalance' | translate}}</div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="globalDisableFlag">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'CenterCode' | translate}}</th>
+                                            <th>{{'Status' | translate}}</th>
+                                            <th>{{'AgentCode' | translate}}</th>
+                                            <th>{{'AgentName' | translate}}</th>
+                                            <th>{{'GranteeAmount' | translate}}</th>
+                                            <th>{{'OutStanding' | translate}}</th>
+                                            <th>{{'Balance' | translate}}</th>
+                                            <th>{{'Difference' | translate}}</th>
+                                            <th>{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tr dir-paginate="chassis in chassisList | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+
+                                        <td>{{chassis.Center}}</td>
+                                        <td>{{chassis.Status}}</td>
+                                        <td>{{chassis.AgentCode}}</td>
+                                        <td>{{chassis.AgentName}}</td>
+                                        <td>{{chassis.GranteeAmount}}</td>
+                                        <td>{{chassis.OutStanding}}</td>
+                                        <td>{{chassis.Balance}}</td>
+                                        <td>{{chassis.Differnce}}</td>
+                                        <td>
+                                            <!-- <fieldset ng-disabled="isSuperUser == 'True'"> -->
+                                                <a title="{{'Print' | translate}}" ng-click="DownloadGatePass(chassis)"><i class="fa fa-download"></i></a>
+                                            <!-- </fieldset> -->
+</td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="chassisList == null || chassisList.length == 0"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                                </table>
+                            </fieldset>
+
+                            <div class="alert-msg" ng-show="chassisList == null">
+                                <div class="col-md-6">
+                                    <div class="alert alert-success alert-bordered">
+                                        <span class="text-semibold">No Records Found!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <span class="col-md-4 pl-15" ng-show="chassisList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="chassisList == null || chassisList.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+
+

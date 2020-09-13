@@ -1,0 +1,1153 @@
+﻿<style>
+    .disable-input {
+        line-height: 2px;
+        padding-left: 5%;
+        border: none;
+        cursor: not-allowed;
+        background-color: #eee !important;
+    }
+
+    .white {
+        color: white !important;
+    }
+</style>
+<link href="../assets/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="../assets/js/bootstrap-datetimepicker.js"></script>
+<div class="content-wrapper" id="vehicleRegistrationDiv">
+    <div class="col-md-12 mt-20">
+        <div class="panel panel-flat bdr bdrt pb20">
+            <!--<div class="panel-heading">
+                VEHICLE REGISTRATION
+            </div>-->
+            <div class="panel-body">
+                <!-- #region GATE SELECTION -->
+                <div class="col-md-12 grey-shade form-horizontal">
+                    <div class="form-group">
+
+                    </div>
+
+                </div>
+                <!-- #endregion GATE SELECTION -->
+                <!--#region VALIDATE VEHICLE-->
+                <div class="row g-grey-shade pb-20">
+                    <div class="col-md-12 form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" ng-disabled="true" ng-model="jobNumber" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'GateSelection' | translate}}<span>*</span></label>
+                                <div class="col-md-8">
+                                    <select name="ddlGateSelection" class="form-control select" ng-model="selectedGate"
+                                            ng-options="gate.Code as (gate.Code + '  ' + gate.EngName + '   ' + gate.ArbName) for gate in entryExitGateList" ng-change="gateSelectionChanged()" ng-disabled="true"></select>
+                                    <label class="validation-error-label" for="basic" ng-show="!validSelectedGate">{{'GateSelectionRequired' | translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'PlateNo' | translate}}<span>*</span></label>
+                                <div class="col-md-8">
+                                    <div class="col-md-11">
+                                        <input type="text" class="form-control" ng-model="vehicleReg.PlateNumber" maxlength="29" ng-change="truckDetailChange('Yaa')" />
+                                        <label class="validation-error-label" ng-show="!validPlateNumber">{{'PlateNoRequired' | translate}}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'PlateColor' | translate}}<span>*</span></label>
+                                <div class="col-md-8">
+                                    <div id="ddlPlateColor" ng-keydown="plateColorKeyDown($event)" class="col-md-11" angucomplete-alt placeholder="{{'phPlateColor' | translate}}" ng-model="selectedPlateColor"
+                                         local-data="plateColors" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" show-Title="true" search-str="searchPlateColorText"
+                                         input-class="form-control white" match-class="highlight" input-name="ddlPlateColor" selected-object="selectedPlateColorObj" input-changed="onPlateColorChange">
+                                    </div>
+                                    <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateColorLookup()"></i></a>
+                                    <span class="validation-error-label  col-md-12" ng-show="invalidPlateColor">{{'InvalidPlateColorMessage'|translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'PlateOrigin' | translate}}<span>*</span></label>
+                                <div class="col-md-8">
+                                    <div id="ddlPlateOrigin" ng-keydown="plateOriginKeyDown($event)" class="col-md-11" angucomplete-alt placeholder="{{'phPlateOrigin' | translate}}" ng-model="selectedPlateOrigin" show-title="true"
+                                         local-data="plateOrigins" search-fields="Code,CountryEngName,CountryArbName" title-field="Code,CountryEngName,CountryArbName" minlength="1" search-str="searchPlateOriginText"
+                                         input-class="form-control white" match-class="highlight" input-name="ddlPlateOrigin" selected-object="selectedPlateOriginObj" input-changed="onPlateOriginChange">
+                                    </div>
+                                    <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateOriginLookup()"></i></a>
+                                    <span class="validation-error-label  col-md-12" ng-show="invalidPlateOrigin">{{'InvalidPlateOriginMessage'|translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label col-md-4">{{'PlateCategory' | translate}}<span>*</span></label>
+                                <div class="col-md-8">
+                                    <div id="ddlPlateCategory" ng-keydown="plateCategoryKeyDown($event)" class="col-md-11" angucomplete-alt placeholder="{{'phPlateCategory' | translate}}" ng-model="selectedPlateCategory" show-title="true"
+                                         local-data="plateCategorys" search-fields="CategoryCode,CategoryEngName,CategoryArbName" title-field="CategoryCode,CategoryEngName,CategoryArbName" minlength="1" search-str="searchPlateCategoryText"
+                                         input-class="form-control white" match-class="highlight" input-name="ddlPlateCategory" selected-object="selectedPlateCategoryObj" input-changed="onPlateCatChange">
+                                    </div>
+                                    <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateCategoryLookup()"></i></a>
+                                    <span class="validation-error-label  col-md-12" ng-show="invalidPlateCategory">{{'InvalidPlateCategoryMessage'|translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-clear" style="display:none">
+                        {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                    </button>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-find" ng-click="GetTruckDetails(false)">
+                            <i class="fa fa-search-plus"></i>
+                            {{'GetTruckDetails' | translate}}
+                        </button>
+                    </div>
+                </div>
+                <!--#endregion VALIDATE VEHICLE-->
+                <!--#region VEHICLE DETAILS-->
+                <form id="vehicleRegisterForm" name="myRegisterForm" ng-submit="saveVehicleRegistration()" novalidate>
+                    <div class="col-md-12 mt-20">
+                        <div class="panel panel-flat bdr bdrt pb20 grey-shade">
+                            <div ng-show="showVehicleRegDetails">
+                                <fieldset ng-disabled="!IsOpenEditable">
+                                    <div class="col-md-12 form-horizontal">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'VehicleType' | translate}}<span>*</span></label>
+                                                <!--<div name="VehicleType" id="ddlVehicleType" ng-keydown="vehicleTypeKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleType' | translate}}" ng-model="selectedVehicleType"
+                                                     local-data="vehicleTypes" search-fields="Code,EngName,ArbName"
+                                                     title-field="Code" show-title="true" class="col-lg-3" search-str="searchVehicleTypeText"
+                                                     minlength="1" input-class="form-control" match-class="highlight" input-name="ddlVehicleType" selected-object="selectedVehicleTypeObj" input-changed="onVehicleTypeChange" only-numbers required>
+                                                </div>-->
+                                                <div class="col-lg-2">
+                                                    <input type="text" id="txtVehicleCode" class="form-control" ng-model="selectedVehicleType" ng-keydown="OnVehicleTypesChange($event,selectedVehicleType)" required />
+                                                </div>
+                                                <div class="col-lg-1 mt-20">
+                                                    <a><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openVehicleTypeLookup()"></i></a>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <input type="text" class="form-control" ng-model="vehicleTypeEngilsh" title={{vehicleTypeEngilsh}} disabled />
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <input type="text" class="form-control" ng-model="vehicleTypeArabic" title={{vehicleTypeArabic}} disabled />
+                                                </div>
+                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.VehicleType.$error.required && invalidSubmit">{{'VehicleTypeRequired'|translate}}</span>
+                                                <span class="validation-error-label  col-md-10" ng-show="!validVehicleType">{{'VehicleTypeRequired'|translate}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-4">{{'VehicleCategory' | translate}}<span>*</span></label>
+                                                <!--<div name="VehicleCategory" id="ddlVehicleCategory" ng-keydown="vehicleCategoryKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleCategory' | translate}}" ng-model="selectedVehicleCategory" show-title="true" class="col-lg-3"
+                                                     local-data="vehicleCategoryList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" search-str="searchVehicleCategoryText"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlVehicleCategory" selected-object="selectedVehicleCategoryObj" input-changed="onVehicleCatChange" required>
+                                                </div>-->
+                                                <div class="col-lg-2">
+                                                    <input type="text" id="txtVehicleCategory" class="form-control" ng-model="selectedVehicleCategory" ng-keydown="vehicleCategoryKeyDown($event)" required />
+                                                </div>
+                                                <div class="col-lg-1 mt-20"> <a><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openVehicleCategoryLookup()"></i></a></div>
+                                                <div class="col-lg-2"> <input type="text" class="form-control" disabled ng-model="selectedVehicleCategoryEnglish" /></div>
+                                                <div class="col-lg-3"> <input type="text" class="form-control" disabled  ng-model="selectedVehicleCategoryArabic"/></div>
+                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.VehicleCategory.$error.required && invalidSubmit">{{'VehicleCategoryRequired'|translate}}</span>
+                                                <span class="validation-error-label  col-md-10" ng-show="!validVehicleCategory">{{'VehicleCategoryRequired'|translate}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'VehicleColor' | translate}}<span>*</span></label>
+                                                <!--<div name="VehicleColor" id="ddlVehicleColor" ng-keydown="vehicleColorKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleColor' | translate}}" ng-model="selectedVehicleColor" show-title="true" class="col-lg-3"
+                                                     local-data="vehicleColors" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" search-str="searchVehicleColorText"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlVehicleColor" selected-object="selectedVehicleColorObj" input-changed="onVehicleColorChange" required>
+                                                </div>-->
+
+                                                <div class="col-lg-2">
+                                                    <input type="text" id="txtVehicleColor" class="form-control" ng-model="selectedVehicleColor"  ng-keydown="vehicleColorKeyDown($event)"  />
+                                                </div>
+                                                <div class="col-lg-1 mt-20">
+                                                    <a><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openVehicleColorLookup()"></i></a>
+                                                </div>
+                                                <div class="col-lg-3"> <input type="text" class="form-control" disabled  ng-model="selectedVehicleColorEng" title={{selectedVehicleColorEng}} /></div>
+                                                <div class="col-lg-3"> <input type="text" class="form-control" disabled ng-model="selectedVehicleColorArb"  title={{selectedVehicleColorArb}} /></div>
+                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.VehicleColor.$error.required && invalidSubmit">{{'VehicleColorRequired'|translate}}</span>
+                                                <span class="validation-error-label  col-md-10" ng-show="!validVehicleColor">{{'VehicleColorRequired'|translate}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-horizontal">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label  col-lg-3">{{'City' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="city" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label  col-lg-4">{{'ChassisNo' | translate}}<span>*</span></label>
+                                                <div class="col-md-8">
+                                                    <input name="ChassisNumber" id="txtChassisNo" type="text" class="form-control" ng-model="vehicleReg.ChassisNumber" maxlength="30" required />
+                                                    <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.ChassisNumber.$invalid && invalidSubmit">{{'ChassisNoRequired'|translate}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'RegExpiry' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <div class="input-group">
+                                                        <input name="RegExpiry" type="text" class="form-control pickadate" placeholder="{{'SelectExpiryDate' | translate}}" ng-model="vehicleReg.CarEDate" />
+                                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                    </div>
+                                                    <!--<span class="validation-error-label  col-md-10" ng-show="myRegisterForm.RegExpiry.$invalid && invalidSubmit">{{'RegExpiryRequired'|translate}}</span>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-horizontal">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-2">{{'VehicleOwner' | translate}}<span>*</span></label>
+                                                <div class="col-lg-10">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <input name="OwnerName" type="text" class="form-control" ng-model="vehicleReg.OwnerName1" ng-change="OwnerNameChange('OwnerName1',1)" required />
+                                                            <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.OwnerName.$invalid && invalidSubmit">{{'VehicleOwnerRequired'|translate}}</span>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.OwnerName2" ng-change="OwnerNameChange('OwnerName2',2)" />
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.OwnerName3" ng-change="OwnerNameChange('OwnerName3',3)" />
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.OwnerName4" ng-change="OwnerNameChange('OwnerName4',4)" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'OwnerNationality' | translate}}<span>*</span></label>
+                                                <!--<div name="OwnerNationality" id="ddlOwnerNationality" ng-keydown="openNationality($event,'owner')" angucomplete-alt placeholder="{{'phOwnerNationality' | translate}}" ng-model="selectedOwnerNationality" show-title="true"
+                                                     local-data="nationalityList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" class="col-lg-2" search-str="searchNationalityText"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlOwnerNationality" selected-object="selectedOwnerNatOriginObj" input-changed="onNationalityChange" required>
+                                                </div>-->
+                                                <div class="col-lg-2">
+                                                    <input type="text" id="txtOwnerNationality" class="form-control" ng-model="selectedOwnerNationality" ng-keydown="openNationality($event,'owner')" required/>
+                                                </div>
+                                                <div class="col-lg-1 mt-20">
+                                                    <a><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openNationality('click','owner')"></i></a>
+                                                </div>
+                                                <div class="col-lg-3"> <input type="text" class="form-control" disabled ng-model="selectedOwnerNationalityEng" title={{selectedOwnerNationalityEng}} /></div>
+                                                <div class="col-lg-3"> <input type="text" class="form-control" disabled ng-model="selectedOwnerNationalityArb" title={{selectedOwnerNationalityArb}}/></div>
+                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.OwnerNationality.$error.required && invalidSubmit">{{'OwnerNationalityRequired'|translate}}</span>
+                                                <span class="validation-error-label  col-md-10" ng-show="!validOwnerNationality">{{'OwnerNationalityRequired'|translate}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 form-horizontal">
+                                        <div class="col-md-4" ng-show="vehicleReg.TicketFlag == 'Y'">
+                                            <div class="form-group">
+                                                <label class="control-label  col-lg-3">{{'Ticket' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input name="TripTicket" type="text" class="form-control" ng-model="vehicleReg.TripTicket" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-4">{{'Trailer' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input name="TrailerNumber" type="text" class="form-control" ng-model="vehicleReg.TrailerNumber" maxlength="30" />
+                                                    <!--<span class="validation-error-label  col-md-10" ng-show="myRegisterForm.TrailerNumber.$invalid && invalidSubmit">{{'TrailerRequired'|translate}}</span>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label  col-lg-3">{{'Model' | translate}}<span>*</span></label>
+                                                <div class="col-md-8">
+                                                    <input name="VehicleModel" type="text" class="form-control" ng-model="vehicleReg.VehicleModel" only-numbers maxlength="20" required />
+                                                    <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.VehicleModel.$invalid && invalidSubmit">{{'ModelRequired'|translate}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="col-md-12 mt-20">
+                                    <!--#region CLOSE/OPEN ENTRY-->
+                                    <div class="col-md-6">
+                                        <fieldset ng-disabled="!IsCloseEditable">
+                                            <div class="panel bdr bdrt pb20" ng-class="{'grey-shade':IsCloseEditable == false}">
+                                                <div class="panel-heading">
+                                                    {{'CloseEntry' | translate}}
+                                                    <div class="pull-right mtm6">
+                                                        <button type="button" class="btn btn-red" ng-click="getEmirateIdDetails('close')">{{'Read' | translate}}</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 form-horizontal">
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'CloseDate' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input name="CloseDate" type="text" class="form-control" placeholder="{{'CloseDateTime' | translate}}" ng-model="vehicleReg.DateClose" ng-disabled="true">
+                                                                    <span class="input-group-addon" style="display:none"><i class="icon-calendar22"></i></span>
+                                                                    <div class='input-group date' id='closeTime' style="display:none">
+                                                                        <input id="etaTimeData" onkeydown="event.preventDefault();" ng-model="closeTime" type='text' class="form-control" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="fa fa-clock"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <!--<span class="validation-error-label  col-md-10" ng-show="myRegisterForm.CloseDate.$invalid && myRegisterForm.CloseDate.$dirty">{{'CloseDateRequired'|translate}}</span>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'DriverName' | translate}}<span>*</span></label>
+                                                            <div class="col-md-10">
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <input name="DriverNameClose" type="text" class="form-control" ng-model="vehicleReg.DriverNameClose1" ng-required="IsCloseEditable" />
+                                                                        <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DriverNameClose.$invalid && invalidSubmit">{{'DriverNameRequired'|translate}}</span>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameClose2" />
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameClose3" />
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameClose4" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'Destination' | translate}}<span>*</span></label>
+                                                            <div class="col-md-9">
+                                                                <div name="DestinationClose" ng-keydown="openDestination($event,'close')" angucomplete-alt placeholder="{{'DestCountryph' | translate}}" ng-model="selectedCloseDestination" show-title="true"
+                                                                     local-data="destinationList" search-fields="Code,CountryEngName,CountryArbName" title-field="Code,CountryEngName,CountryArbName" minlength="1"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlDestination" selected-object="selectedCloseDestinationObj" input-changed="onDestinationChange" ng-required="IsCloseEditable">
+                                                                </div>
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openDestination('click','close')"></i></a>
+                                                            <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DestinationClose.$error.required && invalidSubmit">{{'DestinationRequired'|translate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'DriverNationality' | translate}}<span>*</span></label>
+                                                            <dis class="col-md-9">
+                                                                <div name="DriverNationalityClose" ng-keydown="openNationality($event,'close')" angucomplete-alt placeholder="{{'DriverNationality' | translate}}" ng-model="selectedcloseDriverNationality" show-title="true"
+                                                                     local-data="nationalityList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlcloseDriverNationality" selected-object="selectedcloseDriverNatOriginObj" input-changed="onNationalityChange" ng-required="IsCloseEditable">
+                                                                </div>
+                                                            </dis>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openNationality('click','close')"></i></a>
+                                                            <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DriverNationalityClose.$error.required && invalidSubmit">{{'DriverNationalityRequired'|translate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'NoOfPassengers' | translate}}<span>*</span></label>
+                                                            <div class="col-md-9">
+                                                                <input name="PassangerNumberClose" type="text" class="form-control" ng-model="vehicleReg.PassangerNumberClose" ng-required="IsCloseEditable" only-numbers />
+                                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.PassangerNumberClose.$invalid && invalidSubmit">{{'NoOfPassengersRequired'|translate}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'DocType' | translate}}<span>*</span></label>
+                                                            <div class="col-md-9">
+                                                                <select name="ddlDocType" class="form-control select" ng-model="vehicleReg.DriverIDTypeClose"
+                                                                        ng-options="docType.Code as (docType.DocumentEngName + '   ' + docType.DocumentArbName) for docType in docTypeList" ng-required="IsCloseEditable"></select>
+                                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.ddlDocType.$invalid && invalidSubmit">{{'DocTypeRequired'|translate}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'DocNo' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <input name="DriverIDNumberClose" type="text" class="form-control" ng-model="vehicleReg.DriverIDNumberClose" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'ExpiryDate' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input name="DriverIDDateClose" type="text" class="form-control pickadate" placeholder="{{'SelectExpiryDate' | translate}}" ng-model="vehicleReg.DriverIDDateClose">
+                                                                    <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8" ng-show="IsVisibleJobNumber">
+                                                            <label class="control-label col-md-3">{{'JobNumber' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <input type="text" class="form-control" ng-model="vehicleReg.JobNumberClose" ng-disabled="vehicleReg.IsdisableJobNumberClose" />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8" ng-show="IsCloseEditable">
+                                                            <label class="control-label col-md-3">{{'LoadType' | translate}}</label>
+                                                            <!--<div class="col-md-9">
+                                                                <select name="ddlLoadType" class="form-control select" ng-model="vehicleReg.LoadTypeClose"
+                                                                        ng-options="loadType.Code as (loadType.EngName + '   ' + loadType.ArbName) for loadType in carLoadTypeList" ng-required="IsCloseEditable"></select>
+                                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.ddlLoadType.$invalid && invalidSubmit">{{'LoadTypeRequired'|translate}}</span>
+                                                            </div>-->
+                                                            <div class="col-md-8">
+                                                                <div name="ddlLoadTypeClose" ng-keydown="openLoadTypeLookup($event,'close')" angucomplete-alt placeholder="{{'SearchLoadType' | translate}}" ng-model="vehicleReg.LoadTypeClose" show-title="true"
+                                                                     local-data="loadTypeList" search-fields="Code,EngName,ArbName" title-field="EngName,ArbName" minlength="1" 
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlLoadTypeClose" selected-object="selectedCloseLoadTypeObj">
+                                                                </div>
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLoadTypeLookup('click','close')"></i></a>
+
+                                                        </div>
+                                                        <div class="col-md-4 mt-15" style="display:none">
+                                                            <div class="form-checkbox fleft">
+                                                                <label class="control control--checkbox">
+                                                                    <input type="checkbox" name="chckLoaded" id="chckLoaded" ng-model="vehicleReg.LoadFlagClose" ng-checked="vehicleReg.LoadFlagClose == 'Y'" ng-disabled="true" />
+                                                                    <span class="control__indicator"></span>
+                                                                </label>
+                                                            </div>
+                                                            <label>{{'Loaded' | translate}}</label>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="IsCloseEditable">
+                                                        <div class="col-md-12 mt-15">
+                                                            <label class="control-label col-md-2">{{'Remarks' | translate}}</label>
+                                                            <div class="col-md-10">
+                                                                <textarea class="form-control" ng-model="vehicleReg.RemarksClose" maxlength="100"></textarea>
+                                                                <label class="control-label col-lg-12">{{'Limitedto100charactersonly' | translate}} </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <fieldset ng-disabled="!IsOpenEditable">
+                                            <div class="panel bdr bdrt pb20">
+                                                <div class="panel-heading">
+                                                    {{'OpenEntry' | translate}}
+                                                    <div class="pull-right mtm6">
+                                                        <button type="button" class="btn btn-red" ng-click="getEmirateIdDetails('open')">{{'Read' | translate}}</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 form-horizontal">
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'OpenDate' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input name="OpenDate" type="text" class="form-control" placeholder="{{'OpenDateTime' | translate}}" ng-model="vehicleReg.DateOpen" ng-disabled="true">
+                                                                    <span class="input-group-addon" style="display:none"><i class="icon-calendar22"></i></span>
+                                                                    <div class='input-group date' id='openTime' style="display:none">
+                                                                        <input id="etaTimeData" onkeydown="event.preventDefault();" ng-model="openTime" type='text' class="form-control" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="fa fa-clock"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <!--<span class="validation-error-label  col-md-10" ng-show="myRegisterForm.OpenDate.$invalid && myRegisterForm.OpenDate.$dirty">{{'OpenDateRequired'|translate}}</span>-->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'DriverName' | translate}}<span>*</span></label>
+                                                            <div class="col-md-10">
+                                                                <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <input name="DriverNameOpen" type="text" class="form-control" ng-model="vehicleReg.DriverNameOpen1" ng-required="IsOpenEditable" />
+                                                                        <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DriverNameOpen.$invalid && invalidSubmit">{{'DriverNameRequired'|translate}}</span>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameOpen2" />
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameOpen3" />
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <input type="text" class="form-control" ng-model="vehicleReg.DriverNameOpen4" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'Destination' | translate}}<span>*</span></label>
+                                                            <div class="col-md-8">
+                                                                <div name="DestinationOpen" ng-keydown="openDestination($event,'open')" angucomplete-alt placeholder="{{'DestCountryph' | translate}}" ng-model="selectedOpenDestination" show-title="true"
+                                                                     local-data="destinationList" search-fields="Code,CountryEngName,CountryArbName" title-field="Code,CountryEngName,CountryArbName" minlength="1"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlDestination" selected-object="selectedOpenDestinationObj" input-changed="onDestinationChange" ng-required="IsOpenEditable">
+                                                                </div>
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openDestination('click','open')"></i></a>
+                                                            <!--<div class="col-md-3">
+                                                                <input type="text" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" />
+                                                            </div>-->
+                                                            <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DestinationOpen.$error.required && invalidSubmit">{{'DestinationRequired'|translate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label class="control-label col-md-2">{{'DriverNationality' | translate}}<span>*</span></label>
+                                                            <div class="col-md-8">
+                                                                <div name="DriverNationalityOpen" ng-keydown="openNationality($event,'open')" angucomplete-alt placeholder="{{'DriverNationality' | translate}}" ng-model="selectedopenDriverNationality" show-title="true"
+                                                                     local-data="nationalityList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlopenDriverNationality" selected-object="selectedopenDriverNatOriginObj" input-changed="onNationalityChange" ng-required="IsOpenEditable">
+                                                                </div>
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openNationality('click','open')"></i></a>
+                                                            <!--<div class="col-md-3">
+                                                                <input type="text" class="form-control" />
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" />
+                                                            </div>-->
+                                                            <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.DriverNationalityOpen.$error.required && invalidSubmit">{{'DriverNationalityRequired'|translate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'NoOfPassengers' | translate}}<span>*</span></label>
+                                                            <div class="col-md-9">
+                                                                <input name="NoOfPassengersOpen" type="text" class="form-control" ng-model="vehicleReg.PassangerNumberOpen" ng-required="IsOpenEditable" only-numbers />
+                                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.NoOfPassengersOpen.$invalid && invalidSubmit">{{'NoOfPassengersRequired'|translate}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'DocType' | translate}}<span>*</span></label>
+                                                            <div class="col-md-9">
+                                                                <select name="ddlDocTypeOpen" class="form-control select" ng-model="vehicleReg.DriverIDTypeOpen"
+                                                                        ng-options="docType.Code as (docType.DocumentEngName + '   ' + docType.DocumentArbName) for docType in docTypeList" ng-required="IsOpenEditable"></select>
+                                                                <span class="validation-error-label  col-md-10" ng-show="myRegisterForm.ddlDocTypeOpen.$invalid && invalidSubmit">{{'DocTypeRequired'|translate}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'DocNo' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <input name="DocNoOpen" type="text" class="form-control" ng-model="vehicleReg.DriverIDNumberOpen" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'ExpiryDate' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input name="ExpiryOpen" type="text" class="form-control pickadate" placeholder="{{'SelectExpiryDate' | translate}}" ng-model="vehicleReg.DriverIDDateOpen">
+                                                                    <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'JobNumber' | translate}}</label>
+                                                            <div class="col-md-9">
+                                                                <input type="text" class="form-control" ng-model="vehicleReg.JobNumberOpen" ng-disabled="vehicleReg.IsdisableJobNumberOpen" />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <!--ng-show="vehicleReg.TruckFlag == 'N'"-->
+                                                        <div class="col-md-8">
+                                                            <label class="control-label col-md-3">{{'LoadType' | translate}}</label>
+                                                            <div class="col-md-8">
+                                                                <!--<select name="ddlDocTypeOpen" class="form-control select" ng-model="vehicleReg.LoadTypeOpen"
+                                                                        ng-options="loadType.Code as (loadType.EngName + '   ' + loadType.ArbName) for loadType in carLoadTypeList"></select>-->
+                                                                <div name="ddlLoadTypeOpen" ng-keydown="openLoadTypeLookup($event,'open')" angucomplete-alt placeholder="{{'SearchLoadType' | translate}}" ng-model="vehicleReg.LoadTypeOpen" show-title="true"
+                                                                     local-data="loadTypeList" search-fields="Code,EngName,ArbName" title-field="EngName,ArbName" minlength="1"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlLoadTypeOpen" selected-object="selectedOpenLoadTypeObj">
+                                                                </div>
+
+                                                                <!--<div name="ddlDocTypeOpen" ng-keydown="openLoadTypeLookup($event,'open')" angucomplete-alt placeholder="{{'SearchLoadType' | translate}}" ng-model="selectedOpenLoadType" show-title="true"
+                                                                     local-data="loadTypeList" search-fields="Code,EngName,ArbName" title-field="ArbName" minlength="1" ng-if="language != 'en'"
+                                                                     input-class="form-control" match-class="highlight" input-name="ddlDocTypeOpen" selected-object="selectedOpenLoadTypeObj" input-changed="onOpenLoadTypeChange">
+                                                                </div>-->
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLoadTypeLookup('click','open')"></i></a>
+                                                        </div>
+                                                        <div class="col-md-4 mt-15" style="display:none">
+                                                            <!--ng-show="vehicleReg.TruckFlag == 'N'"-->
+                                                            <div class="form-checkbox fleft">
+                                                                <label class="control control--checkbox">
+                                                                    <input type="checkbox" name="chckLoaded" id="chckLoaded" ng-model="vehicleReg.LoadFlagOpen" ng-checked="vehicleReg.LoadFlagOpen == 'Y'" ng-disabled="true" />
+                                                                    <span class="control__indicator"></span>
+                                                                </label>
+                                                            </div>
+                                                            <label>{{'Loaded' | translate}}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12 mt-15">
+                                                            <label class="control-label col-md-2">{{'Remarks' | translate}}</label>
+                                                            <div class="col-md-10">
+                                                                <textarea class="form-control" ng-model="vehicleReg.RemarksOpen" maxlength="100"></textarea>
+                                                                <label class="control-label col-lg-12">{{'Limitedto100charactersonly' | translate}} </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <!--#endregion CLOSE/OPEN ENTRY-->
+
+                                    <div class="col-md-12 mt-10">
+                                        <div class="panel bdr bdrt pb20">
+                                            <div class="col-md-12 form-horizontal">
+                                                <div class="form-group">
+                                                    <div class="col-md-4">
+                                                        <label class="control-label col-md-4">{{'CarReferenceNo' | translate}}</label>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.PermitNumber" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" style="display:none">
+                                                        <label class="control-label col-md-4">{{'OpenReferenceNo' | translate}}</label>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.PermitNumber" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="control-label col-md-4">{{'KSA' | translate}}</label>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control" ng-model="vehicleReg.TextTransNumber" only-numbers disabled />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group" style="display:none">
+                                                    <div class="col-md-6 mt-20">
+                                                        <label class="control-label col-md-2">{{'Description' | translate}}</label>
+                                                        <div class="col-md-10">
+                                                            <textarea class="form-control" ng-model="vehicleReg.CarT1Desc"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pull-right mt-15 mr-20">
+                                <button type="button" class="btn btn-default" ng-click="gotoVehicleList()">{{'Back' | translate}}</button>
+                                <button type="submit" class="btn btn-red" ng-disabled="myRegisterForm.$invalid"  ng-show="showVehicleRegDetails">{{'Save' | translate}}</button>
+                                <button type="button" class="btn btn-red" ng-disabled="myRegisterForm.$invalid"  ng-hide="TrailerFlag" ng-click="gotoVehicleTralier()">{{'VehicleTralier' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!--#endregion VEHICLE DETAILS-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--#REGION: F9 LOOKUP MODALS-->
+<div>
+    <div class="modal" id="plateColorLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateColor()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateColor' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateColorText" type="text" ng-model="searchPlateColorText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateColorItem.Code==plateColorItemSelected.Code}" ng-click="setPlateColor(plateColorItem)" dir-paginate="plateColorItem in plateColors | itemsPerPage: 10" current-page="lookUpCurrentPagePlateColor" pagination-id="plateColorPager">
+                                    <td>
+                                        {{plateColorItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateColorItem.EngName}} {{plateColorItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateColors == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateColors == null">
+                        <dir-pagination-controls pagination-id="plateColorPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateOriginLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateOrigin()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateOrigin' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateOriginText" type="text" ng-model="searchPlateOriginText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateOriginItem.Code==plateOriginItemSelected.Code}" ng-click="setPlateOrigin(plateOriginItem)" dir-paginate="plateOriginItem in plateOrigins | itemsPerPage: 10" current-page="lookUpCurrentPagePlateOrigin" pagination-id="plateOriginPager">
+                                    <td>
+                                        {{plateOriginItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateOriginItem.CountryEngName}} {{plateOriginItem.CountryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateOrigins == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateOrigins == null">
+                        <dir-pagination-controls pagination-id="plateOriginPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateCategoryLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateCategory()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateCategory' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateCategoryText" type="text" ng-model="searchPlateCategoryText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateCategoryItem.CategoryCode==plateCategoryItemSelected.CategoryCode}" ng-click="setPlateCategory(plateCategoryItem)" dir-paginate="plateCategoryItem in plateCategorys | itemsPerPage: 10" current-page="lookUpCurrentPagePlateCategory" pagination-id="plateCategoryPager">
+                                    <td>
+                                        {{plateCategoryItem.CategoryCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateCategoryItem.CategoryEngName}} {{plateCategoryItem.CategoryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateCategorys == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateCategorys == null">
+                        <dir-pagination-controls pagination-id="plateCategoryPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleCategoryLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleCategory()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleCategory' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleCategoryText" type="text" ng-model="searchVehicleCategoryText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleCategoryItem.Code==vehicleCategoryItemSelected.Code}" ng-click="setVehicleCategory(vehicleCategoryItem)" dir-paginate="vehicleCategoryItem in vehicleCategorys | itemsPerPage: 10" current-page="lookUpCurrentPageVehicleCategory" pagination-id="vehicleCategoryPager">
+                                    <td>
+                                        {{vehicleCategoryItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleCategoryItem.EngName}} {{vehicleCategoryItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleCategorys == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleCategorys == null">
+                        <dir-pagination-controls pagination-id="vehicleCategoryPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleColorLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleColor()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleColor' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleColorText" type="text" ng-model="searchVehicleColorText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleColorItem.Code==vehicleColorItemSelected.Code}" ng-click="setVehicleColor(vehicleColorItem)" dir-paginate="vehicleColorItem in vehicleColors | itemsPerPage: 10" current-page="lookUpCurrentPageVehicleColor" pagination-id="vehicleColorPager">
+                                    <td>
+                                        {{vehicleColorItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleColorItem.EnglishName}} {{vehicleColorItem.ArabicName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleColors == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleColors == null">
+                        <dir-pagination-controls pagination-id="vehicleColorPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleTypeLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleType()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleType' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleTypeText" type="text" ng-model="searchVehicleTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleTypeItem.Code==vehicleTypeItemSelected.Code}" ng-click="setVehicleType(vehicleTypeItem)" dir-paginate="vehicleTypeItem in vehicleTypes | itemsPerPage: 10" current-page="lookUpCurrentPageVehicleType" pagination-id="vehicleTypePager">
+                                    <td>
+                                        {{vehicleTypeItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleTypeItem.EngName}} {{vehicleTypeItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleTypes == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleTypes == null">
+                        <dir-pagination-controls pagination-id="vehicleTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="openNationalityLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'Nationality' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchDriverNationalityText" type="text" ng-model="searchNationalityText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: nationalityItem.Code==nationalitySelected.Code}" ng-click="setNationality(nationalityItem)" dir-paginate="nationalityItem in nationalityList | itemsPerPage: 10" current-page="lookUpCurrentPageNationality" pagination-id="nationalityPager">
+                                    <td>
+                                        {{nationalityItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{nationalityItem.EngName}} {{nationalityItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="nationalityList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="nationalityList == null">
+                        <dir-pagination-controls pagination-id="nationalityPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="ownerNationalityLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeOwnerNationality()">&times;</button>
+                    <h5 class="modal-title bold">{{'OwnerNationality' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchOwnerNationalityText" type="text" ng-model="searchOwnerNationalityText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: ownerNationalityItem.Code==ownerNationalityItemSelected.Code}" ng-click="setOwnerNationality(ownerNationalityItem)" dir-paginate="ownerNationalityItem in ownerNationalities | itemsPerPage: 10" current-page="lookUpCurrentPageOwnerNationality" pagination-id="ownerNationalityPager">
+                                    <td>
+                                        {{ownerNationalityItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{ownerNationalityItem.EngName}} {{ownerNationalityItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="ownerNationalities == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="ownerNationalities == null">
+                        <dir-pagination-controls pagination-id="ownerNationalityPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="LoadTypeLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'LoadType' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchLoadTypeText" type="text" ng-model="searchLoadTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: loadTypeItem.Code==loadTypeSelected.Code}" ng-click="setLoadType(loadTypeItem)" dir-paginate="loadTypeItem in loadTypeList | itemsPerPage: 10" current-page="lookUpCurrentPageLoadType" pagination-id="loadTypePager">
+                                    <td>
+                                        {{loadTypeItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{loadTypeItem.EngName}} {{loadTypeItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="loadTypeList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="loadTypeList == null">
+                        <dir-pagination-controls pagination-id="loadTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="openDestinationLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'Destination' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchDestinationText" type="text" ng-model="searchDestinationText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: destinationItem.Code==destinationSelected.Code}" ng-click="setDestination(destinationItem)" dir-paginate="destinationItem in destinationList | itemsPerPage: 10" current-page="lookUpCurrentPageDestination" pagination-id="destinationPager">
+                                    <td>
+                                        {{destinationItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{destinationItem.CountryEngName}} {{destinationItem.CountryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="destinationList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="destinationList == null">
+                        <dir-pagination-controls pagination-id="destinationPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+<!--#EOF REGION: F9 LOOKUP MODALS-->
+<script>
+    var date = new Date();
+    date.setDate(date.getDate() - 1);
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: 100,
+        selectMonths: true,
+        disable: [
+            { from: [0, 0, 0], to: date }
+        ]
+    });
+    //function showConfirmMessage(msg) {
+    //    swal({
+    //        title: '',
+    //        text: msg,
+    //        type: "success",
+    //        confirmButtonColor: "#66BB6A",
+    //        confirmButtonText:  angular.element(document.getElementById('vehicleRegistrationDiv')).scope().gotoVehicleList(),
+    //        closeOnConfirm: true,
+    //        html: true
+    //    },
+    //        function (isConfirm) {
+    //            if (isConfirm) {
+    //                angular.element(document.getElementById('vehicleRegistrationDiv')).scope().gotoVehicleList();
+    //            }
+    //        });
+
+    //}
+
+    $('#closeTime,#openTime').datetimepicker({
+        format: 'HH:mm',
+        allowInputToggle: true
+    });
+
+
+</script>
+
+
+

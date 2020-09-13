@@ -1,0 +1,212 @@
+﻿
+<style>
+    .lbl {
+        font-weight: bold;
+        padding-top: 13px;
+        font-family: 'Roboto';
+    }
+
+    .gridLnk {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: red !important;
+    }
+
+    .selectNw {
+        height: 30px !important;
+    }
+    .tdbreak {
+        word-break: break-all
+    }
+</style>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <h4>{{'TransactionManifest' | translate}}</h4>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-3">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                        <div class="col-md-8">
+                            <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                    ng-options="transMode.key as transMode.value for transMode in transModes"
+                                    ng-change="onModeChanged()"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label  col-md-4">{{'CentreCode' | translate}}</label>
+                        <div class="col-md-8">
+                            <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                    ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                    ng-change="onCenterCodeChanged()"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel panel-flat bdr pb20">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="txtJobnumber" type="text" ng-model="searchParameter.jobNumber" ng-change="isShowTransactionManifest = false" only-numbers />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-find" ng-click="getTransactionManifestDetails(1)" ng-disabled="searchParameter.jobNumber == null || searchParameter.jobNumber == ''">
+                                        {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #endregion Search Panel -->
+                <!-- #region Manifest Transaction-->
+                <div ng-show="isShowTransactionManifest">
+                    <div class="col-md-12 form-horizontal form-group">
+                        <div class="col-md-3">
+                            <label class="control-label col-md-4">{{'Center' | translate}}</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.CentrCode" ng-disabled="true" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-4">{{'Type' | translate}}</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.CustBillType" ng-disabled="true" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-4">{{'BillNumber' | translate}}</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.BillNumber" ng-disabled="true" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-4">{{'Year' | translate}}</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.CurrentYear" ng-disabled="true" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label col-md-2">{{'CenterName' | translate}}</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.CenterNameEng" title={{ transactionManifest.SealDetail.CenterNameEng }} ng-disabled="true" />
+                            </div>
+                            <div class="col-md-5">
+                                <input class="form-control t-right" type="text" ng-model="transactionManifest.SealDetail.CenterNameArb" title={{transactionManifest.SealDetail.CenterNameArb}} ng-disabled="true" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label col-md-2">{{'Importer' | translate}}</label>
+                            <div class="col-md-2">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.ImporterCode" ng-disabled="true" />
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control" type="text" ng-model="transactionManifest.SealDetail.ImporterNameEng" ng-disabled="true" title={{ transactionManifest.SealDetail.ImporterNameEng }}/>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control t-right" type="text" ng-model="transactionManifest.SealDetail.ImporterNameArb" ng-disabled="true"   title={{ transactionManifest.SealDetail.ImporterNameArb }} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="panel bdr bdrt pb20 mt-20">
+                            <!--#region Invoice Group-->
+                            <div class="panel-heading panel-flat">
+                                {{'SealList' | translate}}
+                                <div class="pull-right mtm6">
+                                    <fieldset ng-disabled="isSuperUser == 'True'">
+                                        <button type="button" class="btn btn-green" ng-click="addSeal()" ng-disabled="isAddNewDisable">{{'AddNew' | translate}}</button>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <form id="manifestform">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:4%;">{{'DOCode' | translate}}</th>
+                                                    <th style="width:2%;">{{'Sno' | translate}}</th>
+                                                    <th style="width:20%;">{{'SealTruckNumber' | translate}}
+                                                        <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'en'" data-placement="right" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                                        <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'ae'" data-placement="left" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                                    </th>
+                                                    <th style="width:3%;">{{'User' | translate}}</th>
+                                                    <th style="width:5%;">{{'Date' | translate}}</th>
+                                                    <th style="width:3%;">{{'Action' | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-show="isAddNewDisable">
+                                                    <td class="tdbreak">{{seal.JobNumber}}</td>
+                                                    <td class="tdbreak">{{seal.SNo}}</td>
+                                                    <td class="tdbreak"><input type="text" ng-model="seal.SealNumber"  maxlength="70" /></td>
+                                                    <td class="tdbreak">{{seal.UserCreated}}</td>
+                                                    <td class="tdbreak">{{seal.CreatedDate}}</td>
+                                                    <td class="tdbreak">
+                                                        <a title="{{'Save' | translate}}" ng-click="saveSeal(seal)"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                                        <a title="{{'Delete' | translate}}" ng-click="deleteSeal(seal)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr pagination-id="tranManifestPagination" dir-paginate="item in transactionManifest.SealList | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                                    <td class="tdbreak">{{item.JobNumber}}</td>
+                                                    <td class="tdbreak">{{item.SNo}}</td>
+                                                    <td class="tdbreak">{{item.SealNumber}}</td>
+                                                    <td class="tdbreak">{{item.UserCreated}}</td>
+                                                    <td class="tdbreak">{{item.CreatedDate}}</td>
+                                                    <td class="tdbreak"></td>
+                                                </tr>
+                                                <tr class="no-records" ng-show="transactionManifest.SealList == null || transactionManifest.SealList.length == 0">
+                                                    <td colspan="7">
+                                                        {{'NoItems' | translate}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20"  ng-hide="transactionManifest.SealList == null && transactionManifest.SealList.length == 0">
+                        <div class="col-md-10">
+                            <dir-pagination-controls pagination-id="tranManifestPagination"
+                                                     direction-links="true" boundary-links="true"
+                                                     on-page-change="loadMoreRecords(newPageNumber)">
+                            </dir-pagination-controls>
+                        </div>
+                        <span class="col-md-2 pull-right" ng-show="transactionManifest.SealList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                    <!-- #endregion Manifest Transaction-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+</script>
+
+
+
+
+

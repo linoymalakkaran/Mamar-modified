@@ -1,0 +1,168 @@
+﻿<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'ContainerList' | translate}}</div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'ContainerNumber' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" placeholder="" ng-model="parameters.searchString">
+                                    </div>
+                                    <button type="button" class="btn btn-green" ng-click="searchContainer()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="pull-right">
+                                    <div class="pull-right">
+                                        <fieldset ng-disabled="$storage.get('isPcsSuperUser') || clearanceFlag == 'Y'">
+                                            <a class="btn btn-red" ng-click="addNewContainer()">{{'AddNew' | translate}}</a>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <!-- #region Container List-->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="$storage.get('isPcsSuperUser') || clearanceFlag == 'Y'">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'ContainerNumber' | translate}}</th>
+                                            <th>
+                                            {{'SealNumber' | translate}}
+                                                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'en'" data-placement="right" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'ae'" data-placement="left" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                            </th>
+                                            <th>{{'Size' | translate}}</th>
+                                            <th>{{'Service' | translate}}</th>
+                                            <th>{{'Weight' | translate}}</th>
+                                            <th>{{'Measure' | translate}}</th>
+                                            <th>{{'Remarks' | translate}}</th>
+                                            <th>{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="savedSuccess" class="alert-success">
+                                            <td colspan="8">
+                                                <span>{{'SavedSuccess'|translate}}</span>
+                                                <a ng-click="savedSuccess=false" class="close" style="font-size:19px">&times;</a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="addNew" ng-keydown="onKeyDownContainerList($event)" class="border">
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="AAAA9999999" ng-model="RecordToSave.ContainerNumber"
+                                                       maxlength="11" restrict-space ng-change="onContainerChanged()" />
+                                                <span class="validation-error-label" ng-show="isRequiredValid && !isValidContainerNo">{{'ErrContainerFormat' | translate}}</span>
+                                                <span class="validation-error-label" ng-show="!isRequiredValid">{{'ErrContainerNo' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" maxlength="20" restrict-space allow-comma ng-model="RecordToSave.SealNumber" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" only-digits ng-model="RecordToSave.Size" maxlength="2" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" ng-model="RecordToSave.Service" maxlength="5" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Weight" ng-change="validateWeightMeasureFormat()" maxlength="16" />
+                                                <span class="validation-error-label" ng-show="weightInvalidFormat">{{'InvalidFormatMessage' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Measure" ng-change="validateWeightMeasureFormat()" maxlength="16" />
+                                                <span class="validation-error-label" ng-show="mesaureInvalidFormat">{{'InvalidFormatMessage' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" ng-model="RecordToSave.Remarks" maxlength="50" />
+                                            </td>
+                                            <td>
+                                                <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveContainer()"></i></a>
+                                                <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelContainerSave()"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr dir-paginate="item in containerList | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+                                            <td>{{item.ContainerNumber}}</td>
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.SealNumber}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]"> <input class="form-control" type="text" maxlength="20" restrict-space allow-comma ng-model="RecordToSave.SealNumber" /></td>
+
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.Size}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]"> <input class="form-control" type="text" only-digits ng-model="RecordToSave.Size" maxlength="2" /></td>
+
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.Service}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]"> <input class="form-control" type="text" ng-model="RecordToSave.Service" maxlength="5" /></td>
+
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.Weight}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]">
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Weight" ng-change="validateWeightMeasureFormat()" maxlength="16" />
+                                                <span class="validation-error-label" ng-show="weightInvalidFormat">{{'InvalidFormatMessage' | translate}}</span>
+                                            </td>
+
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.Measure}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]">
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Measure" ng-change="validateWeightMeasureFormat()" maxlength="16" />
+                                                <span class="validation-error-label" ng-show="mesaureInvalidFormat">{{'InvalidFormatMessage' | translate}}</span>
+                                            </td>
+
+                                            <td ng-show="!editContainer[item.ContainerNumber]">{{item.Remarks}}</td>
+                                            <td ng-show="editContainer[item.ContainerNumber]"><input class="form-control" type="text" ng-model="RecordToSave.Remarks" maxlength="50" /></td>
+
+                                            <td>
+                                                <a ng-if="editContainer[item.ContainerNumber]"><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveContainer(item)"></i></a>
+                                                <a ng-if="editContainer[item.ContainerNumber]"><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelContainerSave(item)"></i></a>
+                                                <a ng-if="!editContainer[item.ContainerNumber]"><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="editContainerDetails(item)"></i></a>
+                                                <a ng-if="!editContainer[item.ContainerNumber]" title="{{'Delete' | translate}}" ng-click="deleteContainer($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="containerList == null">
+                                            <td colspan="8">
+                                                {{'NoItems' | translate}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+
+                            <div class="alert-msg" ng-show="containerList == null">
+                                <div class="col-md-6">
+                                    <div class="alert alert-success alert-bordered">
+                                        <span class="text-semibold">{{'NoItems' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <span class="col-md-4 pl-15" ng-show="containerList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        <div class="pull-right mr-10">
+                            <button class="btn btn-green alwaysEnabled" ng-click="backtoSubDoDetails()">{{'Back' | translate}}</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="containerList == null">
+                        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                    </div>
+                    <!-- #endregion Container List-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+</script>

@@ -1,0 +1,52 @@
+﻿<div class="modal" id="originCountryLookup" role="dialog">
+    <div style="width:50%" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{'OrginCountry' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input
+                    id="searchOriginCountryText"
+                    type="text"
+                    ng-model="searchPopUpModels.searchOriginCountryText"
+                    ng-change="OriginCountryChangeFilterClientSide()"
+                    class="form-control disabledInputWithBorder col-md-12"
+                >
+                <div class="table-responsive mb20">
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th width="10%">{{'Code'|translate}}</th>
+                                <th>{{'Description'|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                ng-class="{selected: countryItem.Code==originCountryItemSelected.Code}"
+                                ng-click="setOriginCountry(countryItem)"
+                                dir-paginate="countryItem in origincountryListFiltered | itemsPerPage: 10"
+                                pagination-id="originShipmentCountryPager"
+                            >
+                                <td>
+                                    {{countryItem.Code}}
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                    {{countryItem.EnglishName}} {{countryItem.ArabicName}}
+                                </td>
+                            </tr>
+                            <tr ng-show="origincountryListFiltered == null">
+                                <td colspan="3">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="origincountryListFiltered == null">
+                    <dir-pagination-controls pagination-id="originShipmentCountryPager" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

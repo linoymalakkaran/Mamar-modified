@@ -1,0 +1,75 @@
+﻿<style>
+    .alignRight {
+        text-align: right !important;
+    }
+
+    .large {
+        width: 80% !important;
+    }
+
+    .modalAnnounce {
+        background-color: rgb(162,144,97) !important;
+    }
+
+    .underline {
+        text-decoration: underline !important;
+    }
+
+    .a.menu_links {
+        cursor: pointer;
+    }
+
+    .verticalscroll {
+        max-height: 540px;
+        overflow: auto;
+    }
+    .textcolor{
+        font color="bl"
+    }
+</style>
+<div class="modal" id="announcementModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog large">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header modalAnnounce">
+                <button type="button" class="close" data-dismiss="modal" ng-click="callOnLoadMethod()">&times;</button>
+                <h5 class="modal-title bold">{{'CustomsAnnouncementsE' | translate }} / {{'CustomsAnnouncementsA' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <div class="table-responsive mb20">
+                    <table class="table">
+                        <tbody>
+                            <tr dir-paginate="announcement in announcements | itemsPerPage: announcementParams.pageSize" total-items="annoucementTotalCount" current-page="announcementParams.pageNumber">
+                                <td class="no-border">
+                                    <div class="panel panel-info bdrt alignRight p-10 verticalscroll">
+                                        <div class="panel-body">
+                                            <div class="">
+                                                <div style="text-align: right !important;">
+                                                    {{announcement.messageA}}
+                                                </div>
+                                                <hr>
+                                                <div style="text-align: left !important;">
+                                                    {{announcement.messageE}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-8 pagination pl25 mb20 mr10" ng-hide="announcements == null || announcements.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreAnnouncementRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+                <div class="col-md-2 pl25 mb20 mr10" ng-show="announcements[0].fileName">
+                    <a title="{{'DownloadFileE' | translate}} / {{'DownloadFileA' | translate}}" ng-click="downloadAnnouncementFile(announcements[0].id, announcements[0].fileName)"><i class="fa fa-download"> {{'DownloadFileE' | translate}} / {{'DownloadFileA' | translate}}</i></a>
+                </div>
+                <div class="col-md-2 pl25 mb20 mr10 pull-right">
+                    <span class="label pull-right" ng-show="announcements != null && announcements.length > 0"><font color="black" size="2"><strong>{{announcementParams.pageNumber}} of <span class="num">{{annoucementTotalCount}}</span></strong> {{'announcementsE' | translate}} / {{'announcementsA' | translate}}</font></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

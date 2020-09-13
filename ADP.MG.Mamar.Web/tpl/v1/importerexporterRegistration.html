@@ -1,0 +1,722 @@
+﻿<div class="content-wrapper">
+    <div class="col-md-12  mt-20">
+        <div class="panel panel-flat bdr bdrt pb20">
+            <div class="pull-right mb-10">
+                <a class="btn btn-dark-grey btn-block" ui-sref="importerexportersList" ui-sref-opts="{reload: true, notify: true}">{{'GoToImportExportList' | translate}}</a>
+            </div>
+            <div class="col-md-12">
+                <div class="panel">
+                    <form name="userForm" ng-submit="AddUpdateImporterExporter()" novalidate>
+                        <div class="panel-heading panel-flat mt20 pl-20">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    {{'ImporterExporterDetail' | translate}}
+                                </div>
+                                <div class="col-md-1 pull-right ">
+                                    <fieldset ng-disabled="isSuperUser == 'True'">
+                                        <button type="submit" class="btn btn-green" ng-disabled="isSaveDisabled || !isNew">{{'Save' | translate}}</button>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                        <fieldset ng-disabled="!isNew">
+                            <div class="panel-body mt-10">
+                                <div class="form-horizontal mt-20 mb-20 ml-20">
+                                    <div class="row">
+                                        <div class="col-md-4 ml-4 mb-20">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'Code' | translate}}</label>
+                                                    <div class="col-lg-4"><input type="text" class="form-control" placeholder="" ng-model="ImpExpDetail.ImporterDetailModel.ImporterCode" ng-disabled="true" ng-trim="false" only-numbers> </div>
+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'UAEID' | translate}}</label>
+                                                    <div class="col-lg-6"> <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'EnterUAEID' | translate}}" ng-model="ImpExpDetail.ImporterDetailModel.UAEID" title={{ImpExpDetail.ImporterDetailModel.UAEID}} ng-trim="false" maxlength="30" only-numbers></div>
+                                                    <div class="col-lg-3">
+                                                        <button type="button" ng-disabled="isSuperUser == 'True'" class="btn btn-green" ng-click="ReadEIDPersonalData()">{{ 'Read' | translate }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'Category' | translate}}<span>*</span></label>
+                                                    <div class="col-lg-2">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" id="txtcategoryCode" placeholder="{{'EnterCode'  | translate}}" title={{ImpExpDetail.ImporterDetailModel.CategoryCode}} ng-model="ImpExpDetail.ImporterDetailModel.CategoryCode" ng-trim="false" maxlength="3" ng-change="UpdateCategory(ImpExpDetail.ImporterDetailModel.CategoryCode,false)" ng-keydown="ShowCategoryPopup($event)">
+                                                    </div>
+                                                    <div class="col-lg-1 mt-20"><a ng-disabled="isSuperUser == 'True'" ng-click="ShowCategoryPopup('click')"><i class="fa fa-search"></i></a></div>
+                                                    <div class="col-lg-3">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English'  | translate}}" ng-model="ImpExpDetail.ImporterDetailModel.CategoryCodeEngName" title={{ImpExpDetail.ImporterDetailModel.CategoryCodeEngName}} ng-trim="false" disabled>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic'  | translate}}" ng-model="ImpExpDetail.ImporterDetailModel.CategoryCodeArbName" title={{ImpExpDetail.ImporterDetailModel.CategoryCodeArbName}} ng-trim="false" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-show="formValidation.invalidCategory">
+                                                    <label class="control-label col-lg-3"></label>
+                                                    <div class="col-lg-8">
+                                                        <span class="validation-error-label" ng-show="formValidation.invalidCategory">{{'InvalidCategory'| translate }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'ImpgCode' | translate}}</label>
+                                                    <div class="col-lg-2">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" id="txtImpgCode" placeholder="{{'EnterCode' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImpGroupCode}} ng-model="ImpExpDetail.ImporterDetailModel.ImpGroupCode" ng-trim="false" maxlength="3" ng-blur="AddImportGroup(ImpExpDetail.ImporterDetailModel.ImpGroupCode,false)" ng-keydown="ShowImportGroupPopup($event)" only-numbers>
+                                                    </div>
+                                                    <div class="col-lg-1 mt-20"><a ng-click="ShowImportGroupPopup('click')"><i class="fa fa-search"></i></a></div>
+
+                                                    <div class="col-lg-3">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English'  | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterGroupEngName}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterGroupEngName" ng-trim="false" disabled>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic'  | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterGroupArbName}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterGroupArbName" ng-trim="false" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-show="formValidation.invalidImpgCode">
+                                                    <label class="control-label col-lg-3"></label>
+                                                    <div class="col-lg-8">
+                                                        <span class="validation-error-label" ng-show="formValidation.invalidImpgCode">{{'InvalidGroupCode'| translate }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'FirstName' | translate}}<span>*</span></label>
+                                                    <div class="col-lg-4">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterEngName1}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterEngName1" maxlength="100" ng-trim="false">
+                                                    </div>
+                                                    <div class="col-lg-5"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterArbName1}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterArbName1" maxlength="100" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'SecondName' | translate}}<span>*</span></label>
+                                                    <div class="col-lg-4"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterEngName2}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterEngName2" maxlength="100" ng-trim="false"></div>
+                                                    <div class="col-lg-5"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterArbName2}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterArbName2" maxlength="100" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'ThirdName' | translate}}<span>*</span></label>
+                                                    <div class="col-lg-4"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterEngName3}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterEngName3" maxlength="100" ng-trim="false"></div>
+                                                    <div class="col-lg-5"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterArbName3}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterArbName3" maxlength="100" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'FourthName' | translate}}<span>*</span></label>
+                                                    <div class="col-lg-4"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterEngName4}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterEngName4" maxlength="100" ng-trim="false"></div>
+                                                    <div class="col-lg-5"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'Arabic' | translate}}" title={{ImpExpDetail.ImporterDetailModel.ImporterArbName4}} ng-model="ImpExpDetail.ImporterDetailModel.ImporterArbName4" maxlength="100" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="!(ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '1' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3')">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'Owner' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.OwnerName" title={{ImpExpDetail.ImporterDetailModel.OwnerName}} placeholder="{{ 'EnterOwner' | translate}}" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">
+                                                <div>
+                                                    <label class="control-label col-lg-3">{{AdccCodelabel | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.AdccCode" title={{ImpExpDetail.ImporterDetailModel.AdccCode}} placeholder="{{ AdccCodelabel | translate}}" ng-trim="false"></div>
+                                                </div>
+                                            </div>
+                                            <div ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ 'Expiry' | translate}}</label>
+                                                    <div class="col-lg-8 input-group">
+                                                        <input type="text" ng-readonly="isSuperUser == 'True'" class="form-control pickadate" placeholder="{{ 'SelectExpiryDate' | translate }}" ng-model="adccExpiry" ng-trim="false">
+                                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div>
+                                                <div class="form-group">
+                                                    <div ng-if="ImpExpDetail.ImporterDetailModel.Nationality == 'Y' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == null ">
+                                                        <label class="control-label col-lg-3">{{ NationalityLabel | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '5' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2'">*</span></label>
+                                                        <div class="col-lg-2">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'Code' | translate}}" title={{ImpExpDetail.ImporterDetailModel.CityCode}} ng-model="ImpExpDetail.ImporterDetailModel.CityCode" ng-trim="false" maxlength="3" only-numbers ng-blur="AddCitycode(ImpExpDetail.ImporterDetailModel.CityCode,false)" ng-keydown="ShowCityCodePopup($event)">
+                                                        </div>
+                                                        <div class="col-lg-1 mt-20"><a ng-click="ShowCityCodePopup('click')"><i class="fa fa-search"></i></a></div>
+
+                                                        <div class="col-lg-3">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English'| translate }}" title={{ImpExpDetail.ImporterDetailModel.CityEnglish}} ng-model="ImpExpDetail.ImporterDetailModel.CityEnglish" ng-trim="false" disabled>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'CityArb'| translate }}" title={{ImpExpDetail.ImporterDetailModel.CityArabic}} ng-model="ImpExpDetail.ImporterDetailModel.CityArabic" ng-trim="false" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="ImpExpDetail.ImporterDetailModel.Nationality == 'N'">
+                                                        <label class="control-label col-lg-3">{{ NationalityLabel | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '1'">*</span></label>
+                                                        <div class="col-lg-2">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'Code' | translate}}" title={{ImpExpDetail.ImporterDetailModel.City}} ng-model="ImpExpDetail.ImporterDetailModel.City" ng-trim="false" maxlength="3" ng-blur="AddNationality(ImpExpDetail.ImporterDetailModel.City,false)" ng-keydown="ShowNationalityPopup($event)">
+                                                        </div>
+                                                        <div class="col-lg-1 mt-20"><a ng-click="ShowNationalityPopup('click')"><i class="fa fa-search"></i></a></div>
+
+                                                        <div class="col-lg-3">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'English'| translate }}" title={{ImpExpDetail.ImporterDetailModel.CityEnglish}} ng-model="ImpExpDetail.ImporterDetailModel.CityEnglish" ng-trim="false" disabled>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control t-right" placeholder="{{'CityArb'| translate }}" title={{ImpExpDetail.ImporterDetailModel.CityArabic}} ng-model="ImpExpDetail.ImporterDetailModel.CityArabic" ng-trim="false" disabled>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group" ng-show="formValidation.invalidNationality">
+                                                    <label class="control-label col-lg-3"></label>
+                                                    <div class="col-lg-8">
+                                                        <span class="validation-error-label" ng-show="formValidation.invalidNationality">{{'InvalidNationality' | translate}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '1' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '4'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ 'Address' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.ImporterAddress" title={{ImpExpDetail.ImporterDetailModel.ImporterAddress}} placeholder="{{'EnterAddress'| translate }}" ng-trim="false" maxlength="50"> </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'Telephone' | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '4' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '1'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" maxlength="15" placeholder="{{'EnteTelephone'| translate }}" title={{ImpExpDetail.ImporterDetailModel.Telephone}} ng-model="ImpExpDetail.ImporterDetailModel.Telephone" ng-trim="false" mobile-Numbers> </div>
+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'MobileNo' | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" maxlength="20" placeholder="{{'EnterMobileNo'| translate }}" title={{ImpExpDetail.ImporterDetailModel.MobileNumber}} ng-model="ImpExpDetail.ImporterDetailModel.MobileNumber" ng-trim="false" mobile-Numbers> </div>
+
+                                                </div>
+                                            </div>
+                                            <div ng-if="ImpExpDetail.ImporterDetailModel.CategoryGroupCode != '3'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ 'Fax' | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '4' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '1'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" maxlength="15" ng-model="ImpExpDetail.ImporterDetailModel.Fax" title={{ImpExpDetail.ImporterDetailModel.Fax}} placeholder="{{'EnterFax'| translate }}" ng-trim="false" mobile-Numbers> </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'POBox' | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '4'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'EnterPOBox'| translate }}" title={{ImpExpDetail.ImporterDetailModel.POBox}} ng-model="ImpExpDetail.ImporterDetailModel.POBox" ng-trim="false"> </div>
+
+                                                </div>
+                                            </div>
+                                            <div ng-if="ImpExpDetail.ImporterDetailModel.CategoryGroupCode != '3'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ 'Email' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="email" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.Email" title={{ImpExpDetail.ImporterDetailModel.Email}} placeholder="{{'EnterEmail'| translate }}" ng-trim="false"> </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'TrafficNo' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" maxlength="10" placeholder="{{'EnterTrafficNo'| translate }}" title={{ImpExpDetail.ImporterDetailModel.TrafficNumber}} ng-model="ImpExpDetail.ImporterDetailModel.TrafficNumber" ng-trim="false" only-numbers> </div>
+                                                </div>
+                                            </div>
+                                            <div ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ MunicipalityCodeLabel | translate}}<span ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">*</span></label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.MunicipCode" title={{ImpExpDetail.ImporterDetailModel.MunicipCode}} placeholder="{{ MunicipalityCodeLabel | translate }}" ng-trim="false"> </div>
+                                                </div>
+                                            </div>
+                                            <div ng-show="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2' || ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '3'">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{ 'Expiry' | translate}}</label>
+                                                    <div class="col-lg-8 input-group">
+                                                        <input ng-readonly="isSuperUser == 'True'" type="text" class="form-control pickadate" placeholder="{{'SelectExpiryDate' | translate}}" ng-model="municipExpiry" ng-trim="false">
+                                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group" ng-if="ImpExpDetail.ImporterDetailModel.CategoryGroupCode == '2'">
+                                                <div class="form-checkbox mt-10">
+                                                    <div class="fleft">
+                                                        <label class="control control--checkbox">
+                                                            <input ng-disabled="isSuperUser == 'True'" type="checkbox" checked="checked" ng-checked="ImpExpDetail.ImporterDetailModel.IsNationality" ng-model="ImpExpDetail.ImporterDetailModel.IsNationality" ng-change="SetIEFlag('Nationality',ImpExpDetail.ImporterDetailModel.IsNationality)" />
+                                                            <span class="control__indicator"></span>
+                                                        </label>
+                                                    </div>
+                                                    <label class="control-label">{{'LocalCompany' | translate}}</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="form-checkbox mt-10">
+                                                    <div class="fleft">
+                                                        <label class="control control--checkbox">
+                                                            <input ng-disabled="isSuperUser == 'True'" type="checkbox" checked="checked" ng-disabled="true" ng-checked="ImpExpDetail.ImporterDetailModel.FACILITY_FLG== 'Y'" ng-model="ImpExpDetail.ImporterDetailModel.FACILITY_FLG" ng-change="SetIEFlag('FACILITY_FLG',ImpExpDetail.ImporterDetailModel.FACILITY_FLG)" />
+                                                            <span class="control__indicator"></span>
+                                                        </label>
+                                                    </div>
+                                                    <label class="control-label">{{'Facility' | translate}}</label>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'VatTrnNum' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" disabled class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.VATTransNumber" title={{ImpExpDetail.ImporterDetailModel.VATTransNumber}} placeholder="{{'EnterVatno'| translate }}" ng-trim="false" maxlength="16"> </div>
+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'ExciseTrnNum' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" disabled class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.ExciseTrransNumber" title={{ImpExpDetail.ImporterDetailModel.ExciseTrransNumber}} placeholder="{{'EnterExciseno'| translate }}" ng-trim="false" maxlength="16"> </div>
+
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'FMSSupplierID' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'Entersupplier'| translate}}" title={{ImpExpDetail.ImporterDetailModel.FMSSupplierID}} ng-model="ImpExpDetail.ImporterDetailModel.FMSSupplierID" ng-trim="false" only-numbers></div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'FMSVendorId' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'EnterVendor'| translate}}" title={{ImpExpDetail.ImporterDetailModel.FMSVendorID}} ng-model="ImpExpDetail.ImporterDetailModel.FMSVendorID" ng-trim="false" only-numbers> </div>
+                                                </div>
+
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'FMSSiteID' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'EnterSite'| translate}}" title={{ImpExpDetail.ImporterDetailModel.FMSSiteID}} ng-model="ImpExpDetail.ImporterDetailModel.FMSSiteID" ng-trim="false" only-numbers></div>
+                                                </div>
+
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-3">{{'UTC' | translate}}</label>
+                                                    <div class="col-lg-8"><input ng-readonly="isSuperUser == 'True'" type="text" class="form-control" placeholder="{{'EnterUTC'| translate}}" title={{ImpExpDetail.ImporterDetailModel.UTCCode}} ng-model="ImpExpDetail.ImporterDetailModel.UTCCode" ng-trim="false"> </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel">
+                    <div class="panel-body grey-shade">
+                        <div class="form-horizontal mb-20">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="control-label col-lg-1">{{'Name' | translate}}</label>
+                                    <div class="col-lg-3">
+                                        <input type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.ImporterEngName" ng-disabled="true">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <input type="text" class="form-control t-right" ng-model="ImpExpDetail.ImporterDetailModel.ImporterArbName" ng-disabled="true">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="control-label col-lg-3">{{'PaymentDate' | translate}}</label>
+                                    <div class="col-lg-5">
+                                        <input type="text" class="form-control" ng-disabled="true" ng-model="ImpExpDetail.ImporterDetailModel.PaymentDate">
+                                    </div>
+                                    <div class="col-lg-4 form-checkbox mt-10">
+                                        <div class="fleft">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" checked="checked" ng-checked="ImpExpDetail.ImporterDetailModel.PaymentFlag == 'Y'" ng-disabled="true" />
+                                                <div class="control__indicator"></div>
+                                            </label>
+                                        </div>
+                                        <label class="control-label">{{'PaymentFlag' | translate}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label col-lg-2">{{'RenewDate' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-disabled="true" ng-model="ImpExpDetail.ImporterDetailModel.RenewPayDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-lg-2">{{'Voucher' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-disabled="true" ng-model="ImpExpDetail.ImporterDetailModel.VCHRCode">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="control-label col-lg-3">{{'UserCreated' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-model="CreatedBy" ng-disabled="true">
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label col-lg-2">{{'Date' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.CreatedDate" ng-disabled="true">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-lg-2">{{'Auditor' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-model="AuditorName" ng-disabled="true">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="control-label col-lg-3">{{'UserModified' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-model="ModifyUser" ng-disabled="true">
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="control-label col-lg-2">{{'Date' | translate}}</label>
+                                    <div class="col-lg-7">
+                                        <input type="text" class="form-control" ng-model="ImpExpDetail.ImporterDetailModel.ModifyDate" ng-disabled="true">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12  mt-10">
+                <div class="row" id="otherControls">
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-heading">{{'TradeActivities' | translate}}</div>
+                            <div class="panel-body">
+                                <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:200px">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:8%;">{{'Code' | translate}}</th>
+                                                <th style="width:8%;">{{'English' | translate}}</th>
+                                                <th style="width:9%;">{{'Arabic' | translate}}</th>
+                                                <th style="width:5%;">{{'Active' | translate}}</th>
+                                                <th style="width:2%;">{{'Delete' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tr ng-repeat="gridItem in ImpExpDetail.ImporterActivities">
+                                            <td>{{gridItem.ActivityCode }}</td>
+                                            <td>{{gridItem.ActivityEngName}}</td>
+                                            <td>{{gridItem.ActivityArbName}}</td>
+                                            <td><input type="checkbox" ng-checked="true" ng-model="gridItem.ActiveFlag" disabled /></td>
+                                            <td><a title="{{'Delete' | translate}}" ng-if="isSuperUser == 'False'" ng-click="deleteConfimActivity(gridItem.ActivityCode)"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                        <tr ng-hide="importerCode == ''">
+                                            <td>
+                                                <div class="col-md-12">
+                                                    <input type="text" ng-readonly="isSuperUser == 'True'" class="col-md-9" ng-model="ActivityCode" ng-keydown="ShowTradeActivityPopup($event)" />
+
+                                                    <a ng-if="isSuperUser == 'False'" ng-click="ShowTradeActivityPopup('click')" class="col-md-3 mt-20"><i class="fa fa-search"></i></a>
+                                                </div>
+                                            </td>
+                                            <td><input ng-readonly="isSuperUser == 'True'" type="text" /></td>
+                                            <td><input ng-readonly="isSuperUser == 'True'" type="text" /></td>
+                                            <td><input ng-disabled="isSuperUser == 'True'" type="checkbox" checked="checked" ng-model="ActiveFlag" /></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="ImpExpDetail.ImporterActivities == null || ImpExpDetail.ImporterActivities.length == 0"><td colspan="12">{{'NoItems' | translate}}</td></tr>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel">
+                            <div class="panel-heading">{{'Attachments' | translate}}</div>
+                            <div class="panel-body">
+                                <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:200px">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:9%;">{{'FileName' | translate}}</th>
+                                                <th style="width:8%;">{{'Attach' | translate}}</th>
+                                                <th style="width:9%;">{{'View' | translate}}</th>
+                                                <th style="width:9%;">{{'Delete' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tr ng-repeat="gridItem in ImpExpDetail.ImporterAttachments">
+                                            <td>{{gridItem.FilePath }}_{{gridItem.SerialNumber}}</td>
+                                            <td>
+                                                <label for="upfiles" class="fa fa-paperclip" style="cursor:pointer"></label>
+                                                <input type="file" id="upfiles" ng-disabled="isSuperUser == 'True'" upload-Files value="" ng-click="docSerialNumber=gridItem.SerialNumber" accept={{acceptFiles}} style="display:none" />
+                                            </td>
+                                            <td><a title="{{'Show'|translate}}" ng-disabled="isSuperUser == 'True'" ng-click="downLoadDocument(gridItem.SerialNumber)"><i class="fa fa-download"></i></a></td>
+                                            <td><a title="{{'Delete' | translate}}" ng-hide="isSuperUser == 'True'" ng-click="deleteConfimDocument(gridItem.SerialNumber)"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <label for="upfiles" class="fa fa-paperclip" style="cursor:pointer"></label>
+                                                <input type="file" ng-disabled="isSuperUser == 'True'" id="upfiles" upload-Files value="" ng-click="docSerialNumber=1" accept=".pdf,.docx,.xlsx,.jpg,.xls,.doc,.jpeg,.tif,.png,.bmp,.txt,.tiff,.xps,.gif,.rtf,.csv" style="display:none" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="ImpExpDetail.ImporterAttachments == null || ImpExpDetail.ImporterAttachments.length == 0"><td colspan="12">{{'NoItems' | translate}}</td></tr>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="control-label">{{'ActivityCount' | translate}}: {{ ImpExpDetail.ImporterActivities == null ? "0": ImpExpDetail.ImporterActivities .length}}</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">{{'AttachmentCount' | translate}}: {{ ImpExpDetail.ImporterAttachments == null ? "0": ImpExpDetail.ImporterAttachments.length }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+<div>
+    <div id="activityModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="TradeModel">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'AddTradeActivities' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <!--<label class="control-label col-lg-2">{{'Actity' | translate}}</label>-->
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="tradesearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable">
+                                    <tr>
+                                        <th style="width:9%;">{{'Code' | translate}}</th>
+                                        <th>{{'Actity' | translate}}</th>
+                                        <!--<th style="width:15%;">{{'ArabicDesc' | translate}}</th>
+                                        <th style="width:9%; display:none"></th>
+                                        <th style="width:9%;"></th>-->
+                                    </tr>
+                                    <tr ng-repeat="activity in TradeActivityTypes | filter:tradesearch | orderBy:'ActivityCode'" ng-click="AddTradeActivity(activity.ActivityCode)">
+                                        <td>{{activity.ActivityCode}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{activity.ActivityEnglish + " - " + activity.ActivityArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeTradeActivity()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="categoryModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="CategoryModel">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'AddCategory' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <!--<label class="control-label col-lg-2">{{'Category' | translate}}</label>-->
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="categorysearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable ">
+                                    <tr>
+                                        <th style="width:15%;">{{'Code' | translate}}</th>
+                                        <th>{{'Category' | translate}}</th>
+                                    </tr>
+                                    <tr ng-repeat="cat in categoryCode | filter:categorysearch | orderBy:'CategoryCode'" ng-click="UpdateCategory(cat.CategoryCode,true)">
+                                        <td>{{cat.CategoryCode}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{cat.CategoryEngName + " - " + cat.CategoryArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeCategoryPopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="CityCodeModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="CityCodeModal">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'AddCity' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <!--<label class="control-label col-lg-2">{{'City' | translate}}</label>-->
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="citycodesearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable ">
+                                    <tr>
+                                        <th style="width:15%;">{{'Code' | translate}}</th>
+                                        <th>{{'City' | translate}}</th>
+                                    </tr>
+                                    <tr ng-repeat="city in citycodes | filter:citycodesearch | orderBy:'CityCode'" ng-click="AddCitycode(city.CityCode,true)">
+
+                                        <td>{{city.CityCode}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{city.CityEnglish + " - " + city.CityArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closecityCodePopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="NationalityModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="NationalityModal">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'Nationality' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <!--<label class="control-label col-lg-2">{{'Nationality' | translate}}</label>-->
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="nationalitysearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable ">
+                                    <tr>
+                                        <th style="width:15%;">{{'Code' | translate}}</th>
+                                        <th>{{'Nationality' | translate}}</th>
+
+                                    </tr>
+                                    <tr ng-repeat="national in nationalities | filter:nationalitysearch | orderBy:'NationalityCode'" ng-click="AddNationality(national.NationalityCode,true)">
+                                        <td>{{national.NationalityCode}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{national.NationalityEngName + " - " + national.NationalityArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeNationalityPopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ImportGroupModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="ImportGroupModal">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'AddImportGroup' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="importgroupsearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable">
+                                    <tr>
+                                        <th style="width:15%;">{{'GroupID' | translate}}</th>
+                                        <th>{{'Group' | translate}}</th>
+                                    </tr>
+                                    <tr ng-repeat="impgroup in importGroupcodes | filter:importgroupsearch | orderBy:'GroupID'" ng-click="AddImportGroup(impgroup.GroupID,true)">
+                                        <td>{{impgroup.GroupID}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{impgroup.GroupEnglish + " - " + impgroup.GroupArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeImportGroupPopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    var yesterday = new Date((new Date()).valueOf());
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true,
+        disable: [
+            { from: [0, 0, 0], to: yesterday }
+        ]
+    });
+</script>

@@ -1,0 +1,213 @@
+﻿<style>
+    .popover {
+        padding-bottom: 20px;
+        min-width: 250px;
+    }
+
+    .selectNew {
+        width: 99% !important;
+    }
+
+    .greenFont {
+        color: green;
+    }
+
+    .redFont {
+        color: red;
+    }
+    .modal-open {
+        overflow: scroll !important;
+    }
+</style>
+<link href="../assets/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="../assets/js/bootstrap-datetimepicker.js"></script>
+<div ng-controller="vehicleInspectionDetailsController">
+    <form name="shipmentDetails">
+        <!-- #region Search Panel-->
+        <div class="row g-grey-shade pb-20">
+            <div class="sub-title">
+                <h6>{{'SearchBy' | translate}}</h6>
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-lg-4">
+                        <label class="control-label col-md-4">{{'GateLocation' | translate}}</label>
+                        <select tabindex="3" id="dplBLDO" class="form-control select" ng-show="language == 'en'"
+                                ng-options="blDO.id as blDO.name for blDO in BLDOList"
+                                ng-model="selectedBLDO" ng-disabled="isBLDODisabled" ng-change="blDdlChanged()"></select>
+                    </div>
+                   
+                    <div class="col-md-4">
+                        <label class="control-label col-md-4">{{'ReferenceNo' | translate}}</label>
+                        <div class="col-md-8">
+                            <input type="text"
+                                   class="form-control"
+                                   restrict-Space
+                                   ng-model="searchParams.ReferenceNo"
+                                   maxlength="30" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-green" ng-click="getPendingTrans()">
+                {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <!-- #endregion Search Panel -->
+        <div class="panel">
+            <!--#region Invoice Group-->
+            <div class="panel-heading panel-flat mt20 pl-20">
+                {{'VehicleInspection' |translate}}
+            </div>
+            <div class="col-md-12 grey-shade">
+                <div class="form-horizontal">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'PlateNo' | translate}}</label>
+                            <div class="col-lg-8">
+                                <input id="PlateNo" name="PlateNo" type="text" class="form-control" ng-disabled="true" ng-model="PlateNo" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'Color' | translate}}</label>
+
+                            <div class="col-lg-8">
+                                <input id="Color" name="Color" type="text" class="form-control" ng-disabled="true" ng-model="Color" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'PlateCategory' | translate}}</label>
+                            <div class="col-lg-8">
+                                <input id="PlateCategory" name="PlateCategory" type="text" class="form-control" ng-disabled="true" ng-model="PlateCategory" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'PlateOrigin' | translate}}</label>
+
+                            <div class="col-lg-8">
+                                <input id="PlateOrigin" name="PlateOrigin" type="text" class="form-control" ng-disabled="true" ng-model="PlateOrigin" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'Chasis' | translate}}</label>
+                            <div class="col-lg-8">
+                                <input id="Chasis" name="Chasis" type="text" class="form-control" ng-model="Chasis" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'DriverName' | translate}}</label>
+
+                            <div class="col-lg-8">
+                                <input id="DriverName" name="DriverName" type="text" class="form-control" ng-disabled="true" ng-model="DriverName" />
+                            </div>
+                         
+                        </div>
+                    
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'Owner' | translate}}</label>
+                            <div class="col-lg-8">
+                                <input id="Owner" name="Owner" type="text" class="form-control" ng-model="Owner" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3">{{'Audit' | translate}}</label>
+
+                            <div class="col-lg-8">
+                                <input id="Audit" name="Audit" type="text" class="form-control" ng-disabled="true" ng-model="Audit" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <br />
+                        <div class="form-group">
+                            <label class="control-label col-lg-4">{{'InspectRemarks' | translate}}</label>
+                            <div class="col-md-8">
+                                <textarea id="InspectRemarks" rows="5" cols="5" class="form-control pl-10 mt10" ng-model="InspectRemarks"></textarea>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            <div class="col-md-12 pr-20 pt-15">
+                <div class="pull-right">
+                    <a ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="saveDOBLInformation();">{{'Save' | translate}}</a>
+                </div>
+                <div class="pull-right">
+                    <a ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="saveDOBLInformation();">List</a>
+                </div>
+            </div>
+            <!--<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>-->
+        </div>
+      
+        <div ng-if="jobNoShipment !== ''" class="col-md-12 pr-20 pt-15">
+            <div class="pull-right">
+                <a ng-show="!($storage.get('isPrivateCompany')) && (DOBLDTO.Maqasa == 'Y' || DOBLDTO.CenterPassFee == 'Y')" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="saveDOBLInformation(getTruckDetails,true)">{{'TruckDetails' | translate}}</a>
+                <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="saveDOBLInformation(getContainers,true)">{{'ContainerDetails' | translate}}</a>
+                <a ng-click="openAttachments()" ng-disabled="true" class="btn btn-green mtb5 mr-10 alwaysEnabled">{{'Attachments' | translate}}</a>
+                <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="openEExemption()">{{'e-Exemptions' | translate}}</a>
+                <a ng-disabled="DOBLDTO.ATACarnetFlag!='Y'" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="DOBLDTO.ATACarnetFlag!='Y' || openAtaCarnet()">{{'ATACarnet' | translate}}</a>
+                <a class="btn btn-green mtb5 alwaysEnabled" ng-click="saveDOBLInformation(getChasisList,true)">{{'ChasisDetails' | translate}}</a>
+            </div>
+        </div>
+    </form>
+
+    <!--<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>-->
+</div>
+
+
+<script>
+  
+    $(function () {
+        $('[rel=popover]').popover({
+            html: true,
+            placement: 'bottom',
+            title: '<a onclick="closePopover()" class="close alwaysEnabled">&times;</a>',
+            content: function () {
+                var content = $('#popover_content_wrapper').html();
+                if ($('#authorityTable tr').length == 1) {
+                    content = "<p style='color:black'>No records to show</p>";
+                }
+                return content;
+            }
+        });
+    });
+
+    function closePopover() {
+        $('[rel=popover]').popover('hide');
+    }
+    var today = new Date();
+    $(".pickExpdate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true,
+        disable: [{ from: [0, 0, 0], to: today }]
+    });
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true 
+    });
+    $(function () {
+        $('#etaTime').datetimepicker({
+            format: 'HH:mm',
+            allowInputToggle: true
+        });
+    });
+
+</script>
+
+

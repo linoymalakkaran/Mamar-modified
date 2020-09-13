@@ -1,0 +1,87 @@
+﻿<div ng-controller="postPaidController" class="panel drt pb20">
+
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'ImporterNumber'|translate}}</th>
+                        <th>{{'StatementNumber'|translate}}</th>
+                        <th>{{'Amount'|translate}}</th>
+                        <th>{{'CustAccountNumber'|translate}}</th>
+                        <th>{{'DCMark'|translate}}</th>
+                        <th>{{'Flag'|translate}}</th>
+                        <th>{{'ValueDate'|translate}}</th>
+                        <th>{{'CreatedDate'|translate}}</th>
+                        <th>{{'DhabiSeqNum'|translate}}</th>
+                        <th>{{'Customer'|translate}}</th>
+                        <th>{{'CustRefNum'|translate}}</th>
+                        <th>{{'RefNum'|translate}}</th>
+                        <th>{{'RefType'|translate}}</th>
+                        <th>{{'Notes'|translate}}</th>
+                        <th>{{'Action'| translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in postPaidObject | itemsPerPage: mPostPaidRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            {{model.AM942ImpCode}}
+                        </td>
+                        <td>
+                            {{model.AM942StatementNum}}
+                        </td>
+                        <td>
+                            {{model.AM942AMOUNT}}
+                        </td>
+                        <td>
+                            {{model.AM942CustAccNum}}
+                        </td>
+                        <td>
+                            {{model.AM942DcMark}}
+                        </td>
+                        <td>
+                            {{model.AM942Flag}}
+                        </td>
+                        <td>
+                            {{model.AM942ValueDate}}
+                        </td>
+                        <td>
+                            {{model.CreatedDate}}
+                        </td>
+                        <td>
+                            {{model.AM942DhabiSeqNum}}
+                        </td>
+                        <td>
+                            {{model.ImporterName}}
+                        </td>
+                        <td>
+                            {{model.AM942CustRefNum}}
+                        </td>
+                        <td>
+                            {{model.AM942RefNo}}
+                        </td>
+                        <td>
+                            {{model.AM942RefType}}
+                        </td>
+                        <td>
+                            {{model.AM942Notes}}
+                        </td>
+                        <td>
+                            <a ng-click="openMT942Details(model.AM942DhabiSeqNum)" title="{{'Show'|translate}}"<i class="fa fa-eye"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="postPaidObject == null || postPaidObject.length == 0">
+                        <td colspan="15">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="postPaidObject == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="postPaidObject.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+        </div>
+    </div>
+    
+</div>

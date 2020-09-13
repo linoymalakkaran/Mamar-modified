@@ -1,0 +1,223 @@
+﻿<style>
+    .white {
+        color: white !important;
+    }
+
+    .margin-level4 {
+        padding-left: 30px !important;
+    }
+
+    .margin-level5 {
+        padding-left: 15px !important;
+    }
+
+    .margin-level4rt {
+        padding-right: 30px !important;
+    }
+
+    .margin-level5rt {
+        padding-right: 15px !important;
+    }
+    .ml0
+    {
+        margin-left:0px !important;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="trans-list-head">{{'HSCodeSearch' | translate}}</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row importcentrecodedp">
+                        <div class="col-md-7">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                                ng-options="transMode.key as transMode.value for transMode in transModes"
+                                                ng-change="onModeChanged()"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                                ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                                ng-change="onCenterCodeChanged()"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label col-lg-2">{{ 'Section' | translate }}</label>
+                                    <div class="col-lg-10">
+                                        <div angucomplete-alt id="section" placeholder="{{'Find' | translate}}" ng-model="section" search-str="searchSectionText" show-title="true" minlength="1"
+                                             local-data="sections" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" input-class="form-control white" match-class="highlight"
+                                             input-name="section" selected-object="selectedSection" input-changed="onSectionChange" ng-keydown="lookupKeyDown($event, 'section')">
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidSection">{{'InvalidSection'|translate}}</span>
+                                        <div class="note ml0" ng-show="isChapterRequired">
+                                            <span>*</span>{{'chapterRequiredMsg' | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label col-lg-2">{{'Chapter' | translate}}</label>
+                                    <div class="col-lg-10">
+                                        <div angucomplete-alt id="chapter" disable-input="chapterDisabled" placeholder="{{'Find' | translate}}" ng-model="chapter" search-str="searchChapterText" show-title="true" minlength="1"
+                                             local-data="chapters" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" input-class="form-control white" match-class="highlight"
+                                             input-name="chapter" selected-object="selectedChapter" ng-keydown="lookupKeyDown($event, 'chapter')">
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidChapter">{{'InvalidChapter'|translate}}</span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label col-lg-2">{{'HSCode' | translate}}</label>
+                                    <div class="col-lg-10">
+                                        <div angucomplete-alt id="hsCode" placeholder="{{'Find' | translate}}" ng-model="hsCode" search-str="searchHSCodeText" show-title="true" minlength="1"
+                                             local-data="hsCodes" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" input-class="form-control white" match-class="highlight"
+                                             input-name="hsCode" selected-object="selectedHSCode" ng-keydown="lookupKeyDown($event, 'hsCode')">
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidHSCode">{{'InvalidHSCode'|translate}}</span>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label col-lg-2">{{'DutyPercent' | translate}}</label>
+                                    <div class="col-lg-4">
+                                        <input type="text" class="form-control" ng-model="searchParameter.terrifDescription" maxlength="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-green" ng-click="searchResult()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+
+                                        <th>{{'HSCode' | translate}}</th>
+                                        <th style="width:20%">{{'Description' | translate}}</th>
+                                        <th style="width:20%">{{'Section' | translate}}</th>
+                                        <th style="width:20%">{{'Chapter' | translate}}</th>
+                                        <th>{{'DutyPercent' | translate}}</th>
+                                        <th>{{'MinCharges' | translate}}</th>
+                                        <th>{{'Unit' | translate}}</th>
+                                        <th>{{'Description' | translate}}</th>
+                                        <th>{{'OGAStats' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr ng-class="item.Level == '3' ? 'selected' : ''" dir-paginate="item in hsCodeList | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                    <td>{{item.Code}}</td>
+                                    <td ng-show="language=='en'" ng-class="item.Level == '4' ? 'margin-level4' : (item.Level == '5' ? 'margin-level5' : '')">{{item.EnglishName}}</td>
+                                    <td ng-show="language=='ae'" ng-class="item.Level == '4' ? 'margin-level4rt' : (item.Level == '5' ? 'margin-level5rt' : '')">{{item.ArabicName}}</td>
+                                    <td>{{item.SectionCode}} {{item.SectionEnglishName}} {{item.SectionArabicName}}</td>
+                                    <td>{{item.ChapterCode}} {{item.ChapterEnglishNamme}} {{item.ChapterArabicName}}</td>
+                                    <td>{{item.TarrifDescription}}</td>
+                                    <td>{{item.HTUID}} {{item.HTURemarks}}</td>
+                                    <td>{{item.UOMCode}}</td>
+                                    <td>{{item.UOMDescEng}}</td>
+                                    <td>{{item.OGAStatus}}</td>
+                                </tr>
+                                <tr class="no-records" ng-show="hsCodeList == null || hsCodeList.length == 0"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="hsCodeList == null || hsCodeList.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-if="hsCodeList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-include="'../tpl/LookUpTemplate.html'"></div>
+
+<!--<div class="modal" id="sectionChapterLookUp" role="dialog">
+    <div style="{{lookUpWidth}}" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{lookUpTitle | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input id="searchLookupText" ng-keyup="onLookupSearhChange()" type="text" class="form-control disabledInputWithBorder col-md-12" />
+                <div class="table-responsive mb20">
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th ng-repeat="header in lookUpHeaders" width="{{header.Width}}">{{header.Text|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr ng-click="setLookupData(lookUpItem,lookupId)" dir-paginate="lookUpItem in lookUpData | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="lookUpPager">
+                                <td>
+                                    {{lookUpItem.Code}}
+                                </td>
+                                <td>
+                                    {{lookUpItem.DescriptionEng}}{{lookUpItem.DescriptionArb}} <span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                </td>
+                            </tr>
+                            <tr ng-show="lookUpData == null">
+                                <td colspan="10">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="lookUpData == null">
+                    <dir-pagination-controls pagination-id="lookUpPager" direction-links="true" boundary-links="true">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>
+
+
+

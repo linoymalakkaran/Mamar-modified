@@ -1,0 +1,27 @@
+﻿<div
+  id="createMaterialMasterId"
+  tabindex="0"
+  style="outline: none;"
+  class="content-wrapper"
+>
+  <div class="trans-list-head">
+    {{'MaterialMaster' | translate}}
+  </div>
+  <div class="row" id="MaterialListId">
+    <div class="panel panel-flat bdr bdrt pb-10 mt-15">
+      <div class="panel-body">
+        <div
+          ng-include="'../tpl/MaterialMaster/materialMasterSearch.html'"
+        ></div>
+        <div class="col-md-12">
+          <div
+            ng-include="'../tpl/MaterialMaster/materialMasterList.html'"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    ng-include="'../tpl/MaterialMaster/materialMasterPopupModels.html'"
+  ></div>
+</div>

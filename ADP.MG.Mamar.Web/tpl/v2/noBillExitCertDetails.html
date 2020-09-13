@@ -1,0 +1,471 @@
+﻿
+<style>
+    .disable-input {
+        line-height: 2px;
+        margin-top: 10px;
+        border: none;
+        cursor: not-allowed;
+        background-color: #eee;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="panel mt-20">
+        <div class="panel-heading pl-20">{{'NoBillExitCert' | translate}}</div>
+        <div class="panel-body">
+            <div class="form-horizontal" id="dvNoBillExitCert">
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Number' | translate}}</label>
+                            <div class="col-md-8">
+                                <label class="form-control noinput disable-input" ng-model="EENumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Date' | translate}}</label>
+                            <div class="col-md-8 input-group">
+                                <input type="text" class="form-control pickadate" ng-model="noBillCert.ExitEntryDetail.EEDate " />
+                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Type' | translate}}</label>
+                            <div class="col-md-8">
+                                <select name="ddlEEBillType" class="form-control select" ng-model="noBillCert.ExitEntryDetail.EEBillType"
+                                        ng-options="billType.BILL_TYPE_CODE as billType.BILL_TYPES for billType in eeBillTypes"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Agent' | translate}}</label>
+                            <div class="col-md-8">
+                                <div ng-keydown="cargoAgentKeyDown($event)" pause="50" name="CargoAgent" class="col-md-10" angucomplete-alt id="EnglishCargoAgents" placeholder="{{'CargoAgentsph' | translate}}"
+                                     ng-model="cargoAgentModel" search-str="searchCargoAgentText" show-title="true" local-data="cargoAgents" search-fields="Code,NameEnglish,NameArabic"
+                                     title-field="Code,NameEnglish,NameArabic" minlength="1" input-class="form-control" match-class="highlight"
+                                     input-name="CargoAgents" selected-object="selectedCargoAgent">
+                                </div>
+                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openCargoAgentLookup()"></i></a>
+                                <span class="col-md-12 validation-error-label" ng-show="!isValidEEAgent">{{'InvalidCargoAgent'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Shipper' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" ng-model="noBillCert.ExitEntryDetail.EEShipper" maxlength="50" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'VoyageNumber' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" ng-model="noBillCert.ExitEntryDetail.EEVoyNo" maxlength="30" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Importer' | translate}}</label>
+                            <div class="col-md-8">
+                                <div ng-keydown="importerExporterKeyDown($event)" class="col-md-10" pause="2000" angucomplete-alt id="ImporterExporter" name="ImporterExporter" placeholder="{{'ImporterExporterph' | translate}}"
+                                     ng-model="eeImporterModel" search-str="searchImporterExporterText" show-title="true" local-data="impotersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control" match-class="highlight"
+                                     input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                </div>
+                                <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openImporterExporterLookup()"></i></a>
+                                <span class="col-md-12 validation-error-label" ng-show="!isValidEEImporter">{{'InvalidImporterExporter'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'CountryExp' | translate}}</label>
+                            <div class="col-md-8">
+                                <div ng-keydown="eeCountryLookupKeyDown($event,'CountryExp')" angucomplete-alt name="countryExp" class="col-md-10" id="EECountryExp" placeholder="{{'Countryph' | translate}}"
+                                     ng-model="eeCountryExpModel" local-data="country" search-fields="Code,EnglishName,ArabicName" show-title="true" title-field="Code,EnglishName,ArabicName" minlength="1"
+                                     input-class="form-control" match-class="highlight" input-name="EECountryExp" selected-object="selectedOriginCountry">
+                                </div>
+                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openEECountryLookup('CountryExp')"></i></a>
+                                <span class="col-md-12 validation-error-label" ng-show="!isValidEECountryExp">{{'InvalidShipmentFrom'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'CountryDest' | translate}}</label>
+                            <div class="col-md-8">
+                                <div ng-keydown="eeCountryLookupKeyDown($event,'CountryDest')" class="col-md-10" show-title="true" angucomplete-alt id="EECountryDest" name="countryDest" placeholder="{{'DestCountryph' | translate}}"
+                                     ng-model="eeCountryDestModel" local-data="destCountry" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" input-changed="DestinationChanged" minlength="1"
+                                     input-class="form-control" match-class="highlight" input-name="EECountryDest" selected-object="selectedDestCountry">
+                                </div>
+                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openEECountryLookup('CountryDest')"></i></a>
+                                <span class="col-md-12 validation-error-label" ng-show="!isValidEEDestCountry">{{'InvalidShipmentTo'|translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-12">{{'MarksnNo' | translate}}</label>
+                            <div class="col-md-12">
+                                <textarea id="GoodsDescription" rows="5" cols="5" class="form-control pl-10 mt10" ng-model="noBillCert.ExitEntryDetail.EEMarksNo" maxlength="500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-12">{{'GoodsDescription' | translate}}</label>
+                            <div class="col-md-12">
+                                <textarea id="GoodsDescription" rows="5" cols="5" class="form-control pl-10 mt10" ng-model="noBillCert.ExitEntryDetail.EEGoodDesc" maxlength="500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Quantity' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="12" 
+                                       decimal-upto="3" ng-model="noBillCert.ExitEntryDetail.EEQty" maxlength="16"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'NetWeight' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="12" 
+                                       decimal-upto="3" ng-model="noBillCert.ExitEntryDetail.EENetWeight" maxlength="16" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'GrossWeight' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="12" 
+                                       decimal-upto="3" ng-model="noBillCert.ExitEntryDetail.EEGrossWeight " maxlength="16" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'CIFAmount' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="13" 
+                                       decimal-upto="2" ng-model="noBillCert.ExitEntryDetail.EECIFAmount" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Origin' | translate}}</label>
+                            <div class="col-md-8">
+                                <select name="ddlFromEmirates" ng-model="noBillCert.ExitEntryDetail.EEOrigin" class="form-control select">
+                                    <option value="">{{'Select' | translate}}</option>
+                                    <option ng:repeat="x in emirates" value="{{x.Code}}">{{x.Name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">{{'Insurance' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="15" 
+                                       decimal-upto="4" ng-model="noBillCert.ExitEntryDetail.EEInsurance" maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-20">
+                    <div class="col-md-12 pull-left">
+                        <button type="button" class="btn btn-green" ng-click="addNewTruckInfo()">{{'AddTruck' | translate}}</button>
+                    </div>
+                    <div class="col-md-12 table-responsive mt20 mb20">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{'TruckNumber'|translate}}</th>
+                                    <th>{{'TruckNational'|translate}}</th>
+                                    <th>{{'TruckType'|translate}}</th>
+                                    <th>{{'TruckDriver'|translate}}</th>
+                                    <th>{{'Action' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="isAddNewTruck">
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="rowTruckInfo.EETruckNo" maxlength="20" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="rowTruckInfo.EETruckNat" maxlength="20" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="rowTruckInfo.EETruckType" maxlength="25" />
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" ng-model="rowTruckInfo.EETruckDriver" maxlength="40" />
+                                    </td>
+                                    <td>
+                                        <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveTruckInfo('add')"></i></a>
+                                        <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelTruckSave('add')"></i></a>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="truckInfo in noBillCert.Trucks">
+                                    <td ng-show="!editTruck[$index]">{{truckInfo.EETruckNo | uppercase}}</td>
+                                    <td ng-show="editTruck[$index]"><input type="text" class="form-control" ng-model="rowTruckInfo.EETruckNo" maxlength="20" /></td>
+
+                                    <td ng-show="!editTruck[$index]">{{truckInfo.EETruckNat | uppercase}}</td>
+                                    <td ng-show="editTruck[$index]"><input type="text" class="form-control" ng-model="rowTruckInfo.EETruckNat" maxlength="20" /></td>
+
+                                    <td ng-show="!editTruck[$index]">{{truckInfo.EETruckType | uppercase}}</td>
+                                    <td ng-show="editTruck[$index]"><input type="text" class="form-control" ng-model="rowTruckInfo.EETruckType" maxlength="25" /></td>
+
+                                    <td ng-show="!editTruck[$index]">{{truckInfo.EETruckDriver | uppercase}}</td>
+                                    <td ng-show="editTruck[$index]"><input type="text" class="form-control" ng-model="rowTruckInfo.EETruckDriver" maxlength="40" /></td>
+
+                                    <td>
+                                        <a ng-show="editTruck[$index]"><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveTruckInfo('edit', $index)"></i></a>
+                                        <a ng-show="editTruck[$index]"><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelTruckSave('edit',truckInfo, $index)"></i></a>
+                                        <a ng-show="!editTruck[$index]"><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="editTruckInfo(truckInfo, $index)"></i></a>
+                                        <a ng-show="!editTruck[$index]" title="{{'Delete' | translate}}" ng-click="deleteTruck($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="noBillCert.Trucks == null || noBillCert.Trucks.length == 0"><td colspan="5">{{'NoItems' | translate}}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-20">
+                    <div class="col-md-4">
+                        <div class="col-md-12 pull-left">
+                            <button type="button" class="btn btn-green" ng-click="addNewContainer()">{{'AddContainer' | translate}}</button>
+                        </div>
+                        <div class="col-md-12 table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'ContainerNumber'|translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="isAddNewContainer">
+                                        <td>
+                                            <input type="text" class="form-control" ng-model="rowContainer.EEContainer" maxlength="20" />
+                                        </td>
+                                        <td>
+                                            <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveContainer('add')"></i></a>
+                                            <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelContainerSave('add')"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="container in noBillCert.Containers">
+                                        <td ng-show="!editContainer[$index]">{{container.EEContainer | uppercase}}</td>
+                                        <td ng-show="editContainer[$index]"><input type="text" class="form-control" ng-model="rowContainer.EEContainer" maxlength="20" /></td>
+
+                                        <td>
+                                            <a ng-show="!editContainer[$index]" title="{{'Delete' | translate}}" ng-click="deleteContainer($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="noBillCert.Containers == null || noBillCert.Containers.length == 0"><td colspan="2">{{'NoItems' | translate}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12 pull-left">
+                            <button type="button" class="btn btn-green" ng-click="addNewChassis()">{{'AddChassis' | translate}}</button>
+                        </div>
+                        <div class="col-md-12 table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'ChassisNumber'|translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="isAddNewChassis">
+                                        <td>
+                                            <input type="text" class="form-control" ng-model="rowChassis.EEChassis" maxlength="30" />
+                                        </td>
+                                        <td>
+                                            <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveChassis('add')"></i></a>
+                                            <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelChassisSave('add')"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="chassis in noBillCert.Chassises">
+                                        <td ng-show="!editChassis[$index]">{{chassis.EEChassis | uppercase}}</td>
+                                        <td ng-show="editChassis[$index]"><input type="text" class="form-control" ng-model="rowChassis.EEChassis" maxlength="30" /></td>
+                                        <td>
+                                            <a ng-show="!editChassis[$index]" title="{{'Delete' | translate}}" ng-click="deleteChassis($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="noBillCert.Chassises == null || noBillCert.Chassises.length == 0"><td colspan="2">{{'NoItems' | translate}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12 pull-left">
+                            <button type="button" class="btn btn-green" ng-click="addNewSeal()">{{'AddSeal' | translate}}</button>
+                        </div>
+                        <div class="col-md-12 table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'SealNumber'|translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-show="isAddNewSeal">
+                                        <td>
+                                            <input type="text" class="form-control" restrict-space only-numbers ng-model="rowSeal.EESeal" maxlength="30" />
+                                        </td>
+                                        <td>
+                                            <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveSeal('add')"></i></a>
+                                            <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelSealSave('add')"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="seal in noBillCert.Seals">
+                                        <td ng-show="!editSeal[$index]">{{seal.EESeal | uppercase}}</td>
+                                        <td ng-show="editSeal[$index]"><input type="text" class="form-control" restrict-space only-numbers ng-model="rowSeal.EESeal" maxlength="30" /></td>
+                                        <td>
+                                            <a ng-show="!editSeal[$index]" title="{{'Delete' | translate}}" ng-click="deleteSeal($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="noBillCert.Seals == null || noBillCert.Seals.length == 0"><td colspan="2">{{'NoItems' | translate}}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt20 mb-20">
+                    <div class="pull-right">
+                        <button class="btn btn-green mr-10" type="button" ng-click="saveNoBillEECert()">{{'Save' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#region LookUps-->
+<div class="modal" id="cargoAgentLookup" role="dialog">
+    <div style="width:50%" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{'CargoAgent' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input id="searchCargoAgentText" type="text" ng-model="searchCargoAgentText" class="form-control disabledInputWithBorder col-md-12" />
+                <div class="table-responsive mb20">
+                    <div class="small-loader" ng-show="cargoAgents == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th width="10%">{{'Code'|translate}}</th>
+                                <th>{{'Description'|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-class="{selected: cargoAgentItem.Code==cargoAgentItemSelected.Code}" ng-click="setCargoAgent(cargoAgentItem)" dir-paginate="cargoAgentItem in cargoAgents | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="cargoAgentPager">
+                                <td>
+                                    {{cargoAgentItem.Code}}
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                    {{cargoAgentItem.NameEnglish + " " + cargoAgentItem.NameArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                </td>
+                            </tr>
+                            <tr ng-show="cargoAgents == null">
+                                <td colspan="10">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="cargoAgents == null">
+                    <dir-pagination-controls pagination-id="cargoAgentPager" direction-links="true" boundary-links="true">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="eeCountryLookUp" role="dialog">
+    <div style="width:50%" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{lookUpTitle | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input id="searchEECountryLookupText" ng-keyup="onEECountryLookupSearhChange()" type="text" class="form-control disabledInputWithBorder col-md-12" />
+                <div class="table-responsive mb20">
+                    <div class="small-loader" ng-show="lookUpData == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th ng-repeat="header in lookUpHeaders" width="{{header.Width}}">{{header.Text|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-click="setEECountryLookupData(lookUpItem,lookupId)" dir-paginate="lookUpItem in lookUpData | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="lookUpIEECountryPager">
+                                <td>
+                                    {{lookUpItem.Code}}
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                    {{(lookUpItem.NameEnglish == undefined ?lookUpItem.EnglishName:lookUpItem.NameEnglish) + " " + (lookUpItem.NameArabic == undefined ?lookUpItem.ArabicName:lookUpItem.NameArabic) }}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                </td>
+                            </tr>
+                            <tr ng-show="lookUpData == null">
+                                <td colspan="10">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="lookUpData == null">
+                    <dir-pagination-controls pagination-id="lookUpIEECountryPager" direction-links="true" boundary-links="true">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#endregion LookUps-->
+
+
+<div ng-include="'../tpl/LookUpTemplate.html'"></div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+<script type="text/javascript">
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

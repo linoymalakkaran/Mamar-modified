@@ -1,0 +1,71 @@
+﻿<div ng-controller="facilityController" class="panel drt pb20">
+    <!--<div class="centrecodedp mt-10">
+        <form class="form-horizontal ng-pristine ng-valid">
+            <div class="form-group">
+                <label class="control-label col-lg-4 ng-binding">{{'CentreCode' | translate}}</label>
+                <div class="col-lg-8">
+                    <select name="dplCentreCode" ng-model="selCenterCode" class="form-control select2" ng-change="centerCodeChanged()">
+                        <option ng:repeat="x in centerCodes" value="{{x.Code}}">{{x.Code}} {{x.EnglishName}} {{x.ArabicName}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>-->
+
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'Centre'|translate}}</th>
+                        <th>{{'ImpCode'|translate}}</th>
+                        <th>{{'DepositNote'|translate}}</th>
+                        <th>{{'Category'|translate}}</th>
+                        <th>{{'IssDate'|translate}}</th>
+                        <th>{{'FacilityAmount'|translate}}</th>
+                        <th>{{'FacilityStatement'|translate}}</th>
+                        <th>{{'SettleVoucher'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in facility | itemsPerPage: mFacilityRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            {{model.CenterCode}}
+                        </td>
+                        <td>
+                            {{model.ImpCode}}
+                        </td>
+                        <td>
+                            {{model.FSDNoteNumber}}
+                        </td>
+                        <td>
+                            {{model.CategoryCode}}
+                        </td>
+                        <td>
+                            {{model.IssDate | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{model.Amount}}
+                        </td>
+                        <td>
+                            {{model.BatchNumber}}
+                        </td>
+                        <td>
+                            {{model.SettleVoucher}}
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="facility == null || facility.length == 0">
+                        <td colspan="8">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="facility == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="facility.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+        </div>
+    </div>
+    
+</div>

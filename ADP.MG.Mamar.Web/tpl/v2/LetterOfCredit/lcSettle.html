@@ -1,0 +1,154 @@
+﻿<style>
+    .white {
+        color: white !important;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .pullrightExport {
+        float: right !important;
+    }
+
+    .pullleftExport {
+        float: left !important;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="trans-list-head">{{'Settle' | translate}}</div>
+                </div>
+                <div class="pull-right mt-10 mr-10">
+                    <a class="btn btn-dark-grey btn-block" ui-sref-opts="{reload: true, notify: true}" ng-click="gotoLCDetails()">{{'Back' | translate}}</a>
+                </div>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label col-lg-4">{{'Importer/Exporter' | translate}}</label>
+                                    <div class="col-lg-8">
+                                        <div tabindex="7" angucomplete-alt id="ImporterExporter" pause="50" placeholder="{{'ImporterXporterph' | translate}}" ng-model="importer" search-str="searchImporterExporterText" show-title="true"
+                                             local-data="importersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control white" match-class="highlight"
+                                             input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidImporter">{{'InvalidImporterExporter'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-5">{{'BillNumber' | translate}}</label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" ng-model="searchParameter.billNumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-5">{{'VoucherNumber' | translate}}</label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" ng-model="searchParameter.vhNumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'IssueDate' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParameter.issueDate">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pullrightExport" ng-show="language=='ae'">
+                        <button type="button" class="btn btn-green" ng-click="!$storage.get('isPcsSuperUser') && printOutstanding()" ng-disabled="$storage.get('isPcsSuperUser')">
+                            {{'PrintOutstanding' | translate}} <i class="fa fa-print" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="pullleftExport" ng-if="language=='en'">
+                        <button type="button" class="btn btn-green" ng-click="!$storage.get('isPcsSuperUser') && printOutstanding()" ng-disabled="$storage.get('isPcsSuperUser')">
+                            {{'PrintOutstanding' | translate}} <i class="fa fa-print" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-green" ng-click="getLCSettleListBySearch()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'Year' | translate}}</th>
+                                        <th>{{'BillNo' | translate}}</th>
+                                        <th>{{'CenterCode' | translate}}</th>
+                                        <th>{{'VoucherNumber' | translate}}</th>
+                                        <th>{{'IssueDate' | translate}}</th>
+                                        <th>{{'ExpiryDate' | translate}}</th>
+                                        <th>{{'ImporterCode' | translate}}</th>
+                                        <th>{{'PayeeName' | translate}}</th>
+                                        <th>{{'VoucherAmount' | translate}}</th>
+                                        <th>{{'SettleFlag' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr dir-paginate="lc in lcSettleList | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                    <td>{{lc.BILL_YEAR}}</td>
+                                    <td>{{lc.BILL_NUM}}</td>
+                                    <td>{{lc.BILL_CENT_CODE}}</td>
+                                    <td>{{lc.VH_NUM}}</td>
+                                    <td>{{::lc.VH_ISS_DATE |  date:'dd/MM/yyyy'}}</td>
+                                    <td>{{::lc.VH_EXP_DATE |  date:'dd/MM/yyyy'}}</td>
+                                    <td>{{lc.VH_IMP_CODE}}</td>
+                                    <td>{{lc.VH_PAYEE_NAME}}</td>
+                                    <td class="t-right">{{lc.VH_AMT | number : 2}}</td>
+                                    <td>
+                                        <div class="form-group form-checkbox">
+                                            <div class="fleft">
+                                                <label class="control control--checkbox">
+                                                    <input type="checkbox" ng-model="lc.VH_SETTLE_FLAG" ng-checked="lc.VH_SETTLE_FLAG == 'Y'" disabled="disabled">
+                                                    <span class="control__indicator"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-hide="lcSettleList == null || lcSettleList.length == 0"><td colspan="8" class="t-right bold">{{'TotalAmount' | translate}}</td><td class="t-right bold">{{vhTotalAmount | number : 2}}</td><td></td></tr>
+                                <tr class="no-records" ng-show="lcSettleList == null || lcSettleList.length == 0"><td colspan="10">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="lcSettleList == null || lcSettleList.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-if="lcSettleList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>
+
+
+

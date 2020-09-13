@@ -1,0 +1,256 @@
+﻿
+<style type="text/css">
+    .selected {
+        background-color: black;
+        color: black;
+        font-weight: bold;
+    }
+    .modal {
+      overflow-y: auto;
+    }
+
+    .modal-open {
+      overflow: auto;
+    }
+
+    .modal-open[style] {
+       padding-right: 0px !important;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'UserManagement' | translate}}</div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <div class="col-md-12 pr-20 pt-8">
+                        <div class="pull-right">
+                            <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="openLinkCustomsAccountWindow()">{{'LinkCustomsAccount' | translate}}</a>
+                            <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="AddNewUser()">{{'AddNew' | translate}}</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt18 mb20">
+                            <table class="table table-bordered" id="myTable">
+                                <thead>
+                                    <tr>
+                                        <th>{{'FullName' | translate}}</th>
+
+                                        <!--<th>{{'Gender' | translate}}</th>-->
+                                        <th>{{'Email' | translate}}</th>
+                                        <th>{{'EnterMobileNo' | translate}}</th>
+                                        <th>{{'ExpressCourierUsername' | translate}}</th>
+                                        <th>{{'Status' | translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr dir-paginate="gridItem in MaqtaListedUser | itemsPerPage: parameters.pageSize"
+                                    current-page="parameters.pageNumber" pagination-id="userlistPagination"
+                                    ng-click="setClickedRowColor($index,gridItem)"
+                                    ng-class="{'selected':$index == selectedRow}">
+                                    <td>{{gridItem.FullName}}</td>
+
+                                    <!--<td>{{gridItem.Gender}}</td>-->
+                                    <td>{{gridItem.Email}}</td>
+                                    <td>{{gridItem.MobileNumber}}</td>
+                                    <td>{{gridItem.UserName}}</td>
+                                    <td>{{gridItem.Status}}</td>
+                                    <td>
+                                        <a><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="setClickedRow(gridItem)"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="MaqtaListedUser == null || MaqtaListedUser.length == 0"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-12 pagination pl25 mb20" ng-hide="MaqtaListedUser == null">
+                            <dir-pagination-controls pagination-id="userlistPagination" direction-links="true" boundary-links="true">
+                            </dir-pagination-controls>
+                            <span class="col-md-2 pull-right" ng-if="MaqtaListedUser.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        </div>
+                    </div>
+                    <div id="MTransDetails">
+                        <div ng-if="!IsHideDetails" class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <div class="panel-default-red mt20">
+                                        <div class="panel-heading">{{'UserDetails' | translate}}</div>
+                                    </div>
+                                    <div class="form-horizontal">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'FirstName' | translate}}<span style="color:red !important">*</span></label>
+                                                <div class="col-lg-8">
+                                                    <input type="text" id="PlateNo" name="FiName" class="form-control" maxlength="48" ng-model="SaveParameters.FirstName" ng-disabled="IsDisableForm" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'LastName' | translate}}<span style="color:red !important">*</span></label>
+                                                <div class="col-lg-8">
+                                                    <input id="PlateNo" name="LastName" type="text" class="form-control" maxlength="48" ng-model="SaveParameters.LastName" ng-disabled="IsDisableForm" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'Email' | translate}}<span style="color:red !important">*</span></label>
+                                                <div class="col-lg-8">
+                                                    <form name="form">
+                                                        <input id="PlateCategory" name="emailID" type="text" valid-Email class="form-control" ng-model="SaveParameters.Email" ng-disabled="IsDisableForm" />
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'EnterMobileNo' | translate}}</label>
+
+                                                <div class="col-lg-8">
+                                                    <input id="PlateOrigin" name="MobileNo" only-Numbers type="text" maxlength="12" class="form-control" ng-model="SaveParameters.MobileNo" ng-disabled="IsDisableForm" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'Phone' | translate}}</label>
+                                                <div class="col-lg-8">
+                                                    <input id="Chasis" name="Phone" type="text" only-Numbers class="form-control" maxlength="12" ng-model="SaveParameters.Phone" ng-disabled="IsDisableForm" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group" ng-hide="true">
+                                                <label class="control-label col-lg-3">{{'Gender' | translate}}</label>
+
+                                                <div class="control-label col-lg-8">
+
+                                                    <label><input type="radio" name="SGender" ng-change="RadioChange('Male')" ng-model="GenderSelected.course" checked="checked" value="Male" ng-disabled="IsDisableForm" />{{'Male' | translate}}</label>
+                                                    <label><input type="radio" name="SGender" ng-change="RadioChange('Female')" ng-model="GenderSelected.course" value="Female" ng-disabled="IsDisableForm" />{{'Female' | translate}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-3">{{'IsActive' | translate}}</label>
+
+                                                <div class="control-label col-lg-8" ng-disabled="IsDisableForm">
+                                                    <label><input type="checkbox" name="Status" ng-disabled="!IsEnable" ng-model="SaveParameters.Status" />  </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12 pr-20 pt-15">
+                                <div class="pull-right">
+                                    <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="SaveUserInformation()">{{'Save' | translate}}</a>
+                                    <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="CancelDetails()">{{'Cancel' | translate}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="UnRegisterUser">
+                        <div ng-if="!IsHideDetails" class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive mb20 mt20">
+                                    <div class="col-md-6">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{'AvailCustomsUserCode' | translate}}</th>
+                                                    <th></th>
+                                                    <th>{{'MappedCustomsUserCode' | translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-horizontal">
+                                                            <select size="5" class="form-control" multiple="" ng-model="available" ng-options="client as client.name for client in availableclients"></select>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group form-horizontal" style="text-align:center">
+                                                            <!--<a class="btn btn-green" ng-click="moveItem(available, availableclients,selectedclients,'Add')" title="{{'Add' | translate}}" ng-show="language=='en'"><i class="fa fa-angle-double-right"></i></a>
+                                                            <a class="btn btn-green" ng-click="moveItem(available, availableclients,selectedclients,'Add')" title="{{'Add' | translate}}" ng-show="language=='ae'"><i class="fa fa-angle-double-left"></i></a>
+
+                                                            <a class="btn btn-green" ng-click="moveItem(selected, selectedclients,availableclients,'Remove')" title="{{'Remove' | translate}}" ng-show="language=='en'"><i class="fa fa-angle-double-left"></i></a>
+                                                            <a class="btn btn-green" ng-click="moveItem(selected, selectedclients,availableclients,'Remove')" title="{{'Remove' | translate}}" ng-show="language=='ae'"><i class="fa fa-angle-double-right"></i></a>-->
+
+                                                            <input id="moveright" type="button" class="btn btn-green" value="{{'Add' | translate}}" ng-click="moveItem(available, availableclients,selectedclients,'Add')" />
+                                                            <input id="move left" type="button" class="btn btn-green" value="{{'Remove' | translate}}" ng-click="moveItem(selected, selectedclients,availableclients,'Remove')" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-horizontal">
+                                                            <select size="5" class="form-control" multiple="" ng-model="selected" ng-options="client as client.name for client in selectedclients"></select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="customsMappingModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">{{'LinkCustomsAccount' | translate}}</h5>
+                </div>
+                <form id="frmCustomsAccount" name="frmCustomsAccount" class="form-horizontal" ng-submit="frmCustomsAccount.$valid && linkCustomsAccount()">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 ">
+                                <div class="alert alert-danger fade in" ng-if="!isValid">
+                                    <strong>{{'Error' | translate}}!</strong> {{'RequiredFieldValidationMsg' | translate}}
+                                </div>
+                                <div class="alert alert-danger fade in" ng-if="invalidCredentials">
+                                    <strong>{{'Error' | translate}}!</strong> {{'invalidCredentialsMessage' | translate}}
+                                </div>
+                                <div class="alert alert-danger fade in" ng-if="serverError">
+                                    <strong>{{'Error' | translate}}!</strong> {{serverErrorMessage}}
+                                </div>
+                            </div>
+                                <div class="col-md-12 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'CustomsCompanyCode' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="customsCompanyCode" type="text" ng-model="customsCompanyCode" class="form-control" maxlength="30" tabindex="1" required>
+                                            <label class="validation-error-label" ng-cloak ng-show="submitted && frmCustomsAccount.customsCompanyCode.$error.required">{{'CustomsCompanyCodeRequired' | translate}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'CustomsPassword' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="customsPassword" type="password" ng-model="customsPassword" class="form-control" maxlength="30" tabindex="2" required>
+                                            <label class="validation-error-label" ng-cloak ng-show="submitted && frmCustomsAccount.customsPassword.$error.required">{{'CustomsPasswordRequired' | translate}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 ">
+                                    <div class="pull-right mr-10 mt-20">
+                                        <button type="button" class="btn btn-default" ng-click="closeModalPopUp()" tabindex="4">{{'Cancel' | translate}}</button>
+                                        <button type="submit" class="btn btn-green" tabindex="3" ng-click="submitted=true">{{'LinkAccount' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+

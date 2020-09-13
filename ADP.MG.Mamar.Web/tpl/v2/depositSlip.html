@@ -1,0 +1,84 @@
+﻿<div ng-controller="depositSlipController" class="panel drt pb20">
+    <!--<div class="centrecodedp mt-10">
+        <form class="form-horizontal ng-pristine ng-valid">
+            <div class="form-group">
+                <label class="control-label col-lg-4 ng-binding">{{'CentreCode' | translate}}</label>
+                <div class="col-lg-8">
+                    <select name="dplCentreCode" ng-model="selCenterCode" class="form-control select2" ng-change="centerCodeChanged()">
+                        <option ng:repeat="x in centerCodes" value="{{x.Code}}">{{x.Code}} {{x.EnglishName}} {{x.ArabicName}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>-->
+
+    <div class="col-md-12 mt-10">
+        <fieldset ng-disabled="isSuperUser == 'True'">
+            <button ng-click="openDepositInformation('add')" type="button" class="btn btn-green pull-right">
+                {{'AddNew'|translate}}
+            </button>
+        </fieldset>
+    </div>
+
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'SerialNo'| translate}}</th>
+                        <th>{{'ADSDate'| translate}}</th>
+                        <th>{{'ImporterNumber'| translate}}</th>
+                        <th>{{'StatementNo'| translate}}</th>
+                        <th>{{'BankAccountNo'| translate}}</th>
+                        <th>{{'DepositType'| translate}}</th>
+                        <th>{{'Amount'| translate}}</th>
+                        <th>{{'Action'| translate}}</th>
+                        <th>{{'Print'| translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in depositSlips | itemsPerPage: mDepositSlipRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            {{model.SerialNo}}
+                        </td>
+                        <td>
+                            {{model.ADSDate}}
+                        </td>
+                        <td>
+                            {{model.ImporterNumber}}
+                        </td>
+                        <td>
+                            {{model.StatementNo}}
+                        </td>
+                        <td>
+                            {{model.BankAccountNo}}
+                        </td>
+                        <td>
+                            {{model.DepositType}}
+                        </td>
+                        <td>
+                            {{model.Amount}}
+                        </td>
+                        <td>
+                            <a ng-click="openDepositInformation('edit',model.SerialNo)" title="{{'Show'|translate}}"><i class="fa fa-eye"></i></a>
+                        </td>
+                        <td>
+                            <a title="{{'Print'|translate}}" ng-click="downloadReport('GetADCBDepositSlipReport',model.DepositType,model.SerialNo)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="depositSlips == null || depositSlips.length == 0">
+                        <td colspan="9">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="depositSlips == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="depositSlips.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+        </div>
+    </div>
+
+    
+</div>

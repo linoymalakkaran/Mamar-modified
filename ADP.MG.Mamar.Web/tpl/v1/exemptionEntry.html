@@ -1,0 +1,245 @@
+﻿<style>
+    .label-style {
+        width: 100%;
+    }
+</style>
+<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'ExemptionEntry' | translate}}</h5>
+</div>
+<fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+    <div style="min-height:550px" class="modal-body">
+        <div class="row">
+            <div class="col-md-12 form-horizontal">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'ExemptionCode' | translate}}</label>
+                    </div>
+                    <div class="col-md-6">
+                        <div ng-keydown="exemptionLookupKeyDown($event)" class="col-md-10" angucomplete-alt placeholder="{{'SearchExemptionCode' | translate}}" ng-model="selectedExemptionModel" search-str="searchExemptionText"
+                             local-data="exemptionCode" search-fields="ExemptionCode,ExemptionEngName,ExemptionArbName" title-field="ExemptionCode,ExemptionEngName,ExemptionArbName" minlength="1"
+                             input-class="form-control" match-class="highlight" input-name="ddlExemptionCode" selected-object="selectedexemptionCode" disable-input="mode=='View' || ( (selectedexemptionCode && selectedexemptionCode.originalObject && selectedexemptionCode.originalObject.ExemptionCode == '99') && ($storage.get('isHumanCorps')))" input-changed="inputExemptionChanged">
+                        </div>
+                        <a class="col-md-2 mt-10"><i class="fa fa-search" ng-hide="selectedexemptionCode && selectedexemptionCode.originalObject && selectedexemptionCode.originalObject.ExemptionCode == '99'" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openExemptionLookup()"></i></a>
+                        <div class="col-md-12 validationmsg" ng-show="!IsValidExemptionCode" ng-message="autocomplete-required">{{'ExemptionCodeRequired' | translate}}</div>
+                    </div>
+                    <div class="col-md-1" ng-show="selectedExemptionModel !='' ? selectedexemptionCode.originalObject.ExemptionCode == '33' ? true : false : false">
+                        <label class="control-label col-lg-4 label-style">{{'Country' | translate}}<span>*</span></label>
+                    </div>
+                    <div class="col-md-3" ng-show="selectedExemptionModel !='' ? selectedexemptionCode.originalObject.ExemptionCode == '33' ? true : false : false">
+                        <div angucomplete-alt placeholder="{{'Countryph' | translate}}" ng-model="selectedMadeInModel" id="autocomplete-1"
+                             local-data="madeIn" search-fields="GccCountCode,GccCountEngName,GccCountArbName" title-field="GccCountCode,GccCountEngName,GccCountArbName" minlength="1"
+                             input-class="form-control" match-class="highlight" input-name="ddlMadeIn" selected-object="selectedMadeIn" disable-input="mode=='View'" input-changed="inputCountryChanged">
+                        </div>
+                        <div ng-show="!IsValidExemptionCountry" class="validationmsg" ng-message="autocomplete-required">{{'CountryRequired' | translate}}</div>
+                    </div>
+                </div>
+                <div class="row" ng-show="selectedMadeInModel != '' && selectedexemptionCode.originalObject.ExemptionCode == '33' && selectedExemptionModel !='' && selectedMadeIn.originalObject.GccCountCode !=null && selectedMadeIn.originalObject.GccCountCode !='' && selectedMadeIn.originalObject.GccCountCode !='Undefinded' ? true : false ">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'GccNo' | translate}}<span>*</span></label>
+                    </div>
+                    <div class="col-md-8">
+                        <input name="Attrib14" type="text" only-Numbers ng-model="ExemptionInf.Attrib14" class="form-control" ng-change="ValidateGccNo()" maxlength="100">
+                        <span class="validationmsg" ng-show="!IsValidGccNo">{{'GCCNoRequired' | translate}}</span>
+                        <div id="isValidGCNumber" ng-show="!IsValidGCCNumber" class="validationmsg"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-green ng-binding" ng-click="GetSearchResult()">{{'GCCValidate' | translate}}</button>
+                    </div>
+                </div>
+                <!--<div class="row" ng-show="selectedMadeInModel != '' && selectedexemptionCode.originalObject.ExemptionCode == '33' && selectedExemptionModel !='' && selectedMadeIn.originalObject.GccCountCode !=null && selectedMadeIn.originalObject.GccCountCode !='' && selectedMadeIn.originalObject.GccCountCode !='Undefinded' ? true : false">-->
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <input name="Attrib1" type="text" ng-model="ExemptionInf.Attrib1" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib2" type="text" ng-model="ExemptionInf.Attrib2" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib3" type="text" ng-model="ExemptionInf.Attrib3" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib4" type="text" ng-model="ExemptionInf.Attrib4" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib5" type="text" ng-model="ExemptionInf.Attrib5" class="form-control" ng-disabled="true">
+                    </div>
+
+
+                </div>
+
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <input name="Attrib6" type="text" ng-model="ExemptionInf.Attrib6" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib7" type="text" ng-model="ExemptionInf.Attrib7" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib8" type="text" ng-model="ExemptionInf.Attrib8" class="form-control" ng-disabled="true">
+                    </div>
+
+                </div>
+
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <input name="Attrib9" type="text" ng-model="ExemptionInf.Attrib9" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib10" type="text" ng-model="ExemptionInf.Attrib10" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib11" type="text" ng-model="ExemptionInf.Attrib11" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib12" type="text" ng-model="ExemptionInf.Attrib12" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Attrib13" type="text" ng-model="ExemptionInf.Attrib13" class="form-control" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'Country' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="CountryCode" type="text" ng-model="ExemptionInf.CountryCode" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-4">
+                        <input name="CountryDesc" type="text" ng-model="ExemptionInf.CountryDesc" class="form-control" ng-disabled="true">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'FirstEntryPoint' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="FirstEntryPoint" type="text" ng-model="ExemptionInf.FirstEntryPoint" class="form-control" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'ID' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="ID" type="text" ng-model="ExemptionInf.ID" class="form-control" ng-disabled="true">
+                    </div>
+
+                    <div class="col-md-2 col-md-offset-4">
+                        <label class="control-label col-lg-4 label-style">{{'Func' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="Function" type="text" ng-model="ExemptionInf.Function" class="form-control" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'DutyAmount' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="DutyAmount" type="text" ng-model="ExemptionInf.DutyAmount" class="form-control" ng-disabled="true">
+                    </div>
+
+                    <div class="col-md-2 col-md-offset-4">
+                        <label class="control-label col-lg-4 label-style">{{'BillNo' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="BillNumber" type="text" ng-model="ExemptionInf.BillNumber" class="form-control" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'Date' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input id="Date" name="DODate" ng-trim="true" type="text" ng-model="ExemptionInf.Date" class="form-control" placeholder="{{'DODate' | translate}}" data-date-format="YYYY-MM-DD" datetimepicker ng-disabled="true" />
+                    </div>
+
+                    <div class="col-md-2 col-md-offset-4">
+                        <label class="control-label col-lg-4 label-style">{{'BillCIFAmount' | translate}}<span>*</span></label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="BillCIFAmount" valid-Number type="text" ng-model="ExemptionInf.BillCIFAmount" class="form-control" ng-disabled="false" ng-change="validateBillCIFAmount()">
+                        <span class="validationmsg" ng-show="!IsValidBillCIFAmount">{{'BillCIFAmountRequired' | translate}}</span>
+                    </div>
+                </div>
+                <div class="row" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'StatNum' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="StatNum" type="text" valid-number ng-model="ExemptionInf.StatNum" class="form-control" ng-disabled="true">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'StatDate' | translate}}</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input id="StatDate" name="DODate" ng-trim="true" type="text" ng-model="ExemptionInf.StatDate" class="form-control" placeholder="{{'DODate' | translate}}" data-date-format="YYYY-MM-DD" datetimepicker ng-disabled="true" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label col-lg-4 label-style">{{'Stat CIF Amount' | translate}}<span>*</span></label>
+                    </div>
+                    <div class="col-md-2">
+                        <input name="StatCIFAmount" valid-Number type="text" ng-model="ExemptionInf.StatCIFAmount" class="form-control" ng-change="validateStatCIFAmount()" ng-disabled="false">
+                        <span class="validationmsg" ng-show="!IsValidStatCIFAmount">{{'StatCIFAmountRequired' | translate}}</span>
+                    </div>
+                </div>
+                <div class="modal" id="exemptionLookup" role="dialog">
+                    <div style="width:80%" class="modal-dialog">
+                        <div style="min-height:200px" class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" ng-click="closeExemptionLookup()">&times;</button>
+                                <h5 class="modal-title bold">{{'Exemption' | translate}}</h5>
+                            </div>
+                            <div style="overflow:auto" class="modal-body">
+                                <input id="searchExemptionText" type="text" ng-model="searchExemptionText" class="form-control disabledInputWithBorder col-md-12" />
+                                <div class="table-responsive mb20">
+                                    <table class="table table-bordered lookupTable">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">{{'Code'|translate}}</th>
+                                                <th>{{'Description'|translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                            <tr ng-click="setExemption(exemptionItem)" dir-paginate="exemptionItem in exemptions | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="exemptionPager">
+                                                <td>
+                                                    {{exemptionItem.ExemptionCode}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                                    {{exemptionItem.ExemptionEngName + " " + exemptionItem.ExemptionArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="exemptions == null">
+                                                <td colspan="10">
+                                                    {{'NoItems'|translate}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="exemptions == null">
+                                    <dir-pagination-controls pagination-id="exemptionPager" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="modal-footer" ng-show="!showFields && ExemptionInf.Attrib14 !=''  ? true : false">-->
+</fieldset>
+<div class="modal-footer">
+    <div></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-right mr-10 mt-20">
+                <button type="button" class="btn btn-default" ng-click="closeModal()">{{'Close'|translate}}</button>
+                <button type="button" ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')" class="btn btn-green" ng-click="SaveexemptionEntry()" ng-hide="mode=='View'">{{'Save' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+

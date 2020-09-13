@@ -1,0 +1,776 @@
+﻿<style>
+    #modalInvoiceGroup {
+        padding-top: 4%;
+    }
+
+    .modal-header {
+        padding: 12px;
+    }
+
+    .clear {
+        padding-top: 4%;
+    }
+
+    .no-records {
+        background-color: #eaeeef;
+        color: darkgray;
+    }
+
+    /*.modal-dialog {
+        width: 800px;
+    }*/
+    #frmAddEditInvoiceGroup input[type="text"] {
+        width: 100%;
+        /*padding-left: 6%;*/
+    }
+
+    .disable-input {
+        line-height: 2px;
+        padding-left: 5%;
+        border: none;
+    }
+
+    #exemption.fa {
+        color: green;
+    }
+
+    .error {
+        display: inline-block;
+        color: red;
+    }
+
+    .rt-align {
+        text-align: right;
+        font-weight: 700 !important;
+    }
+
+    #harmonizedLookup.tooltip-inner {
+        max-width: 350px;
+    }
+
+    .border {
+        border: 2px solid #949495 !important;
+    }
+
+    .divScroll {
+        overflow-y: scroll;
+        max-height: 635px;
+    }
+
+    .boldExemption {
+        font-weight: bolder;
+        font-size: 20px;
+    }
+   
+</style>
+<style>
+    .clsUpload {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<script>
+    $('body').on('hidden.bs.modal', function (e) {
+        $("body").css("padding-right", "0px");
+    });
+</script>
+<div ng-controller="invoiceGrpnDetailsController">
+    <div class="col-md-12 mt-10">
+        <div class="panel bdr bdrt pb20">
+            <!--#region Invoice Group-->
+            <div class="panel-heading panel-flat">
+                {{'InvGrp' | translate}}
+                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="invoiceGrps && language == 'en'" data-placement="right" title="" data-original-title="{{'ClickOnInvGroupInfo' | translate}}"></i>
+                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="invoiceGrps && language == 'ae'" data-placement="left" title="" data-original-title="{{'ClickOnInvGroupInfo' | translate}}"></i>
+                <div class="pull-right mtm6">
+                    <button type="button" class="btn btn-green" ng-click="openInvGrpForm(newInvoiceGrp, 'add')" ng-disabled="!custBillType">{{'AddNew' | translate}}</button>
+                    <div id="Attach" class="btn btn-green" ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                        <label for="upfiles" class="fa fa-paperclip"></label>
+                        {{'Upload' | translate }}
+                        <input id="upfiles" type="file" upload-Files name="attachment" value="" class="clsUpload" accept={{ acceptFiles }} ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                    </div>
+                    <a class="btn btn-green" href="../Content/Template/InvoiceTemplate.xltx">{{'Download' | translate }}</a>
+                </div>
+            </div>
+
+            <div class="table-responsive mb20">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="1%">{{'SNo' | translate}}</th>    <!-- CR Change -->
+                            <th>{{'TermsOfShipment' | translate}}</th>  <!-- CR Change -->
+                            <th>{{'GoodsOrigin' | translate}}</th>
+                            <th>{{'OriginName' | translate}}</th>
+                            <th>{{'CuurencyCode' | translate}}</th>
+                            <th>{{'CurrencyName' | translate}}</th>
+                            <th>{{'ExchangeRate' | translate}}</th>
+                            <th>{{'InvoiceRefNumber' | translate}}</th>
+                            <!--<th class="t-right">{{'FreightAmount' | translate}}</th>-->
+                            <th class="t-right">{{'ForeignAmount' | translate}}</th>
+                            <th class="t-right">{{'Weight' | translate}}</th>
+                            <th class="t-right">{{'CIFAmount' | translate}}</th>
+                            <th class="t-right">{{'DutyAmount' | translate}}</th>
+                            <th>{{'ExemptionCode' | translate}}</th>
+                            <th>{{'Action' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in invoiceGrps  track by item.SerialNumber" ng-click="showInvoiceDetail(item)" ng-class="{selected: item.SerialNumber === selectedInvoiceGroup.SerialNumber}">
+                            <!--td>{{item.SerialNumber}}</td>-->
+                            <td>{{$index +  1}}</td> <!-- CR Changes -->
+                            <td>{{item.FreightDesc}}</td> <!-- CR Changes -->
+                            <td>{{item.CountCode}}</td>
+                            <td ng-bind="language == 'en' ? item.CountEngName : item.CountArbName"></td>
+                            <td>{{item.InvoiceCurrCode}}</td>
+                            <td ng-bind="language == 'en' ? item.InvoiceCurrEngName : item.InvoiceCurrArbName"></td>
+                            <td>{{item.ExchangeRate}}</td>
+                            <td>{{item.InvoiceRefNumber}}</td>
+                            <!--<td class="t-right">{{::item.FreightAmount | number : 2}}</td>-->
+                            <td class="t-right">{{item.InvoiceAmount | number : 2}}</td>
+                            <td class="t-right">{{item.InvoiceWeight | number : 3}}</td>
+                            <td class="t-right">{{item.AmountCIF | number : 2}}</td>
+                            <td class="t-right">{{item.DutyAmount | number : 2}}</td>
+                            <td title="{{item.ExemptionDescriptionEng + '|'+ item.ExemptionDescriptionArb }}">{{item.ExemptionCode}}</td>
+                            <td width="12%">
+                                <a class="alwaysEnabled" title="{{'Edit' | translate}}" ng-click="!$storage.get('globalDisableFlag') && !$storage.get('voucherFlag') && openInvGrpForm(item, 'edit')"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                <a title="{{'Delete' | translate}}" ng-click="deleteConfirm($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                <a class="alwaysEnabled" title="{{'Exemption' | translate}}" ng-click="openexemptionEntry(item)" ng-show="custBillType == 'I' || custBillType == 'N'">
+                                    <i class="fa fa-external-link" ng-class="{boldExemption: item.ExemptionCode}" aria-hidden="true" data-toggle="tooltip" data-placement="right" data-original-title="Exemption"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr ng-show="invoiceGrps != null && invoiceGrps.length > 0">
+                            <td colspan="8" class="rt-align">{{'Total' | translate}}</td>
+                            <!--<td class="redbg-light t-right">{{::invoiceGroupAggregateData.TotalFreightAmount| number : 2}}</td>-->
+                            <td class="redbg-light t-right">{{invoiceGroupAggregateData.TotalInvoiceAmount| number : 2}}</td>
+                            <td class="redbg-light t-right">{{invoiceGroupAggregateData.TotalInvoiceWeight | number : 3}}</td>
+                            <td class="redbg-light t-right">{{invoiceGroupAggregateData.TotalAmountCIF | number : 2}}</td>
+                            <td class="redbg-light t-right">{{invoiceGroupAggregateData.ToatlDutyAmount | number : 2}}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="no-records" ng-show="invoiceGrps == null || invoiceGrps.length == 0">
+                            <td colspan="14">
+                                {{'NoItems' | translate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- #region Add/Edit Invoice Group Modal Popup-->
+            <div class="modal" id="modalInvoiceGroup" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <a class="close alwaysEnabled" ng-click="closeModalPopUp()">&times;</a>
+                            <h5 class="modal-title bold" ng-show="action == 'add'">{{'AddInvGrp' | translate}}</h5>
+                            <h5 class="modal-title bold" ng-show="action == 'edit'">{{'EditInvGrp' | translate}}</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" id="frmAddEditInvoiceGroup" class="form-horizontal" ng-submit="saveInvoiceGrp()">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="control-label col-sm-4">{{'OriginCountry' | translate}}<span>*</span></label>
+                                        <div class="col-sm-6">
+                                            <div ng-keydown="lookupKeyDown($event,'OriginCountry')" angucomplete-alt placeholder="{{'Countryph' | translate}}" ng-model="selectedCountry" class="col-md-10"
+                                                 local-data="countryList" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" show-title="true"
+                                                 input-class="form-control" match-class="highlight" input-name="ddlCountry" id="originCountry" selected-object="selectedCountryObj" input-changed="onCountryChange" disable-input="custBillType=='E'">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('OriginCountry')"></i></a>
+                                            <span class="error" ng-show="!isValidCountry">{{'ErrCountry' | translate}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="control-label col-sm-4">{{'Currency' | translate}}<span>*</span></label>
+                                        <div class="col-sm-6">
+                                            <div ng-keydown="lookupKeyDown($event,'Currency')" angucomplete-alt placeholder="{{'Currencyph' | translate}}" ng-model="selectedCurrency" class="col-md-10"
+                                                 local-data="currencyList" search-fields="Code,NameEnglish,NameArabic" title-field="Code,NameEnglish,NameArabic" minlength="1" show-Title="true"
+                                                 input-class="form-control" match-class="highlight" input-name="ddlCurrency" id="currency" selected-object="selectedCurrencyObj" input-changed="onCurrencyChange">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Currency')"></i></a>
+                                            <span class="error" ng-show="!isValidCurrency">{{'ErrCurrency' | translate}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="control-label col-sm-4">{{'ExchangeRate' | translate}}</label>
+                                        <div class="col-sm-6">
+                                            <label class="form-control disable-input noinput" ng-disabled="true" ng-bind="selectedCurrencyObj.originalObject.Rate"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <label class="control-label col-sm-4">{{'InvoiceRefNumber' | translate}}<span>*</span></label>
+                                        <div class="col-sm-6">
+                                            <input type="text" ng-model="selectedInvGrp.InvoiceRefNumber"  maxlength="30" />
+                                            <span class="error" ng-show="!isValidInvNo">{{'Required' | translate}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-hide="custBillType=='E' || custBillType=='R'">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label class="control-label col-sm-4">{{'TermsOfShipment' | translate}}</label>
+                                            <div class="col-sm-6">
+                                                <select name="ddlShipment" class="form-control select" ng-model="selectedInvGrp.FreightType"
+                                                        ng-options="shipment.Value as shipment.Type for shipment in termsOfShipList"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="selectedInvGrp.FreightType == 2 || selectedInvGrp.FreightType == 4">
+                                        <div class="col-sm-12">
+                                            <label class="control-label  col-sm-4">{{'InsuranceAmount' | translate}}</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" ng-model="selectedInvGrp.InsuranceAmount" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="11" decimal-upto="2" maxlength="14" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="selectedInvGrp.FreightType == 3 || selectedInvGrp.FreightType == 4">
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label class="control-label  col-sm-4">{{'FreightCurrency' | translate}}</label>
+                                                <div class="col-sm-6">
+                                                    <div ng-keydown="lookupKeyDown($event,'FreightCurrency')" angucomplete-alt placeholder="{{'Currencyph' | translate}}" ng-model="selectedFreightCurr" class="col-md-10"
+                                                         local-data="freightCurrencyList" search-fields="Code,NameEnglish,NameArabic" title-field="Code,NameEnglish,NameArabic" minlength="1" show-Title="true"
+                                                         input-class="form-control" match-class="highlight" input-name="ddlFreightCurrency" id="freightCurrency" selected-object="selectedFreightCurrencyObj" input-changed="onFreightCurrencyChange">
+                                                    </div>
+                                                    <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('FreightCurrency')"></i></a>
+                                                    <span class="error" ng-show="!isValidFreightCurrency">{{'ErrFreightCurr' | translate}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label class="control-label col-sm-4">{{'FreightExchgRate' | translate}}</label>
+                                                <div class="col-sm-6">
+                                                    <label class="form-control disable-input noinput" ng-disabled="true" ng-bind="selectedFreightCurrencyObj.originalObject.Rate"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label class="control-label  col-sm-4">{{'FreightAmount' | translate}}</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" ng-model="selectedInvGrp.FreightAmount" ng-change="freightAmountChanged()" valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="11" decimal-upto="2" maxlength="14" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label class="control-label col-sm-4">{{'FreightinAED' | translate}}</label>
+                                                <div class="col-sm-6">
+                                                    <label class="form-control disable-input noinput" ng-disabled="true"
+                                                           ng-bind="(selectedInvGrp.FreightAmount * selectedFreightCurrencyObj.originalObject.Rate/selectedCurrencyObj.originalObject.Rate | number: 2) || ''">
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-hide="custBillType == 'O'">
+                                        <div class="col-sm-12">
+                                            <label class="control-label col-sm-4">{{'Agreement' | translate}}</label>
+                                            <div class="col-sm-6">
+                                                <select name="ddlAgreement" class="form-control select" ng-model="selectedInvGrp.OriginType" ng-disabled="isAgreementDisabled"
+                                                        ng-options="agreement.Code as (agreement.EnglishName + '   ' + agreement.ArabicName) for agreement in agreementList"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12" ng-show="action == 'edit'">
+                                            <label class="control-label col-sm-4">{{'DOAmount' | translate}}</label>
+                                            <div class="col-sm-6">
+                                                <label class="form-control disable-input noinput" ng-disabled="true" ng-bind="selectedInvGrp.SubDoAmount"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                                <div class="pull-right">
+                                    <a class="btn btn-default alwaysEnabled" ng-click="closeModalPopUp()">{{'Cancel' | translate}}</a>
+                                    <button type="submit" class="btn btn-green" ng-show="!$storage.get('isPcsSuperUser')">{{'Save' | translate}}</button>
+                                </div>
+                            </form>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #endregion Add/Edit Invoice Group Modal Popup-->
+            <!--#endregion Invoice Group-->
+        </div>
+        <!--#region Invoice Details-->
+        <div id="invoiceDetails">
+            <div class="row" ng-show="invoiceGrpSelected">
+                <div class="panel-green bdrt pb20">
+                    <div class="panel-heading panel-flat ph-green">
+                        {{'InvoiceDetail' | translate}}
+                        <div class="pull-right mtm6">
+                            <a ng-hide="!HazardousItems || HazardousItems.length==0" ng-click="GoToHazardous();" class="btn btn-red alwaysEnabled">{{'HazardousMaterial' | translate}}</a>
+                            <!--<button type="button" class="btn btn-red" ng-click="openInvoiceDetailsModal('add', null)">{{'AddNew' | translate}}</button>-->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'TermsofShipment' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput" ng-hide="selectedInvoiceGroup.CustBillType == 'R' || selectedInvoiceGroup.CustBillType == 'E'">{{selectedInvoiceGroup.FreightDesc}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'FreightAmount' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.FreightAmount | number : 2 }}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'FreightCurrency' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.FreightCurrency}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'FreightExchangeRate' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.FreightExRate}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'Agreement' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput" ng-hide="selectedInvoiceGroup.CustBillType == 'R' || selectedInvoiceGroup.CustBillType == 'E'">{{selectedInvoiceGroup.OriginTypeDesc}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'Insurance' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.InsuranceAmount| number : 2}} {{selectedInvoiceGroup.InvoiceCurrCode}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'DOAmount' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.SubDoAmount | number : 2}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'FreightinAED' | translate}}</label>
+                                        <div class="col-lg-4">
+                                            <label class="noinput">{{selectedInvoiceGroup.CalculatedFreight | number : 2}}</label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="table-responsive mt-10 divScroll">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="1%">{{'SNo' | translate}}</th>
+                                    <th width="2%">{{'Item' | translate}}</th>
+                                    <th width="11%">{{'HarmonizedCode' | translate}}</th>
+                                    <th width="26%">{{'HarmonizedDesc' | translate}}</th>
+                                    <th width="3%">{{'Quantity' | translate}}</th>
+                                    <th width="3%">{{'Unit' | translate}}</th>
+                                    <th class="t-right" width="4%">{{'NetWeight' | translate}}</th>
+                                    <th class="t-right" width="4%">{{'GrossWeight' | translate}}</th>
+                                    <th width="4%">{{'DutyPerItem' | translate}}</th>
+                                    <th class="t-right" width="2%">{{'Amount' | translate}}</th>
+                                    <th class="t-right" width="4%">{{'CIFinDHS' | translate}}</th>
+                                    <th class="t-right" width="5%">{{'DutyinDHS' | translate}}</th>
+                                    <th width="16%">{{'ItemTypeCode' | translate}}</th>
+                                    <th width="12%">{{'OriginExporter' | translate}}</th>
+                                    <th width="3%">{{'Action' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="savedSuccess" class="alert-success">
+                                    <td colspan="15">
+                                        <span>{{'SavedSuccess'|translate}}</span>
+                                        <a ng-click="savedSuccess=false" class="close" style="font-size:19px">&times;</a>
+                                    </td>
+                                </tr>
+                                <!--input-changed="harmonizedCodeChanged"-->
+                                <tr ng-show="!edit && !($storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser'))" ng-keydown="onKeyDownInvoiceDetail($event, 'add')" class="border">
+                                    <td colspan="{{colSpan}}">
+                                        <div ng-keydown="harmonizedCodeKeyDown($event)" class="col-md-10 harmonizedLookupClass" angucomplete-alt id="harmonizedLookup" placeholder="{{'HarmonizedLookupNameph' | translate}}" ng-model="selectedHarmCode"
+                                             local-data="harmonizedCodes" search-fields="ShortHarmCode,HarmonizeEngName,HarmonizeArbName,FTAFlag" show-title="true"
+                                             title-field="ShortHarmCode,HarmonizeEngName,HarmonizeArbName" minlength="3" input-class="form-control" match-class="highlight"
+                                             input-name="harmonizedLookup" selected-object="selectedHarmCodeObj" tabindex="1" title="{{selectedHarmCode}}">
+                                        </div>
+                                        <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openHarmonizeLookup()"></i></a>
+                                        <div class="validationmsg col-md-12" ng-show="!validHarmCode">{{'InvalidHarmCode' | translate}}</div>
+                                    </td>
+                                    <td colspan="1" ng-show="colSpan == 3">
+                                        <input type="text" class="form-control" name="harmDescWithOther" ng-model="selectedInvoiceDetails.HarmDescription" ng-disabled="!enableOtherDesc" maxlength="1024" tabindex="2" other-Prefix ng-if="withOtherPrefix"/>
+                                        <input type="text" class="form-control" name="harmDescWithOutOther"  ng-model="selectedInvoiceDetails.HarmDescription" ng-disabled="!enableOtherDesc" maxlength="1024" tabindex="2" ng-if="!withOtherPrefix" />
+                                        <div class="validationmsg" ng-show="!otherDescValid">{{'otherDescriptionRequired' | translate}}</div>
+                                    </td>
+                                    <td>
+                                        <input name="quantity" type="text" class="form-control" maxlength="8" ng-model="selectedInvoiceDetails.Quantity" restrict-space only-digits tabindex="3">
+                                        <div class="validationmsg" ng-show="!ValidQuantityRqd">{{'QuantityRequired' | translate}}</div>
+                                    </td>
+                                    <td><label class="form-control disable-input noinput" ng-disabled="true" ng-bind="selectedHarmCodeObj.originalObject.UnitCode"></label></td>
+                                    <td>
+                                        <input name="netweight" type="text" class="form-control" ng-model="selectedInvoiceDetails.NetWeight"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="15" tabindex="4">
+                                        <div class="validationmsg" ng-if="!ValidNetWeightRqd">{{'NetWeightRequired' | translate}}</div>
+                                        <div class="validationmsg" ng-if="!ValidNetnGrossWeight">{{'InvalidNetGrossWeight' | translate}}</div>
+                                    </td>
+                                    <td>
+                                        <input name="quantity" type="text" class="form-control" ng-model="selectedInvoiceDetails.GrossWeight"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="15" tabindex="5">
+                                        <div class="validationmsg" ng-if="!ValidGrossWeightRqd">{{'GrossWeightRequired' | translate}}</div>
+                                        <div class="validationmsg" ng-if="!ValidNetnGrossWeight">{{'InvalidNetGrossWeight' | translate}}</div>
+                                    </td>
+                                    <td><label class="form-control disable-input noinput" ng-disabled="true" ng-bind="dutyPercentSelected"></label></td>
+                                    <td>
+                                        <input name="amount" type="text" class="form-control" ng-model="selectedInvoiceDetails.Amount"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="11" decimal-upto="3" maxlength="15" tabindex="6">
+                                        <div class="validationmsg" ng-if="!ValidAmountRqd">{{'AmountRequired' | translate}}</div>
+                                    </td>
+                                    <td>
+                                        <label class="form-control disable-input noinput" ng-disabled="true"></label>
+                                    </td>
+                                    <td>
+                                        <label class="form-control disable-input noinput" ng-disabled="true"></label>
+                                    </td>
+                                    <td>
+                                        <fieldset ng-disabled="!ftaHSCodeMandatory">
+                                            <div class="row">
+                                                <div ng-keydown="itemTypeKeyDown($event, 'add', null)" class="col-md-10" angucomplete-alt id="itemType" placeholder="{{'EnterCode' | translate}}" ng-model="selectedItemTypeXport" search-str="searchItemTypeText" show-title="true"
+                                                     local-data="itemTypes" search-fields="SerialNo,FTAHarmDescEng,FTAHarmDescArb" title-field="SerialNo,FTAHarmDescEng,FTAHarmDescArb" minlength="1" input-class="form-control" match-class="highlight"
+                                                     input-name="itemType" selected-object="selectedItemTypeXportObj" input-changed="onItemTypeChange" field-tabindex="7"  tabindex="7" input-disabled="!ftaHSCodeMandatory">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openItemTypeLookup('add', null)"></i></a>
+                                                <div class="validationmsg col-md-12" ng-show="!validItemType">{{'InvalidItemType' | translate}}</div>
+                                            </div>
+                                        </fieldset>
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div ng-keydown="originExporterKeyDown($event, 'add', null)" class="col-md-10" angucomplete-alt id="originExporter" placeholder="{{'EnterCode' | translate}}" ng-model="selectedOrigXport" search-str="searchOriginExporterText" show-title="true"
+                                                 local-data="originExporters" search-fields="OrgnExporterCode,OrgnExporterEngName,OrgnExporterArbName" title-field="OrgnExporterCode,OrgnExporterEngName,OrgnExporterArbName" minlength="1" input-class="form-control" match-class="highlight"
+                                                 input-name="originExporter" selected-object="selectedOrigXportObj" input-changed="onOriginExporterChange" field-tabindex="8"  tabindex="8">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openOriginExporterLookup('add', null)"></i></a>
+                                            <div class="validationmsg col-md-12" ng-show="!validOriginExporter">{{'InvalidOriginExporter' | translate}}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="SaveInvoiceDetails()"></i></a>
+                                        <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelInvoiceDetail()"></i></a>
+                                    </td>
+                                </tr>
+                                <tr ng-dblclick="!$storage.get('globalDisableFlag') && !$storage.get('voucherFlag') && !$storage.get('isPcsSuperUser') && editInvoiceDetail(invoice) && !invoiceLoader" ng-repeat="invoice in invoiceDetails track by invoice.Item">
+                                    <td>{{$index+1}}</td>
+                                    <td>
+                                        {{invoice.Item}}
+                                    </td>
+                                    <td ng-if="!editInvoice[invoice.Item]">{{invoice.HarmonizeCodeShort}}</td>
+                                    <td ng-if="!editInvoice[invoice.Item]">{{invoice.HarmDescription}}</td>
+                                    <td ng-keydown="harmonizedCodeKeyDown($event, invoice.Item)" ng-if="editInvoice[invoice.Item]" colspan="{{colSpan}}">
+                                        <div class="col-md-9 harmonizedLookupClass" angucomplete-alt id="harmonizedLookupEdit" placeholder="{{'HarmonizedLookupNameph' | translate}}" ng-model="selectedHarmCodeEdit[invoice.Item]"
+                                             local-data="harmonizedCodes" search-fields="ShortHarmCode,HarmonizeEngName,HarmonizeArbName,FTAFlag" show-title="true"
+                                             title-field="ShortHarmCode,HarmonizeEngName,HarmonizeArbName" minlength="3" input-class="form-control" match-class="highlight"
+                                             input-name="harmonizedLookupEdit" selected-object="selectedHarmCodeObjEdit[invoice.Item]" field-tabindex="1" tabindex="1" title="{{selectedHarmCode}}" focus-out="invEditFocusOut(invoice.Item)">
+                                        </div>
+                                        <a class="col-md-3 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openHarmonizeLookup(invoice.Item)"></i></a>
+                                        <div class="validationmsg" ng-show="!validHarmCode">{{'InvalidHarmCode' | translate}}</div>
+                                    </td>
+                                    <td ng-if="editInvoice[invoice.Item] && colSpan == 1" colspan="1">
+                                        <input type="text" class="form-control" name="harmDescEWithOther" ng-model="selectedInvoiceDetails.HarmDescription" ng-disabled="!enableOtherDesc" maxlength="1024" tabindex="2" other-Prefix ng-if="withOtherPrefix"/>
+                                        <input type="text" class="form-control" name="harmDescEWithOutOther" ng-model="selectedInvoiceDetails.HarmDescription" ng-disabled="!enableOtherDesc" maxlength="1024" tabindex="2" ng-if="!withOtherPrefix" />
+                                        <div class="validationmsg" ng-show="!otherDescValid">{{'otherDescriptionRequired' | translate}}</div>
+                                    </td>
+                                    <td ng-if="!editInvoice[invoice.Item]" class="t-right">
+                                        {{invoice.Quantity}}
+                                    </td>
+                                    <td ng-if="editInvoice[invoice.Item]">
+                                        <input name="quantity" type="text" class="form-control" maxlength="8" ng-model="selectedInvoiceDetails.Quantity" restrict-space only-digits tabindex="3">
+                                        <div class="validationmsg" ng-show="!ValidQuantityRqd">{{'QuantityRequired' | translate}}</div>
+                                    </td>
+                                    <td>{{invoice.UnitCode}}</td>
+                                    <td class="t-right" ng-if="!editInvoice[invoice.Item]">{{invoice.NetWeight| number : 3}}</td>
+                                    <td class="t-right" ng-if="editInvoice[invoice.Item]">
+                                        <input name="netweight" type="text" class="form-control" ng-model="selectedInvoiceDetails.NetWeight"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="15" tabindex="4">
+                                        <div class="validationmsg" ng-show="!ValidNetWeightRqd">{{'NetWeightRequired' | translate}}</div>
+                                        <div class="validationmsg" ng-show="!ValidNetnGrossWeight">{{'InvalidNetGrossWeight' | translate}}</div>
+                                    </td>
+                                    <td class="t-right" ng-show="!editInvoice[invoice.Item]">{{invoice.GrossWeight| number : 3}}</td>
+                                    <td class="t-right" ng-show="editInvoice[invoice.Item]">
+                                        <input name="quantity" type="text" class="form-control" ng-model="selectedInvoiceDetails.GrossWeight"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="15" tabindex="5">
+                                        <div class="validationmsg" ng-show="!ValidGrossWeightRqd">{{'GrossWeightRequired' | translate}}</div>
+                                        <div class="validationmsg" ng-show="!ValidNetnGrossWeight">{{'InvalidNetGrossWeight' | translate}}</div>
+                                    </td>
+                                    <td>{{invoice.DutyPercent| number : 2}}</td>
+                                    <td class="t-right" ng-show="!editInvoice[invoice.Item]">{{invoice.Amount | number : 3}}</td>
+                                    <td class="t-right" ng-show="editInvoice[invoice.Item]">
+                                        <input name="amount" type="text" class="form-control" ng-model="selectedInvoiceDetails.Amount"
+                                               valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="11" decimal-upto="3" maxlength="15" tabindex="6">
+                                        <div class="validationmsg" ng-show="!ValidAmountRqd">{{'AmountRequired' | translate}}</div>
+                                    </td>
+                                    <td class="t-right">{{invoice.CifInDirhams | number : 2}}</td>
+                                    <td class="t-right">{{invoice.DutyInDihrams | number : 2}}</td>
+
+                                    <td ng-if="!editInvoice[invoice.Item]"><span ng-show="language == 'en'">{{invoice.FTAHarmDescEng}}</span><span ng-show="language == 'ae'">{{invoice.FTAHarmDescArb}}</span></td>
+                                    <td ng-if="editInvoice[invoice.Item]">
+                                        <fieldset ng-disabled="!ftaHSCodeMandatory">
+                                            <div ng-keydown="itemTypeKeyDown($event, 'edit', invoice.Item)" class="col-md-10" angucomplete-alt id="itemtypeLookupEdit" placeholder="{{'EnterCode' | translate}}" ng-model="selectedItemTypeEdit[invoice.Item]" search-str="searchItemTypeText"
+                                                 local-data="itemTypes" search-fields="SerialNo,FTAHarmDescEng,FTAHarmDescArb" title-field="SerialNo,FTAHarmDescEng,FTAHarmDescArb" minlength="1" input-class="form-control" match-class="highlight" focus-out="invItemTypeEditFocusOut(invoice.Item)"
+                                                 input-name="itemTypeLookupEdit" selected-object="selectedItemTypeObjEdit[invoice.Item]" input-changed="onItemTypeChange" field-tabindex="7"  tabindex="7" show-title="true" input-disabled="!ftaHSCodeMandatory" >
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openItemTypeLookup('edit',invoice.Item)"></i></a>
+                                            <div class="validationmsg col-md-12" ng-show="!validItemType">{{'InvalidItemType' | translate}}</div>
+                                        </fieldset>
+                                    </td>
+
+                                    <td ng-if="!editInvoice[invoice.Item]"><span ng-show="language == 'en'">{{invoice.OriginExpEngCode}}</span><span ng-show="language == 'ae'">{{invoice.OriginExpArbCode}}</span></td>
+                                    <td ng-if="editInvoice[invoice.Item]">
+                                        <div ng-keydown="originExporterKeyDown($event, 'edit', invoice.Item)" class="col-md-9" angucomplete-alt id="originExporterLookupEdit" placeholder="{{'EnterCode' | translate}}" ng-model="selectedOrigXportEdit[invoice.Item]" search-str="searchOriginExporterText"
+                                             local-data="originExporters" search-fields="OrgnExporterCode,OrgnExporterEngName,OrgnExporterArbName" title-field="OrgnExporterCode,OrgnExporterEngName,OrgnExporterArbName" minlength="1" input-class="form-control" match-class="highlight"
+                                             input-name="originExporterLookupEdit" selected-object="selectedOrigXportObjEdit[invoice.Item]" input-changed="onOriginExporterChange" field-tabindex="8"  tabindex="8" show-title="true">
+                                        </div>
+                                        <a class="col-md-3 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openOriginExporterLookup('edit',invoice.Item)"></i></a>
+                                        <div class="validationmsg col-md-12" ng-show="!validOriginExporter">{{'InvalidOriginExporter' | translate}}</div>
+                                    </td>
+                                    <td>
+                                        <a ng-if="editInvoice[invoice.Item]"><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveEditedInvoiceDetail(invoice)"></i></a>
+                                        <a ng-if="editInvoice[invoice.Item]"><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelEditInvoiceDetail(invoice)"></i></a>
+                                        <a ng-if="!editInvoice[invoice.Item]"><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="editInvoiceDetail(invoice)"></i></a>
+                                        <a ng-if="!editInvoice[invoice.Item]"><i class="fa fa-trash" aria-hidden="true" title="{{'Delete' | translate}}" ng-click="deleteIdConfirm($index)"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-if="(invoiceDetails == null || invoiceDetails.length == 0) && !invoiceLoader">
+                                    <td colspan="15">
+                                        {{'NoItems' | translate}}
+                                    </td>
+                                </tr>
+                                <tr ng-if="invoiceDetails != null && invoiceDetails.length > 0 && !invoiceLoader">
+                                    <td colspan="4" class="rt-align">{{'Total' | translate}}</td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.TotalQuantity}}</td>
+                                    <td></td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.TotalNetWeight| number : 3}}</td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.TotalGrossWeight| number : 3}}</td>
+                                    <td></td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.TotalAmount | number : 3}}</td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.TotalCifInDirhams | number : 2}}</td>
+                                    <td class="redbg-light t-right">{{invoiceDetailsData.ToatlDutyInDihrams | number : 2}}</td>
+                                    <td colspan="3" class="num" style="font-weight:700;">{{'total' | translate}} : {{invoiceDetails[0].TotalCount}}</td>
+                                </tr>
+                                <tr ng-if="invoiceLoader" style="height:40px">
+                                    <td colspan="15">
+                                        <div style="margin-top:220px;" class="small-loader"><i class="icon-spinner2 spinner position-center"></i></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal" id="harmonizeLookup" role="dialog">
+                    <div style="width:70%" class="modal-dialog">
+                        <div style="min-height:200px" class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h5 class="modal-title bold">{{'HarmonizedCode' | translate}}</h5>
+                            </div>
+                            <div style="overflow:auto" class="modal-body">
+                                <input id="searchText" type="text" ng-model="searchText" ng-change="onHarmonizeChange();" class="form-control disabledInputWithBorder col-md-12" />
+                                <div class="table-responsive mb20">
+                                    <table class="table table-bordered lookupTable">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">{{'HarmonizedCode'|translate}}</th>
+                                                <th>Description</th>
+                                                <th>الوصف</th>
+                                                <th>{{'Federal'|translate}}</th>
+                                                <th>{{'Local'|translate}}</th>
+                                                <th>{{'FTARequired'|translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                            <tr ng-class="{selected: harmonizedItem.ShortHarmCode==harmonizedItemSelected.ShortHarmCode}" ng-click="setHarmonized(harmonizedItem)" dir-paginate="harmonizedItem in harmonisedList | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="materialTypePager">
+                                                <td>
+                                                    {{harmonizedItem.ShortHarmCode}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                                    {{harmonizedItem.HarmonizeEngName}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                                    {{harmonizedItem.HarmonizeArbName}}
+                                                </td>
+                                                <td>
+                                                    {{harmonizedItem.FedRate}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                                    {{harmonizedItem.LocalRate}}
+                                                </td>
+                                                <td style="min-width:100px; max-width:100px;">
+                                                    {{harmonizedItem.FTAFlag == 'Y' ? 'Yes' : 'No'}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="harmonisedList == null">
+                                                <td colspan="11">
+                                                    {{'NoItems'|translate}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="harmonisedList == null">
+                                    <dir-pagination-controls pagination-id="materialTypePager" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="originExporterLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeOriginExporter()">&times;</button>
+                    <h5 class="modal-title bold">{{'OriginExporter' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchOriginExporterText" type="text" ng-model="searchOriginExporterText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: originExporterItem.OrgnExporterCode==originExporterItemSelected.OrgnExporterCode}" ng-click="setOriginExporter(originExporterItem)" dir-paginate="originExporterItem in originExporters | itemsPerPage: 10" current-page="lookUpCurrentPageOriginExporter" pagination-id="originExporterPager">
+                                    <td>
+                                        {{originExporterItem.OrgnExporterCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{originExporterItem.OrgnExporterEngName}} {{originExporterItem.OrgnExporterArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="originExporters == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="originExporters == null">
+                        <dir-pagination-controls pagination-id="originExporterPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="itemTypeLookupModel" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeItemType()">&times;</button>
+                    <h5 class="modal-title bold">{{'ItemTypeCode' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchItemTypeText" type="text" ng-model="searchItemTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th>{{'SerialNo'|translate}}</th>
+                                    <th>Description</th>
+                                    <th>الوصف</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: itemTypeItem.SerialNo==itemTypesSelected.SerialNo}" ng-click="setItemtype(itemTypeItem)" dir-paginate="itemTypeItem in itemTypes | itemsPerPage: 10" current-page="lookUpCurrentPageItemType" pagination-id="itemTypePager">
+                                    <td>
+                                        {{itemTypeItem.SerialNo}}
+                                    </td>
+                                    <td>
+                                        {{itemTypeItem.FTAHarmDescEng}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{itemTypeItem.FTAHarmDescArb}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="itemTypes == null">
+                                    <td colspan="3">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="itemTypes == null">
+                        <dir-pagination-controls pagination-id="itemTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div id="invgroupLookup" ng-include="'../tpl/LookUpTemplate.html'"></div>
+</div>
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+
+</script>
+

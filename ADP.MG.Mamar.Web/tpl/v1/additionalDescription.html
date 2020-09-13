@@ -1,0 +1,95 @@
+﻿<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'AdditionalDescription'|translate}}</h5>
+</div>
+<!--<form action="#" class="form-horizontal">-->
+<fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <button ng-click="RecordToSave.Description='';addingNew=true;closingNew=false;closedNew=false;Message='';AddNewClick();" title="{{ closedNew ? ('AddNew'|translate) : ('RowAddedAlready'|translate)}}"
+                        ng-disabled="addingNew==true && !(closingNew && !RecordToSave.Description)" type="button" class="btn btn-green pull-right">
+                    {{'AddNew'|translate}}
+                </button>
+            </div>
+        </div>
+        <div style="padding-top:10px" class="row mt10">
+            <div class="col-md-12">
+                <div ng-show="closingEdit && RecordToEdit.Description!=descriptionModel.Description" class="alert alert-warning fade in">
+                    {{'DiscardConfirm'|translate}}<a style="font-weight:bold" ng-click="closingEdit=false;closedEdit=true;RecordToEdit.SerialNumber=0;RecordToEdit.Description='';PopulateData()">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="closingEdit=false;"> {{'No'|translate}}</a>
+                </div>
+                <div ng-show="closingNew && RecordToSave.Description" class="alert alert-warning fade in">
+                    {{'SaveConfirm'|translate}}<a style="font-weight:bold" ng-click="Message='';closedNew=true;saveDescription();addingNew=false;closingNew=false;RecordToSave.Description=''">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="Message='';RecordToSave.Description='';dataEnteredForNew=false;closedNew=true;addingNew=false;closingNew=false;"> {{'No'|translate}} </a>
+                </div>
+                <div ng-show="isGoingToDelete==true" class="alert alert-warning fade in">
+                    {{'DeleteConfirm'|translate}}<a style="font-weight:bold" ng-click="Message='';isGoingToDelete=false;addingNew=false;closingNew=false;deleteConfirmed();">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="Message='';isGoingToDelete=false;"> {{'No'|translate}} </a>
+                </div>
+                <div class="alert alert-success" ng-show="Message && Message!=''">
+                    {{ Message|translate}}
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'GoodsDescription'|translate}}</th>
+                        <th style="width:20%"> {{'Action'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-show="addingNew && !(closingNew && !RecordToSave.Description)">
+                        <td>
+                            <input placeholder="{{'EnterNewDescription'|translate}}" ng-change="dataEnteredForNew=true;closingNew=false;" focus-on-condition="addingNew"
+                                   ng-model="RecordToSave.Description;" maxlength="70" style="width:100%" type="text" />
+                        </td>
+                        <td>
+                            <a ng-show="RecordToSave.Description" ng-click="saveDescription();closedNew=true" title="{{'SaveDescription'|translate}}"><i class="fa fa-check"></i></a>
+                            <a title="{{'Close'|translate}}" ng-click="closingNew=true;"><i class="fa fa-close"></i></a>
+                        </td>
+                    </tr>
+                    <tr dir-paginate="descriptionModel in existingDescriptions | itemsPerPage: GoodsDescriptionRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            <span ng-hide="RecordToEdit.SerialNumber==descriptionModel.SerialNumber">{{descriptionModel.Description}}</span>
+                            <input placeholder="{{'EnterNewDescription'|translate}}" focus-on-condition="RecordToEdit.SerialNumber==descriptionModel.SerialNumber" maxlength="70"
+                                   style="width:100%" type="text" ng-model="descriptionModel.Description" ng-show="RecordToEdit.SerialNumber==descriptionModel.SerialNumber" />
+                        </td>
+                        <td ng-hide="RecordToEdit.SerialNumber==descriptionModel.SerialNumber">
+                            <a title="{{'EditDescription'|translate}}" ng-click="closedEdit=false;Message='';RecordToEdit.SerialNumber=descriptionModel.SerialNumber;RecordToEdit.Description=descriptionModel.Description;">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </a>
+                            <a ng-disabled="isGoingToDelete" title="{{'DeleteDescription'|translate}}" ng-click="deletingDataModel=descriptionModel;deleting=true;deleteDescription(deletingDataModel);">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td ng-show="RecordToEdit.SerialNumber==descriptionModel.SerialNumber">
+                            <a ng-show="descriptionModel.Description" ng-click="updateDescription(descriptionModel);RecordToEdit.SerialNumber=0;Message='';" title="{{'SaveDescription'|translate}}"><i class="fa fa-check"></i></a>
+                            <a title="{{'Close'|translate}}" ng-click="Message='';closingEditMode()"><i class="fa fa-close"></i></a>
+                        </td>
+                    </tr>
+                    <tr ng-show="existingDescriptions == null && !addingNew">
+                        <td colspan="2">
+                            {{'NoItems'|translate}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination pl25 mb20" ng-hide="existingDescriptions == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+        </div>
+    </div>
+</fieldset>
+<div class="modal-footer">
+    <button type="button" ng-click="closeModal()" title="{{'Close'|translate}}" class="btn btn-green pull-right">{{'Close'|translate}}</button>
+    <!--<button type="submit" class="btn btn-green">Submit</button>-->
+</div>
+<!--</form>-->

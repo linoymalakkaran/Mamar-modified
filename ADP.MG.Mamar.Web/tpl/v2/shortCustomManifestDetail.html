@@ -1,0 +1,456 @@
+﻿<style>
+    #custManifest .disable-input {
+        background-color: #eee;
+    }
+</style>
+<div class="content-wrapper" ng-controller="shortCustomManifestDetailController">
+    <form name="custForm" id="custManifest" ng-submit="customManifest.billType != '' && customManifest.emara != '' && postCustomManifestData()">
+        <fieldset ng-disabled="serviceUnavailable">
+            <div class="col-md-12 mt-20">
+                <div class="panel panel-flat bdr bdrt pb20">
+                    <div class="col-lg-12 no-margin-right no-padding-right">
+                        <div class="col-md-4">
+                            <div class="trans-list-head no-margin-top no-padding-top mt-10">
+                                {{'ShortCustManifest' | translate}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                        <div class="mb-10 col-md-2 no-margin-right no-padding-right">
+                            <a class="btn btn-dark-grey btn-block alwaysEnabled" tabindex="25" ui-sref="shortCustManifestList" ui-sref-opts="{reload: true, notify: true}">{{'Back' | translate}}</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 g-grey-shade">
+                        <div class="form-horizontal">
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{ 'TransportMode' | translate}} </label>
+                                        <label class="control-label col-lg-7">{{ shortCustomTransMode}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{ 'CenterCode' | translate}} </label>
+                                        <label class="control-label col-lg-8">{{shortCustomCenterCode}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{ 'BillType' | translate }} <span class="redcolor">*</span></label>
+                                        <div class="col-lg-8">
+                                            <select tabindex="1" id="dplBillType" class="form-control select" ng-show="language == 'en'"
+                                                    ng-options="billType.Code as billType.NameEnglish for billType in lookupBillTpResult"
+                                                    ng-model="customManifest.billType" ng-change="billTypeChange()"></select>
+                                            <select tabindex="5" id="dplBillType" class="form-control select" ng-show="language == 'ae'"
+                                                    ng-options="billType.Code as billType.NameArabic for billType in lookupBillTpResult"
+                                                    ng-model="customManifest.billType"></select>
+                                            <label class="validation-error-label text-white" ng-show="submitted && customManifest.billType == '' "> <span class="redcolor">*</span> {{'BillTypeRequired' | translate}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="pull-right">
+                                        <fieldset>
+                                            <button type="submit" tabindex="24" class="btn btn-green" ng-click="submitted=true">{{ 'Save' | translate }}</button>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-default-red mt20">
+                        <div class="panel-heading pl30">{{'ManifestDetails' | translate}}</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12 mt-10">
+                            <div class="panel bdr bdrt pb20">
+                                <div class="panel-body ">
+                                    <div class="form-horizontal  mt-20 mb-20 ml-20 mr-20">
+                                        <div class="col-md-4">
+                                            <div class="col-lg-5">
+                                                <label class="control-label" ng-show="!isFromEmara">{{ 'ToEmara' | translate }} <span class="redcolor">*</span></label>
+                                                <label class="control-label" ng-show="isFromEmara">{{ 'FromEmara' | translate }} <span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <select tabindex="2" name="ddlToEmirates" ng-model="customManifest.emara"
+                                                        class="form-control select">
+                                                    <option value="">{{'Select' | translate}}</option>
+                                                    <option ng:repeat="x in emirates" value="{{x.Code}}">{{x.Name}}</option>
+                                                </select>
+                                                <label class="validation-error-label" ng-show="submitted && customManifest.emara == '' ">{{'EmaraRequired' | translate}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-show="customManifest.billType != 'E'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'From' | translate }} <span class="redcolor" ng-if="customValidationField.isFromReq">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <div tabindex="3" ng-keydown="lookupKeyDown($event,'From')" angucomplete-alt name="from" class="col-md-10" id="From" placeholder="{{'From' | translate}}" ng-model="customManifest.From"
+                                                     local-data="country" search-fields="Code,EnglishName,ArabicName" show-title="true" title-field="Code,EnglishName,ArabicName" input-changed="FromChanged" minlength="1" input-class="form-control" match-class="highlight"
+                                                     input-name="From" selected-object="selectedOriginCountry">
+                                                </div>
+                                                <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('From')"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!fromCountryValid">{{'invalidFromCountry' | translate}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-show="customManifest.billType != 'I' && customManifest.billType != 'N'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label">{{ 'Destination' | translate }} <span class="redcolor" ng-if="customValidationField.isDesReq">*</span> </label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <div tabindex="4" ng-keydown="lookupKeyDown($event,'To')" angucomplete-alt name="Destination" class="col-md-10" id="Destination" placeholder="{{'Destination' | translate}}" ng-model="customManifest.To"
+                                                     local-data="destCountry" search-fields="Code,EnglishName,ArabicName" show-title="true" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control" match-class="highlight"
+                                                     input-name="Destination" selected-object="selectedDestinationCountry">
+                                                </div>
+                                                <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('To')"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!destinationCountryValid">{{'invalidDestination' | translate}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-10">
+                            <div class="panel bdr bdrt pb20 grey grey-shade">
+                                <div class="panel-body">
+                                    <div class="form-horizontal  mt-20 mb-20 ml-20 mr-20">
+                                        <div class="col-md-4" ng-show="selectedShortCustomTransportMode == 'M'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'DODate' | translate }}<span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7 input-group">
+                                                <input type="text" tabindex="5" class="form-control pickadate" placeholder="{{'dd/MM/yyyy' | translate}}" ng-model="customManifest.doDate" name="doDate">
+                                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'VoyagePobox' | translate }} <span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <input type="text" tabindex="6" class="form-control" ng-model="customManifest.voyageNumber" maxlength="30">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-hide="selectedShortCustomTransportMode == 'M'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'TruckNational' | translate }} <span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <input type="text" tabindex="7" class="form-control" ng-model="customManifest.truckNationality" maxlength="20">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-hide="selectedShortCustomTransportMode == 'M'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'DriverName' | translate }} <span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <input type="text" tabindex="8" class="form-control" ng-model="customManifest.truckDriverName" maxlength="25">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-hide="selectedShortCustomTransportMode == 'M'">
+                                            <div class="col-lg-5">
+                                                <label class="control-label"> {{ 'DriverNationality' | translate }} <span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-7">
+                                                <input type="text" tabindex="9" class="form-control" ng-model="customManifest.driverNationality" maxlength="20">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-10">
+                            <div class="panel bdr bdrt pb20">
+                                <div class="panel-body mt-10">
+                                    <div class="form-horizontal  mt-20 mb-20 ml-20 mr-20">
+                                        <div class="col-md-6">
+                                            <div class="col-md-12">
+                                                <div class="col-lg-3">
+                                                    <label class="control-label"> {{ 'Customs' | translate }}<span class="redcolor">*</span></label>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div tabindex="10" ng-keydown="importerExporterKeyDown($event)" class="col-md-10" angucomplete-alt id="ImporterExporter" pause="2000" name="ImporterExporter" placeholder="{{'ImporterExporterph' | translate}}"
+                                                         ng-model="customManifest.Importer" search-str="searchImporterExporterText" show-title="true" local-data="impotersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control" match-class="highlight"
+                                                         input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                                    </div>
+                                                    <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openImporterExporterLookup()"></i></a>
+                                                    <div class="col-md-12 validation-error-label" ng-show="!importerExporterValid">{{'invalidCustoms' | translate}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="col-lg-3">
+                                                    <label class="control-label"> {{ 'GoodDesc' | translate }} <span class="redcolor">*</span> </label>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <textarea tabindex="12" cols="5" rows="5" class="form-control" ng-model="customManifest.goodDescription" maxlength="500" />
+                                                    <label class="control-label col-lg-12">{{'Limitedto500charactersonly' | translate}} </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-12">
+                                                <div class="col-lg-5">
+                                                    <label class="control-label" ng-if="customManifest.billType != 'E' && customManifest.billType != 'R' "> {{  'LoadPort' | translate }} <span class="redcolor">*</span> </label>
+                                                    <label class="control-label" ng-if="customManifest.billType == 'E' || customManifest.billType == 'R' ">{{  'DischargePort' | translate }} <span class="redcolor">*</span> </label>
+                                                </div>
+                                                <div class="col-lg-7">
+                                                    <div tabindex="11" ng-keydown="portCodeKeyDown($event)" class="col-md-11" angucomplete-alt id="portsLookup" placeholder="{{'PortLookupNameph' | translate}}" ng-model="customManifest.selectedPortCode"
+                                                         local-data="portList" search-fields="PortCode,PortName,CountryName" show-title="true"
+                                                         title-field="PortCode,PortName,CountryName" minlength="3" input-class="form-control" match-class="highlight"
+                                                         input-name="portsLookup" selected-object="selectedPortCodeObj" title="{{selectedPortCode}}">
+                                                    </div>
+                                                    <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPortLookup()"></i></a>
+                                                    <div class="col-md-12 validation-error-label" ng-show="!portValid">{{'InvalidPort' | translate}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 mt-5">
+                                                <div class="panel grey grey-shade border-blue">
+                                                    <div class="col-md-12 mt-10">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label">{{ 'Quantity' | translate }}<span class="redcolor">*</span> </label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <input type="text" tabindex="13" class="form-control" ng-model="customManifest.quantity" maxlength="5" only-numbers>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label">  {{ 'GrossWeight' | translate }} <span class="redcolor">*</span></label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <input type="text" class="form-control" tabindex="14" ng-model="customManifest.weightGross" valid-number-with-comma allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="13">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label">  {{ 'NetWeight' | translate }}<span class="redcolor">*</span></label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <input type="text" class="form-control" tabindex="15" ng-model="customManifest.netGross" valid-number-with-comma allow-decimal="true" allow-negative="false" pre-decimal-upto="9" decimal-upto="3" maxlength="13">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="col-lg-5">
+                                                            <label class="control-label">{{ 'Unit' | translate }}<span class="redcolor"> </span> </label>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <div tabindex="16" ng-keydown="lookupKeyDown($event,'Units')" class="col-md-11" angucomplete-alt id="Unit" placeholder="{{'Units' | translate}}" ng-model="customManifest.Unit" name="Unit"
+                                                                 local-data="units" pause="50" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control"
+                                                                 match-class="highlight" input-name="Unit" selected-object="selectedUnit" show-title="true">
+                                                            </div>
+                                                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Units')"></i></a>
+                                                            <div class="col-md-12 validation-error-label" ng-show="!unitValid">{{'InvalidUnit' | translate}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel bdr bdrt pb20">
+                                <div class="panel-body mt-10">
+                                    <div class="form-horizontal  mt-20 mb-20 ml-20 mr-20">
+                                        <div class="col-md-5">
+                                            <div class="col-lg-3">
+                                                <label class="control-label"> {{ 'Origin' | translate }}<span class="redcolor" ng-if="customValidationField.isOriginReq">*</span> </label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div tabindex="17" ng-keydown="lookupKeyDown($event,'OriginCountry')" angucomplete-alt placeholder="{{'Origin' | translate}}" ng-model="customManifest.selectedCountry" class="col-md-10"
+                                                     local-data="countryList" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" show-title="true"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlCountry" id="originCountry" selected-object="selectedCountryObj" input-changed="onCountryChange" disable-input="custBillType=='E'">
+                                                </div>
+                                                <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('OriginCountry')"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!originValid">{{'invalidOrigin' | translate}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-lg-4">
+                                                <label class="control-label">{{ 'HSCode' | translate }}<span class="redcolor">*</span> </label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div tabindex="18" ng-keydown="harmonizedCodeKeyDown($event)" class="col-md-10 harmonizedLookupClass" angucomplete-alt id="harmonizedLookup" placeholder="{{'HarmonizedLookupNameph' | translate}}" ng-model="customManifest.selectedHarmCode"
+                                                     local-data="harmonizedCodes" search-fields="HarmCodeShort,HarmShortEng,HarmShortArb" show-title="true"
+                                                     title-field="HarmCodeShort,HarmShortEng,HarmShortArb" minlength="3" input-class="form-control" match-class="highlight"
+                                                     input-name="harmonizedLookup" selected-object="selectedHarmCodeObj" title="{{selectedHarmCode}}">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openHarmonizeLookup()"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!hsCodeValid">{{'InvalidHarmCode' | translate}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="col-lg-6">
+                                                <label class="control-label"> {{ 'Quantity' | translate }}</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <!--<input type="text" tabindex="19" class="form-control" ng-model="customManifest.quantity" ng-disabled="true" only-numbers>-->
+                                                <label class="form-control disable-input noinput" ng-bind="customManifest.quantity"></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+
+                                            <div class="col-lg-3">
+                                                <label class="control-label"> {{ 'Currency' | translate }}<span class="redcolor">*</span></label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div tabindex="20" ng-keydown="lookupKeyDown($event,'Currency')" angucomplete-alt placeholder="{{'Currency' | translate}}" ng-model="customManifest.selectedCurrency" class="col-md-10"
+                                                     local-data="currencyList" search-fields="Code,NameEnglish,NameArabic" title-field="Code,NameEnglish,NameArabic" minlength="1" show-Title="true"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlCurrency" id="currency" selected-object="selectedCurrencyObj" input-changed="onCurrencyChange">
+                                                </div>
+                                                <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Currency')"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!currencyValid">{{'ValidCurrency' | translate}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-lg-4">
+                                                <label class="control-label" ng-if="customManifest.billType != 'E' && customManifest.billType != 'R' "> {{ 'CIFAmount' | translate }}</label>
+                                                <label class="control-label" ng-if="customManifest.billType == 'E' || customManifest.billType == 'R' "> {{ 'FOBAmount' | translate }}</label>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <input type="text" tabindex="21" class="form-control" ng-model="customManifest.cbiAmountFC" valid-number-with-comma allow-decimal="true" allow-negative="false" pre-decimal-upto="12" decimal-upto="3" maxlength="16">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="col-lg-6">
+                                                <label class="control-label"> {{ 'Weight' | translate }}</label>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-control disable-input noinput" ng-bind="customManifest.netGross"></label>
+                                                <!--<input type="text" tabindex="22" class="form-control" ng-model="customManifest.netGross" ng-disabled="true">-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <fieldset>
+                                <button type="submit" tabindex="23" class="btn btn-green" ng-click="submitted=true">{{ 'Save' | translate }}</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </fieldset>
+    </form>
+    <div class="modal" id="harmonizeLookup" role="dialog">
+        <div style="width:70%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'HarmonizedCode' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchText" type="text" ng-model="searchText" ng-change="onHarmonizeChange();" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'HarmonizedCode'|translate}}</th>
+                                    <th>Description</th>
+                                    <th>الوصف</th>
+                                    <th>{{'Federal'|translate}}</th>
+                                    <th>{{'Local'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                <tr ng-class="{selected: harmonizedItem.HarmCodeShort==harmonizedItemSelected.HarmCodeShort}" ng-click="setHarmonized(harmonizedItem)" dir-paginate="harmonizedItem in harmonisedList | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="materialTypePager">
+                                    <td>
+                                        {{harmonizedItem.HarmCodeShort}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{harmonizedItem.HarmShortEng}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{harmonizedItem.HarmShortArb}}
+                                    </td>
+                                    <td>
+                                        {{harmonizedItem.FEDRate}}
+                                    </td>
+                                    <td style="min-width:100px; max-width:100px;">
+                                        {{harmonizedItem.LOCRate}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="harmonisedList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="harmonisedList == null">
+                        <dir-pagination-controls pagination-id="materialTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="portLookup" role="dialog">
+        <div style="width:70%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'Port' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchText" type="text" ng-model="searchText" ng-change="onPortChange();" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'PortCode'|translate}}</th>
+                                    <th>{{'PortName'|translate}}</th>
+                                    <th>{{'CountryName'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                <tr ng-class="{selected: port.PortCode==portSelected.PortCode}" ng-click="setPort(port)" dir-paginate="port in portList | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="portPager">
+                                    <td>
+                                        {{port.PortCode}}
+                                    </td>
+                                    <td>
+                                        {{port.PortName}}
+                                    </td>
+                                    <td>
+                                        {{port.CountryName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="portList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="portList == null">
+                        <dir-pagination-controls pagination-id="portPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

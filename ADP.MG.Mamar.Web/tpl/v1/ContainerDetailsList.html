@@ -1,0 +1,62 @@
+﻿<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'ContainerDetails'|translate}}</h5>
+</div>
+<!--<form action="#" class="form-horizontal">-->
+<div class="modal-body">
+    <div class="table-responsive mb20">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{'Select'|translate}}</th>
+                    <th>{{'ContainerNumber'|translate}}</th>
+                    <th>{{'SerialNumber'|translate}}</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="Item in containerList | itemsPerPage: parameters.pageSize" total-items="totalCount">
+                    <td>
+                        <label class="control control--checkbox">
+                            <input type="checkbox" ng-model="Item.isChecked" ng-change="toggleCheckBox(Item,true,true)">
+                            <div class="control__indicator"></div>
+                        </label>
+                    </td>
+                    <td>
+                        {{Item.ContainerNumber}}
+                    </td>
+                    <td>
+                        {{Item.SealNumber}}
+                    </td>
+                    
+                </tr>
+                <tr ng-show="containerList == null">
+                    <td colspan="2">
+                        {{'NoItems'|translate}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 pagination pl25 mb20" ng-hide="containerList == null">
+        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                 on-page-change="loadMoreRecords(newPageNumber)">
+        </dir-pagination-controls>
+        <span class="col-md-2 pull-right" ng-show="containerList.length > 0"><strong>{{'total' | translate}} : {{totalCount}}</strong></span>
+    </div>
+    <!--<div class="col-md-12 pagination pl25 mb20" ng-hide="containerList == null">
+        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                 on-page-change="loadMoreRecords(newPageNumber)">
+        </dir-pagination-controls>
+        <span class="col-md-2 pull-right" ng-show="containerList.length > 0"><strong>{{'total' | translate}} : {{totalCount}}</strong></span>
+    </div>-->
+    <div class="modal-footer modal-title mt20 ">
+        <button type="button" title="{{'Close'|translate}}" class="btn btn-default" ng-click="closeModal();">{{'Close'|translate}}</button>
+        <a ng-click="SaveselectedContainers();" title="{{'Save'|translate}}" class="btn btn-green">{{'Save'|translate}}</a>
+    </div>
+</div>
+<!--<div class="modal-footer">
+    <button type="button" ng-click="closeModal()" title="{{'Close'|translate}}" class="btn btn-green pull-right">{{'Close'|translate}}</button>
+    <button type="button" class="btn btn-green" ng-click="SaveselectedContainers()">{{'Save' | translate}}</button>
+</div>-->
+<!--</form>-->

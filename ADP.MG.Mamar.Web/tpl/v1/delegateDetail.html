@@ -1,0 +1,474 @@
+﻿<style>
+    .picker__holder {
+        width:150%
+    }
+    .clsUpload {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+
+</style>
+<div class="content-wrapper">
+    <div class="panel  mt-20">
+        <div class="pull-right">
+            <a class="btn btn-dark-grey btn-block" ui-sref-opts="{reload: true, notify: true}" ui-sref="DelegateList">{{'Back' | translate}}</a>
+        </div>
+        <div class="panel mt-20">
+            <div class="panel-heading panel-flat pl-20" style="height: 60px;">
+                {{'DelegateDetail' | translate}}
+                <div class="pull-right">
+                    <fieldset ng-disabled="isSuperUser == 'True'">
+                        <button type="submit" class="btn btn-green" ng-click="AddUpdateDelegate()" ng-disabled="IsApproved ||  IsUpdated">{{'Save' | translate}}</button>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="panel-body mt-10" ng-disabled="IsApproved ||  IsUpdated">
+                <div class="form-horizontal  mt-20 mb-20 ml-20 mr-20">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'DelegateNo' | translate}}</label>
+                                    <div class="col-lg-7"><input type="text" class="form-control" ng-model="delegateDetail.DelegateNumber" ng-trim="false" ng-disabled="true"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group" >
+                                    <label class="control-label col-lg-3">{{'ImporterCode' | translate}}<span>*</span></label>
+                                    <div class="col-lg-8" ng-disabled="true">
+                                        <fieldset ng-disabled="isSuperUser == 'True'">
+                                        <div angucomplete-alt id="importerLookup" disable-input="IsApproved || IsUpdated" ng-readonly="true" placeholder="{{'EnterImgCode' | translate}}" ng-model="delegateDetail.ImporterCodeDesc" search-str="importerexportersearch" show-title="true"
+                                             local-data="importersexporters" input-changed="onCargoAgentChange" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control" match-class="highlight"
+                                             input-name="importersexporters" selected-object="selectedImporterCode" ng-disabled="true" tabindex="1" ng-change="IsValid = true"
+                                             ng-keydown="openImportersExporters($event)">
+                                        </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-1 mt-20"><a ng-if="!IsAttachment && isSuperUser == 'False'" ng-click="openImportersExporters('click')"><i class="fa fa-search"></i></a></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidImporter">{{ 'ImporterRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div >
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'HAWB' | translate}}</label>
+                                    <div class="col-lg-8"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" maxlength="30" placeholder="{{'EnterHAWB'| translate }}" title={{delegateDetail.HouseBlNumber}} ng-model="delegateDetail.HouseBlNumber" ng-trim="false" ng-disabled="IsApproved || IsHAWB || IsUpdated" tabindex="2"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-disabled="IsAWB==false">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'AWB' | translate}}</label>
+                                    <div class="col-lg-8"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" maxlength="30" placeholder="{{'EnterAWB'| translate }}" title={{delegateDetail.MasterBlNumber}} ng-model="delegateDetail.MasterBlNumber" ng-trim="false" ng-disabled="IsApproved || IsAWB || IsUpdated" tabindex="3"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'JobNumber' | translate}}</label>
+                                    <div class="col-lg-8"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" placeholder="{{'EnterJobNumber'| translate }}" title={{delegateDetail.DoCode}} 
+                                                                 ng-model="delegateDetail.DoCode" ng-trim="false" ng-disabled="true" tabindex="4"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'RegDate' | translate}}<span>*</span></label>
+                                    <div class="col-lg-6  input-group" style="padding-left: 12px;">
+                                        <input type="text" class="form-control pickadate" placeholder="{{'EnterRegDate'| translate }}" title={{delegateDetail.FRegistrationDate}} ng-model="delegateDetail.FRegistrationDate" ng-trim="false" ng-disabled="IsApproved || IsUpdated || isSuperUser == 'True'" tabindex="5">
+                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidRegDate">{{ 'RegDateRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'PeriodStart' | translate}}<!--<span ng-show="!delegateDetail.IsOpenFlag">*</span>-->
+                                    </label>
+                                    <div class="col-lg-6  input-group" style="padding-left: 12px;">
+                                        <input type="text" class="form-control pickadate" placeholder="{{'EnterPeriodStart'| translate }}"
+                                               title={{delegateDetail.FStartDate}} 
+                                               ng-model="delegateDetail.FStartDate"
+                                               ng-trim="false" ng-disabled="IsApproved || IsUpdated || isSuperUser == 'True'" tabindex="6">
+                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <!--<span class="validation-error-label" ng-show="!IsValidPeriodStart && !delegateDetail.IsOpenFlag">{{ 'PeriodStartRequired' |  translate}}</span>-->
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <label class="control-label col-lg-4" style="padding-left: 0px;">{{'PeriodEnd' | translate}}<!--<span ng-show="!delegateDetail.IsOpenFlag">*</span>-->
+                                        </label>
+                                        <div class="col-lg-8  input-group"    style="padding-left: 24px;">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'EnterPeriodEnd'| translate }}" title={{delegateDetail.FEndDate}} ng-model="delegateDetail.FEndDate" ng-trim="false" ng-disabled="(IsApproved || IsUpdated) || isSuperUser == 'True'" tabindex="7">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-checkbox">
+                                            <div class="fleft">
+                                                <label class="control control--checkbox">
+                                                    <input type="checkbox" ng-disabled="isSuperUser == 'True'" checked="checked" ng-model="delegateDetail.IsOpenFlag" ng-disabled="IsApproved || IsUpdated" ng-change="ValidateOpenPeriod(delegateDetail.IsOpenFlag)" />
+                                                    <div class="control__indicator"></div>
+                                                </label>
+                                            </div>
+                                            <label class="control-label">{{'OpenPeriod' | translate}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <!--<span class="validation-error-label" ng-show="!IsValidPeriodEnd && !delegateDetail.IsOpenFlag">{{ 'PeriodEndRequired' |  translate}}</span>-->
+                                        <span class="validation-error-label" ng-show="!IsValidPEDate && !delegateDetail.IsOpenFlag">{{ 'PeriodEndInvalid' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'ContactPerson' | translate}}</label>
+                                    <div class="col-lg-8" style="padding-left: 12px;"> <input type="text" ng-readonly="isSuperUser == 'True'" maxlength="30" class="form-control" placeholder="{{'EnterContactPerson'| translate }}" title={{delegateDetail.ContactPerson}} ng-model="delegateDetail.ContactPerson" ng-trim="false" ng-disabled="IsApproved || IsUpdated" tabindex="8"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'AttachmentCount' | translate}}</label>
+                                    <div class="col-lg-2" style="padding-left: 12px;"><input type="text" class="form-control" ng-disabled="true" ng-model="attachmentCount"> </div>
+                                    <div class="col-lg-4"><button type="button" ng-disabled="(IsAttachmentAllow || IsApproved ||  IsUpdated)" class="btn btn-green" ng-click="openAttachments()">{{'Attachments' | translate}}</button> </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'City' | translate}}<span>*</span></label>
+                                    <div class="col-lg-6">
+                                        <fieldset ng-disabled="isSuperUser == 'True'">
+                                            <div angucomplete-alt id="cityLookup" disable-input="IsApproved || IsUpdated" placeholder="{{'EntercityCode' | translate}}" ng-model="delegateDetail.cityCodeDesc" search-str="citycodesearch" show-title="true"
+                                                 local-data="citycodes" input-changed="onCargoAgentChange" search-fields="CityCode,CityEnglish,CityArabic" title-field="CityCode,CityEnglish,CityArabic" minlength="1" input-class="form-control" match-class="highlight"
+                                                 input-name="citycodes" selected-object="selectedCityCode" ng-disabled="IsApproved || IsUpdated" tabindex="9" ng-keydown="openCitycodes($event)">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-1 mt-20" ng-if="!IsAttachment && isSuperUser == 'False'"><a ng-click="openCitycodes('click')"><i class="fa fa-search"></i></a></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidCity">{{ 'CityRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'POBox' | translate}}<span>*</span></label>
+                                    <div class="col-lg-5"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" maxlength="30" placeholder="{{'EnterPOBOX'| translate }}" title={{delegateDetail.PoBox}} ng-model="delegateDetail.PoBox" ng-trim="false" ng-disabled="IsApproved || IsUpdated" only-numbers tabindex="10"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidPOBox">{{ 'POBoxRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'Mobile' | translate}}<span>*</span></label>
+                                    <div class="col-lg-5"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" maxlength="15" placeholder="{{'EnterMobile'| translate }}" title={{delegateDetail.Mobile}} ng-model="delegateDetail.Mobile" ng-trim="false" ng-disabled="IsApproved || IsUpdated" mobile-Numbers tabindex="11"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidMobile">{{ 'MobileRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'Phone' | translate}}<span>*</span></label>
+                                    <div class="col-lg-5"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" maxlength="15" placeholder="{{'EnterPhone'| translate }}" title={{delegateDetail.Phone}} ng-model="delegateDetail.Phone" ng-trim="false" ng-disabled="IsApproved || IsUpdated" mobile-Numbers tabindex="12">  </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidPhone">{{ 'PhoneRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'LicenceNo' | translate}}<span>*</span></label>
+                                    <div class="col-lg-5"><input type="text" ng-readonly="isSuperUser == 'True'" class="form-control" placeholder="{{'EnterLicenceNo'| translate }}" maxlength="30"
+                                                                 title={{delegateDetail.LicenseNo}} ng-model="delegateDetail.LicenseNo" ng-disabled="IsApproved || IsUpdated" ng-trim="false" tabindex="13"> </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3"></label>
+                                    <div class="col-lg-8">
+                                        <span class="validation-error-label" ng-show="!IsValidLicenceNo">{{ 'LicenceNoRequired' |  translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">{{'Remarks' | translate}}</label>
+                                <div class="col-lg-10">
+                                    <textarea id="Remarks" ng-readonly="isSuperUser == 'True'" rows="3" cols="7" class=" form-control pl-10 mt10" ng-model="delegateDetail.Remarks" maxlength="50" placeholder="" ng-disabled="IsApproved || IsUpdated" tabindex="14"></textarea>
+                                    <label class="control-label col-lg-12">{{'Limitedto50charactersonly' | translate}} </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel mt-20" ng-disabled="IsApproved ||  IsUpdated">
+            <div class="panel-heading panel-flat">{{'AgentDetail' | translate}}</div>
+            <div class="panel-body mt-10 mr-20">
+                <div class="form-horizontal  mt-20 mb-20 ml-20">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">{{'Agent' | translate}}</label>
+                                <div class="col-lg-8"><input type="text" class="form-control" ng-model="delegateDetail.AgentDesc" ng-trim="false" ng-disabled="true"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-lg-4 form-checkbox">
+                                    <div class="fleft">
+                                        <label class="control control--checkbox">
+                                            <input type="checkbox" ng-checked="delegateDetail.Approved == 'Y'" ng-disabled="true"  />
+                                            <div class="control__indicator"></div>
+                                        </label>
+                                    </div>
+                                    <label class="control-label">{{'Approved' | translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">{{'Approver' | translate}}</label>
+                                <div class="col-lg-8"><input type="text" class="form-control" ng-model="delegateDetail.ApproverDesc" ng-trim="false" ng-disabled="true"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="col-lg-4 form-checkbox">
+                                    <div class="fleft">
+                                        <label class="control control--checkbox">
+                                            <input type="checkbox" ng-checked="delegateDetail.ActiveFlag == 'Y'" ng-disabled="true"  />
+                                            <div class="control__indicator"></div>
+                                        </label>
+                                    </div>
+                                    <label class="control-label">{{'Active' | translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="control-label col-lg-2">{{'ModifiedUser' | translate}}</label>
+                                <div class="col-lg-8"><input type="text" class="form-control" ng-model="delegateDetail.ModifiedUserDesc" ng-trim="false" ng-disabled="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">{{'ModifiedDate' | translate}}</label>
+                                <div class="col-lg-5"><input type="text" class="form-control" ng-model="delegateDetail.ModifiedDateFormated" ng-trim="false" ng-disabled="true"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label col-lg-3">{{'DateApproved' | translate}}</label>
+                                <div class="col-lg-5"><input type="text" class="form-control" ng-model="delegateDetail.ApprovedDateFormated" ng-trim="false" ng-disabled="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+<div>
+    <div id="attachments" class="modal" tabindex="-1" role="dialog" aria-labelledby="TradeModel" data-backdrop="static">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'Attachments' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="pull-right mtm6 mb-10">
+                        <div ng-if="isSuperUser == 'False'">
+                            <div id="Attach" class="btn btn-green">
+                                <label for="upfiles" class="fa fa-paperclip"></label>
+                                {{'Upload' | translate }}
+                                <input id="upfiles" type="file" upload-Files name="attachment" value="" class="clsUpload" accept={{ acceptFiles }}>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding-top:10px" class="row mt10">
+                        <div class="col-md-12">
+                            <div ng-show="isGoingToDelete==true" class="alert alert-warning fade in">
+                                {{'DeleteConfirm'|translate}}<a style="font-weight:bold" ng-click="isGoingToDelete = false;deleteOkay();">
+                                    {{'Yes'|translate}}
+                                </a> | <a style="font-weight:bold" ng-click="isGoingToDelete = false"> {{'No'|translate}} </a>
+                            </div>
+                            <div class="alert alert-success" ng-show="Message && Message!=''">
+                                {{ Message|translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:250px">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:9%;">{{'FileName' | translate}}</th>
+                                    <th style="width:9%;">{{'View' | translate}}</th>
+                                    <th style="width:9%;">{{'Delete' | translate}}</th>
+                                </tr>
+                            </thead>
+
+                            <tr dir-paginate="gridItem in delegateAttachmentList | itemsPerPage: attachmentListParam.pageSize" total-items="totalDelegateItem" current-page="attachmentListParam.pageNumber" pagination-id="delegateAttachListPagination">
+                                <td>{{gridItem.FilePath}}</td>
+                                <td><a title="{{'Show'|translate}}" ng-click="isGoingToDelete = false;Message='';downloadDelegateDocument(gridItem)"><i class="fa fa-download"></i></a></td>
+                                <td><a title="{{'Delete' | translate}}" ng-if="isSuperUser == 'False'" ng-click="isGoingToDelete = false;Message='';deleteDocument(gridItem)"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                            </tr>
+
+                            <tr class="no-records" ng-show="delegateAttachmentList == null || delegateAttachmentList.length == 0"><td colspan="12">{{'NoItems' | translate}}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination" ng-hide="delegateAttachmentList == null || delegateAttachmentList.length == 0">
+                        <dir-pagination-controls pagination-id="delegateAttachListPagination" direction-links="true" boundary-links="true"
+                                                 on-page-change="loadDelegateMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-3 pull-right" ng-show="delegateAttachmentList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalDelegateItem}}</span></strong></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeAttachmentPopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="Citycodes" class="modal" tabindex="-1" role="dialog" aria-labelledby="Citycodes">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'AddCity' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-md-12"> <input type="text" class="form-control disabledInputWithBorder col-md-12" placeholder="" ng-model="citycodesearch" ng-trim="true"></div>
+                            </div>
+                            <div class="table-responsive  mt20 mb20" style="overflow-y:auto;height:300px">
+                                <table class="table table-bordered lookupTable ">
+                                    <tr>
+                                        <th style="width:15%;">{{'Code' | translate}}</th>
+                                        <th>{{'City' | translate}}</th>
+                                    </tr>
+                                    <tr ng-repeat="city in citycodes | filter:citycodesearch | orderBy:'CityCode'" ng-click="setCityCode(city)">
+                                        <td>{{city.CityCode}}</td>
+                                        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                            {{city.CityEnglish + " - " + city.CityArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closecityCodePopup()">{{'Close' | translate}}</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

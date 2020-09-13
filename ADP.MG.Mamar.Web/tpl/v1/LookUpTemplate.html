@@ -1,0 +1,53 @@
+﻿<div class="modal" id="genericLookUp" role="dialog">
+    <div style="{{lookUpWidth}}" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{lookUpTitle | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input id="searchLookupText" ng-keyup="onLookupSearhChange()" type="text" class="form-control disabledInputWithBorder col-md-12" />
+                <div class="table-responsive mb20">
+                    <div class="small-loader" ng-show="lookUpData == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th ng-repeat="header in lookUpHeaders" width="{{header.Width}}">{{header.Text|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+ 
+                            <tr ng-click="setLookupData(lookUpItem,lookupId)" dir-paginate="lookUpItem in lookUpData | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="lookUpPager">
+                                <td ng-hide="lookUpItem.BankCode">
+                                    {{lookUpItem.Code}}
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-hide="lookUpItem.BankCode">
+                                    {{ (lookUpItem.NameEnglish == undefined ?lookUpItem.EnglishName:lookUpItem.NameEnglish) + " " + (lookUpItem.NameArabic?lookUpItem.NameArabic:(lookUpItem.ArabicName?lookUpItem.ArabicName:'')) }}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                </td>
+                                <td ng-show="lookUpItem.Rate != undefined">
+                                    {{lookUpItem.Rate}}
+                                </td>
+
+                                <td ng-show="lookUpItem.BankCode">
+                                    {{lookUpItem.BankCode}}
+                                </td>
+                                <td ng-show="lookUpItem.BankName">
+                                    {{lookUpItem.BankName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                </td>
+                            </tr>
+                            <tr ng-show="lookUpData == null">
+                                <td colspan="10">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="lookUpData == null">
+                    <dir-pagination-controls pagination-id="lookUpPager" direction-links="true" boundary-links="true">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

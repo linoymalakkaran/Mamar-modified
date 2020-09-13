@@ -1,0 +1,1492 @@
+﻿<!DOCTYPE html>
+<html data-ng-app="mamarApp" ng-controller="headController" dir="{{dir}}" lang="{{lang}}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maqta Gateway | Mamar</title>
+    @Styles.Render("~/bundle/theme/css")
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+    <link href="~/Scripts/libs/assets/toastr.min.css" rel="stylesheet" />
+    <script>
+        Url =
+            function () { }
+        Url.prototype = {
+            _relativeRoot: '@Url.Content("~")',
+            // create an extension method called "resolve"
+            resolve: function (relative) {
+                var resolved = relative;
+                if (relative.charAt(0) == '~')
+                    resolved = this._relativeRoot + relative.substring(2);
+                return resolved;
+            }
+        }
+        $Url = new Url();
+    </script>
+    <script>
+
+        function clickCheckBox(e) {
+            var radio = $(e);
+            if (radio.data("waschecked") == true) {
+                radio.prop("checked", false);
+                radio.data("waschecked", false);
+            } else {
+                radio.data("waschecked", true);
+            }
+
+        }
+        function changeRange(e) {
+            if (questions && questions.length == 8)
+                return;
+
+            var idRange = '#' + $(e).attr('id');
+
+            if (idRange) {
+                // show feedback textarea if the rating is 2 or less
+                if ($(e).val() <= 2) {
+                    $('#msQfeed_' + idRange.substring(9)).css('display', 'block');
+                }
+
+                // hide the feedback textarea if the rating is 3 and above
+                if ($(e).val() >= 3) {
+                    $('#msQfeed_' + idRange.substring(9)).css('display', 'none')
+                    $('#msQfeed_' + idRange.substring(9)).val('');
+                }
+            }
+        }
+    </script>
+
+    @*---------------------------------------Dev Styles----------------------------------------------------------------------------*@
+    <style>
+        .angularModalWindowVeryLong {
+        }
+
+            .angularModalWindowVeryLong .modal-dialog {
+                width: 95% !important;
+            }
+
+        .angularModalWindowLong {
+        }
+
+            .angularModalWindowLong .modal-dialog {
+                width: 75% !important;
+            }
+
+        .no-records {
+            background-color: #eaeeef;
+            color: darkgray;
+        }
+
+        .MSsurveyModal {
+            top: 10%;
+        }
+
+        .surveyModal.modal {
+            text-align: center;
+            padding: 0 !important;
+        }
+
+            .surveyModal.modal:before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+                margin-right: -4px;
+            }
+
+        .surveyModal.modal-dialog {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+        }
+        /*.nav-tabs.nav-justified {
+            width: 45% !important;
+        }*/
+        .selectedRow {
+            background-color: #999;
+            color: white;
+            font-weight: bold;
+        }
+
+
+
+        .notificationMsg {
+            padding-top: 2px;
+        }
+
+
+
+        /*DEV STYLES*/
+
+        /*.mega-menu.mega-menu-wide > .dropdown-menu {
+            left: 70px;
+            right: 70px;
+            width: 1000px !important;
+        }*/
+
+        .table > tbody > tr.active > td, .table > tbody > tr.active > th, .table > tbody > tr > td.active, .table > tbody > tr > th.active, .table > tfoot > tr.active > td, .table > tfoot > tr.active > th, .table > tfoot > tr > td.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > thead > tr.active > th, .table > thead > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr.active > td .fa {
+            background-color: #666666;
+            color: #fff;
+        }
+
+        .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr.active:hover > th, .table-hover > tbody > tr:hover > .active, .table-hover > tbody > tr > td.active:hover, .table-hover > tbody > tr > th.active:hover {
+            background-color: #666666;
+            color: #fff;
+        }
+
+        .angucomplete-holder {
+            position: relative;
+        }
+
+        .angucomplete-dropdown {
+            border-color: #ececec;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 2px;
+            width: 250px;
+            padding: 6px;
+            cursor: pointer;
+            z-index: 9999;
+            position: absolute;
+            margin-top: -6px;
+            background-color: #ffffff;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .angucomplete-searching {
+            color: #acacac;
+            font-size: 14px;
+        }
+
+        .angucomplete-description {
+            font-size: 14px;
+        }
+
+        .angucomplete-row {
+            padding: 5px;
+            color: #a29061;
+            margin-bottom: 4px;
+            clear: both;
+        }
+
+        .angucomplete-selected-row {
+            background-color: #999;
+            color: #ffffff;
+        }
+
+        .angucomplete-image-holder {
+            padding-top: 2px;
+            float: left;
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+
+        .angucomplete-image {
+            height: 34px;
+            width: 34px;
+            border-radius: 50%;
+            border-color: #ececec;
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        .angucomplete-image-default {
+            background-position: center;
+            background-size: contain;
+            height: 34px;
+            width: 34px;
+        }
+
+        .disabledInputWithBorder {
+            border: 1px solid #ddd !important;
+            padding: 3px !important;
+        }
+
+
+
+        .angularModalWindowLg {
+        }
+
+            .angularModalWindowLg .modal-dialog {
+                width: 900px !important;
+            }
+
+        textarea {
+            resize: none;
+        }
+
+        .validationmsg {
+            color: red;
+            font-size: 10px;
+        }
+
+        .datepicker,
+        .table-condensed {
+            width: 50px;
+            height: 50px;
+        }
+
+        .arrowLessNumber::-webkit-inner-spin-button,
+        .quantity::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .panel-heading-red {
+            color: white;
+            background-color: #893a53;
+        }
+
+        .btn-find {
+            color: #FFF;
+        }
+
+        .alwaysEnabled {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+        }
+
+        fieldset[disabled] a {
+            pointer-events: none;
+        }
+
+        fieldset[disabled] a {
+            cursor: not-allowed;
+            opacity: .65;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+
+        .g-grey-shade option {
+            color: black;
+        }
+
+
+        .sweet-overlay {
+            background-color: rgba(102,102,102,.8);
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1050;
+        }
+
+        .overlay {
+            position: fixed;
+        }
+
+        .lookupTable > tbody > tr:hover {
+            background-color: lightgray;
+        }
+
+            .lookupTable > tbody > tr:hover > td > span.showOnHover {
+                display: block;
+            }
+
+        .lookupTable > tbody > tr > td > span.showOnHover {
+            display: none;
+        }
+
+        input[type="search"]::-webkit-search-cancel-button {
+            -webkit-appearance: searchfield-cancel-button;
+        }
+
+        .importcentrecodedp .form-horizontal .control-label[class*=col-lg-], .importcentrecodedp .form-horizontal .control-label[class*=col-md-], .importcentrecodedp .form-horizontal .control-label[class*=col-sm-] {
+            color: #4e4d50;
+            font-weight: 600;
+        }
+
+        .importcentrecodedp .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+            border: none;
+            border-bottom: 1px solid #4e4d50;
+        }
+
+        .importcentrecodedp .select2-selection--single:not([class*=bg-]) {
+            background: none;
+            color: #a29061;
+        }
+
+        .disabledLink {
+            pointer-events: none;
+            color: #ccc;
+        }
+
+        .form-control:focus {
+            border: 1px solid rgb(162,144,97);
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(221, 221, 221, 0.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(221, 221, 221, 0.6);
+        }
+
+        .angucomplete-dropdown {
+            width: 100% !important;
+        }
+
+        .userMg {
+            margin-right: 6px !important;
+        }
+
+        .border {
+            border: 2px solid #949495 !important;
+        }
+
+        .modalAnnounce {
+            background-color: rgb(162,144,97) !important;
+        }
+
+        .chprogress {
+            height: 26px !important;
+        }
+
+            .chprogress .progress-bar {
+                padding-top: 1px;
+                line-height: 26px;
+            }
+
+        /*Survey*/
+
+        #MSarabic-title {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .surveyModal {
+            padding-top: 7px !important;
+        }
+
+        .thanks {
+            text-align: center;
+            margin-top: 5%;
+            color: green;
+            margin-bottom: 5%;
+        }
+
+        .notesurvey {
+            font-weight: bold !important;
+            color: maroon !important;
+            padding-top: 10px !important;
+            /*padding-bottom: 10px !important;*/
+        }
+
+        .survey {
+            height: 5px !important;
+        }
+
+        #MSmaqtaLogo {
+            text-align: center;
+        }
+
+        #MSProgress {
+            width: 100%;
+        }
+
+        .Mspage {
+            display: none;
+        }
+
+        .Msactive {
+            display: block;
+        }
+
+        .MsFeedback {
+            display: none;
+        }
+
+        input[type=range].Msinputrange {
+            -webkit-appearance: none;
+            width: 80%;
+            margin: 13.8px 0;
+        }
+
+            input[type=range].Msinputrange:focus {
+                outline: none;
+            }
+
+            input[type=range].Msinputrange::-webkit-slider-runnable-track {
+                width: 100%;
+                height: 6px;
+                cursor: pointer;
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+                background: #3071a9;
+                border-radius: 1.3px;
+                border: 0.2px solid #010101;
+            }
+
+            input[type=range].Msinputrange::-webkit-slider-thumb {
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+                border: 1px solid #000000;
+                height: 16px;
+                width: 16px;
+                border-radius: 25px;
+                background: #ffffff;
+                cursor: pointer;
+                -webkit-appearance: none;
+                margin-top: -5px;
+            }
+
+            input[type=range].Msinputrange:focus::-webkit-slider-runnable-track {
+                background: #3174ad;
+            }
+
+            input[type=range].Msinputrange::-moz-range-track {
+                width: 100%;
+                height: 6px;
+                cursor: pointer;
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+                background: #3071a9;
+                border-radius: 1.3px;
+                border: 0.2px solid #010101;
+            }
+
+            input[type=range].Msinputrange::-moz-range-thumb {
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+                border: 1px solid #000000;
+                height: 16px;
+                width: 16px;
+                border-radius: 25px;
+                background: #ffffff;
+                cursor: pointer;
+            }
+
+            input[type=range].Msinputrange::-ms-track {
+                width: 100%;
+                height: 6px;
+                cursor: pointer;
+                background: transparent;
+                border-color: transparent;
+                color: transparent;
+            }
+
+            input[type=range].Msinputrange::-ms-fill-lower {
+                background: #2f6ea5;
+                border: 0.2px solid #010101;
+                border-radius: 12px;
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            }
+
+            input[type=range].Msinputrange::-ms-fill-upper {
+                background: #3071a9;
+                border: 0.2px solid #010101;
+                border-radius: 15px;
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            }
+
+            input[type=range].Msinputrange::-ms-thumb {
+                box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+                border: 1px solid #000000;
+                height: 14px;
+                width: 16px;
+                border-radius: 25px;
+                background: #ffffff;
+                cursor: pointer;
+            }
+
+            input[type=range].Msinputrange:focus::-ms-fill-lower {
+                background: #3071a9;
+            }
+
+            input[type=range].Msinputrange:focus::-ms-fill-upper {
+                background: #3174ad;
+            }
+
+        .Msanswer {
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        /*//MG Survey*/
+        .formio-form ul.list-inline {
+            padding-top: 10px;
+        }
+
+        #mamarsurvey h4.modal-title {
+            padding-left: 0px;
+        }
+
+
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%;
+        }
+
+            .iframe-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+
+       
+                    /*Dev Style Ends*/
+    </style>
+    @*-----------------Dev Styles--------------------------------------------------------------------------------------------------*@
+
+    @*@-----------DO NOT CHANGE THE BELOW STYLE, REPLACE WITH THE CONTENTS OF AR.CSS SHARED BY UI DESIGNER WHEN REUIRED------------*@
+    @*Arabic Styles*@
+
+    <style ng-if="dir == 'rtl'">
+        @@charset "UTF-8";
+
+/* CSS Document */
+body {
+    font-family: 'Droid-Arabic-Kufi', 'Raleway';
+}
+
+        @@font-face {
+            font-family: 'Droid-Arabic-Kufi';
+            src: @Url.Content("~/fonts/Droid-Arabic-Kufi.woff") format('woff'),
+                    @Url.Content("~/fonts/Droid-Arabic-Kufi.ttf") format('ttf'),
+                    @Url.Content("~/fonts/Droid-Arabic-Kufi.svg#Droid-Arabic-Kufi") format('svg'),
+                    @Url.Content("fonts/Droid-Arabic-Kufi.eot"),
+                    @Url.Content("~/fonts/Droid-Arabic-Kufi.eot?#iefix") format('embedded-opentype');
+        font-weight: normal;
+        font-style: normal;
+}
+h4, h5 {float: right; padding-right: 15px;}
+
+.chart-container {
+    padding: 0 15px 10px 20px;
+    border-left: 1px solid #ddd;
+	border-right:none;
+}
+
+.header-bg {
+	        background: #4d4d4f url(../assets/img/header_bg_ar.png) top left no-repeat;}
+
+.login-container .page-container .login-form, .login-container .page-container .registration-form {
+    margin: 0 200px 0 0;
+	float: right;
+}
+
+.login-bg {
+            background: #f0f2f4 url(../assets/img/login-bg-ar.png) top left no-repeat;
+}
+.login-logo{
+	float: right;
+}
+.has-feedback-left .form-control-feedback {
+    left: auto;
+    right: 0;
+}
+.has-feedback-left .form-control {
+    padding-right: 30px;
+	padding-left: 0px;
+}
+.form-control-feedback {
+    text-align: right; top: 10px;
+}
+.btn-login {
+	float: right; margin-left: 5px}
+.form-group {
+	float: right;width: 100%;}
+.checkbox-inline, .radio-inline {
+    float: right;
+}
+
+.mamar-nav li a {
+    margin-right: 0px; margin-left: 20px;
+}
+
+.navbar-nav>.dropdown-user img {
+	float: right;}
+
+.menu-list li>a>i{ float: right; }
+.menu-list li>a {text-align: right; }
+.menu-heading.underlined{margin-left:0; margin-right: 12px;}
+.menu-list li>a>i {margin-right: 0px; margin-left: 10px;}
+
+.navbar-nav>li {
+    float: right;
+}
+
+.navbar-header {
+    margin-right: -20px;
+	float: right;
+}
+.navbar-right {
+	float: left !important;
+    margin-left: 0;
+}
+
+.navbar-left {
+	float: right !important;
+    margin-right: 0;
+}
+.navbar-nav>.dropdown-user>a>img+span {
+    float: right;
+    padding-right: 7px;
+}
+.navbar-nav {
+	margin-left: 0px;
+    float: right;
+}
+.navbar-collapse {
+    text-align: right;
+    margin-left: 0px;
+}
+/*.navbar-nav>li {
+    float: right;
+}*/
+
+.nav-tabs.nav-justified > .active > a{border-right:0;border-left:0 !important }
+.nav-tabs.nav-justified a{border-right: 1px solid #ccc !important;}
+.nav-tabs.nav-justified>li>a {border-left: 1px solid #ccc !important;}
+.nav-tabs.nav-tabs-solid>.active>a, .nav-tabs.nav-tabs-solid>.active>a:focus, .nav-tabs.nav-tabs-solid>.active>a:hover{border-right: none!important;}
+.nav{ padding-right: 0}
+
+.bootstrap-select .btn{
+	float: left;
+}
+.bootstrap-select .dropdown-toggle .filter-option{
+	text-align: right;     padding-left: 10px; padding-right: 10px;
+
+}
+.bootstrap-select .dropdown-toggle .caret {
+	left: 12px;
+	right:inherit;
+}
+.dropdown-menu{ right:0}
+.dropdown-menu{
+	text-align: right;
+}
+.navbar-right .dropdown-menu {
+    right: auto;
+    left: 0;
+}
+.tabbable li.save-pclr-btn {
+    left: 11px;
+	right:inherit;
+}
+.nav-tabs.nav-justified {
+    padding: 0;
+    border-left: 0;
+	border-right:0;
+/*    float:right;*/
+}
+.navbar-nav>li>a .caret{     float: left; margin-top: 3px; margin-right: 7px;}
+
+
+.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
+    float: right;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9 {
+    float: right;
+}
+.col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9 {
+    float: right;
+}
+.form-horizontal .control-label:not(.text-right) {
+    text-align: right;
+}
+.control__indicator {
+	right: 0;
+}
+.fleft {
+    float: right;
+}
+.pull-right {
+    float: left !important; /*margin-left: 10px*/;
+}
+.pl25{ padding-left: 0px; padding-right: 25px}
+.pr-20 {
+    padding-left: 20px!important; padding-right: 0px!important;
+}
+.mr-10 {
+    margin-right: 0px!important; margin-left: 10px!important;
+}
+.ml-40{ margin-right: 40px; margin-left:0 }
+.tabbable li.centrecodedp {
+    right: inherit;
+    left: 11px;
+    margin-left: 20px;
+    margin-right: 0px;
+}
+
+.modal-header .close {
+    left: 20px;
+	position: absolute;
+	right: inherit;
+}
+.modal-header {
+    padding-left: 0px;
+    padding-right: 25px;
+}
+.sub-title h6 {
+    padding-left: 0px;
+    padding-right: 20px;
+    float: right;
+
+}
+.fa, .far, .fal{ padding: 0 10px 0 0 }
+.fa-search {
+    padding-right: 10px;
+    padding-left: 0px;
+}
+.user-acount .fa-user-circle{margin-right: 0px; margin-left: 7px  }
+.note {
+    float: right;
+    margin-left: 0px;
+	margin-right: 20px;
+	color:#666;
+	font-size: 12px;
+}
+.note span {float: left;}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {text-align: right;}
+.sub-title h6{float: right;padding-right: 20px;padding-left: 0px;}
+label span{    padding-left: 0px;    padding-right: 5px;}
+.fa-search{  padding-left: 0; padding-right: 10px }
+
+input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], textarea, .select {
+	    font-family: 'Droid-Arabic-Kufi', 'RobotoRegular';
+}
+.table>tbody>tr>td {
+	    font-family: 'Droid-Arabic-Kufi', 'RobotoRegular';
+}
+
+.panel-heading, .panel-heading-red  { /*float:right; */text-align: right;}
+.g-grey-shade { clear:both}
+.mr-40{ margin-left: 40px; margin-right: 0 !important}
+.icons-list a[data-action]:after {margin-left: 20px; margin-right: 20px;}
+
+.select2-container { text-align: right}
+/*.select2-selection--single .select2-selection__arrow:after {left: 12px !important; right: 0!important;}*/
+
+.sticky {left:55px;right: inherit;}
+
+.form-group ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  text-align:right !important;
+}
+.login-form ::-moz-placeholder { /* Firefox 19+ */
+  text-align:right !important;
+}
+.login-form :-ms-input-placeholder { /* IE 10+ */
+  text-align:right !important;
+}
+.login-form :-moz-placeholder { /* Firefox 18- */
+  text-align:right !important;
+}
+.validation-error-label, .validation-valid-label{padding-right: 0px;  }
+.corner-slide button {left: -7px; right: inherit;}
+.overlay-bottom .overlay-close{left: 10px;    right: inherit;}
+.overlay-bottom ul li {float: right;}
+.trans-list-head {float: right;padding-right: 15px;}
+.centrecodedp{ float: left}
+.btn-new, .btn-find { float:right}
+
+.pagination {float: right;}
+.pagination>li {float: right;}
+.pagination>li:first-child>a, .pagination>li:first-child>span {
+    margin-right: 0;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+	border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.pagination>li:last-child>a, .pagination>li:last-child>span  {
+    margin-right: 0;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+	border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.bg-info .close {float: left;}
+
+.cont-left { float: right; }
+.cont-right { float: left; }
+.filter-list .well{padding-left: 0; padding-right: 20px}
+.switch h6 {
+    float: right;
+    margin-left: 20px;
+}
+
+.cont-left h6{  direction: ltr !important;
+    text-align: right;}
+
+.navbar-nav>.dropdown-user>a, .navbar-nav>.dropdown-user>a>span {
+	float: right;}
+.user-acount{ float:left}
+.user-acount ul{ padding-left: 0}
+.user-acount ul li span { float:right}
+.bg-gold{float: left;}
+.t-right{ text-align: left !important}
+
+@@media only screen and (max-width: 768px)  {
+
+.icon-grid3{ left:0}
+ol, ul {padding-left: inherit;}
+
+.navbar-brand {float: right;}
+.navbar-header {width:100%; margin-right: inherit;}
+.navbar-nav>li>a { padding-right: 20px !important}
+.navbar-nav {float: inherit; text-align: right}
+.navbar-right {float: right !important; width:100%  }
+.mamar-nav li a{ padding-left: 10px !important}
+
+.navbar-collapse{margin-right: 0px;width: 100%;float: right; clear: both}
+.navbar-collapse ul li{width: 100%;float: right; clear: both}
+.navbar-collapse ul{ float:right !important; width:100%}
+.nav>li>a>img {float: right;}
+.navbar-nav>li a{ float:right; width:100%}
+.navbar-nav>li.lang {float: left !important;    width: 100%;}
+.navbar-nav>li>a .caret {margin-left: 2px;float: left;}
+.navbar-nav .open .dropdown-menu {float: inherit;}
+
+.menu-heading.underlined {
+    margin-left: 0;
+    margin-right: 0;
+}
+.menu-list li a {
+    padding-right: 0 !important;
+}
+
+.lang .bootstrap-select .btn {float: left !important; }
+.lang .bootstrap-select .dropdown-toggle .filter-option-inner-inner{ float: left; padding-left: 25px}
+.lang .bootstrap-select .dropdown-menu li a {text-align: left;}
+.logout{  float:left !important}
+
+.lang .bootstrap-select .dropdown-toggle .filter-option {
+    text-align: left;
+    padding-left: 40px;
+}
+.bootstrap-select.btn-group .btn .caret {
+    left: 15px !important; right:inherit;
+}
+.navbar-nav>li>a .caret{ float :right; margin-right: 0}
+
+.bootstrap-select>.btn.btn-default{float: right; }
+.bootstrap-select .dropdown-menu, .lang .bootstrap-select .dropdown-menu{ width: 100% !important; float:right;}
+.nav-tabs.nav-justified>li>a, .nav-tabs.nav-justified>li.active>a{ text-align: right; padding-right: 20px !important; border-left:none !important}
+
+.note { float: right; margin: 15px;}
+.mr-10 {margin-right: 0px!important; }
+.pagination {float: left; margin-top: 20px }
+.pl25 {padding-left: 25px;}
+.control {margin-left: 0px;margin-right: 10px;}
+
+.bootstrap-select .btn {width: 100%;}
+
+.visible-xs-block {float: right !important;    margin-left: 0px !important;}
+.pull-right {float: left !important;}
+.icon-paragraph-justify3{ margin-top: 5px}
+
+.user-acount ul{padding-right: 10px}
+.user-acount ul li{ float:right}
+.bg-gold{ float:left !important; margin-left: 15px}
+
+}
+
+
+
+@@media only screen and (max-width: 1024px)  {
+
+.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
+    float: inherit; /*clear:both;*/ width: 100%;
+}
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9 {
+    float: inherit;/*clear:both;*/ width: 100%;
+}
+.col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9 {
+    float: inherit;/*clear:both;*/ width: 100%;
+}
+.login-options, .login-options .text-right {text-align: right;}
+
+.customs-btn, .mg-btn {float: right;  }
+.chart-container { width:100%; float: right;}
+
+.filter-list .col-lg-3 { clear: inherit !important }
+
+/*.table-responsive {direction: ltr;}*/
+
+}
+
+@@media only screen and (max-device-width: 1366px) and (min-width: 1024px) {
+.cont-right h6 {
+    float: right;
+    margin-left: 10px;
+}
+
+}
+
+@@media only screen and (max-width: 1366px){
+.chart-container {
+    border: none;
+}
+}
+
+    </style>
+
+    @*-------------END OF Arabic Styles---------------------------------------------------------------------------------------------*@
+
+</head>
+
+<body class="navbar-bottom" data-ng-controller="indexController">
+
+    <div class="modal" id="mamarsurvey" style="z-index:2000">
+        <div class="modal-dialog modal-lg" style="height:800px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{surveyTitle}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div ng-show="submissionSuccess">
+                        <h2 class="thanks"><span><i class="fas fa-check-circle" style="font-size:35px;color:green"></i></span> Thanks!</h2>
+                        <p style="text-align:center; font-size:16px;">
+                            Thank you for your participation, we truly value the feedback and information that you have provided us.
+                        </p>
+                    </div>
+
+                    <div class="alert alert-danger pl20 ml20" role="alert" ng-show="submissionfailed">
+                        {{submissionfailedMessage}}
+                    </div>
+                    <div ng-hide="submissionSuccess" class="iframe-container">
+                        <iframe id="surveyFrame" src="@ViewBag.SurveyIframeUrl" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page header -->
+    <div class="header-bg">
+        <div class="page-header page-header-inverse">
+            <!-- Main navbar -->
+            <div class="navbar navbar-inverse navbar-transparent main-header">
+                <div class="navbar-header">
+                    <a class="navbar-brand" ng-if="!IsAuthorizedUserForMenu" style="pointer-events:none" ui-sref-opts="{reload: true, notify: true}"><img src="~/assets/img/logo.png" /></a>
+                    <a class="navbar-brand" ng-if="IsAuthorizedUserForMenu" style="pointer-events:auto;" ui-sref="dashboard" ui-sref-opts="{reload: true, notify: true}"><img src="~/assets/img/logo.png" /></a>
+                    <ul class="nav navbar-nav pull-right visible-xs-block">
+                        <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-grid3"></i></a></li>
+                    </ul>
+                </div>
+                <div class="user-acount">
+                    <ul>
+                        <li>
+                            <span><i class="fal fa-user-circle"></i></span>
+                            <span>@ViewBag.UserName</span>
+                            <label style="display:none;" id="apiurl" value="@ViewBag.ApiURL">@ViewBag.ApiURL</label>
+                        </li>
+                        <li ng-bind="userAccntDetails.CCode" id="UserAccountDetailsCode" class="bg-gold"></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /main navbar -->
+            <!-- Second navbar -->
+            <div class="nav-bg">
+                <div class="navbar navbar-inverse navbar-transparent">
+                    <ul class="nav navbar-nav visible-xs-block">
+                        <li><a class="text-center collapsed" data-toggle="collapse" data-target="#navbar-second-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+                    </ul>
+                    <div class="navbar-collapse collapse" id="navbar-second-toggle">
+                        <ul class="nav navbar-nav navbar-nav-material mamar-nav" ng-hide="!IsAuthorizedUserForMenu">
+                            <li><a ui-sref="dashboard" ui-sref-opts="{reload: true, notify: true}">{{'Home' | translate}}</a></li>
+                            <li class="dropdown mega-menu mega-menu-wide">
+                                <a class="dropdown-toggle" data-toggle="dropdown" ng-click="validateSubscription()">{{'Transactions' | translate}} <span ng-class="{'caret': !subscriptionRequired}"></span></a>
+                                <div class="dropdown-menu dropdown-content" ng-if="!subscriptionRequired">
+                                    <div class="dropdown-content-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <span class="menu-heading underlined">{{'Declarations' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="transactions({'transportMode' : 'M'})" ui-sref-opts="{reload: true, notify: true}"><i class="far fa-ship"></i> {{'SeaCargo' | translate}}</a></li>
+                                                    <li><a ui-sref="transactions({'transportMode' : 'A'})" ui-sref-opts="{reload: true, notify: true}"><i class="far fa-plane-departure"></i> {{'AirCargo' | translate}}</a></li>
+                                                    <li><a ui-sref="transactions({'transportMode' : 'R'})" ui-sref-opts="{reload: true, notify: true}"><i class="far fa-truck-container"></i> {{'LandCargo' | translate}}</a></li>
+                                                    <li><a ui-sref="transactions({'transportMode' : 'Z'})" ui-sref-opts="{reload: true, notify: true}"><i class="far fa-city"></i> {{'FreeZone' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <span class="menu-heading underlined">{{'PreClearanceProcess' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="pendingTransactions" ui-sref-opts="{reload: true, notify: true}"><i class=""></i> {{'PendingTrans' | translate}}</a></li>
+
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span class="menu-heading underlined">{{'MaqasaReExport' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="maqasaReExport" ui-sref-opts="{reload: true, notify: true}"><i class=""></i> {{'ReExportDecl' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-3" ng-hide="$storage.get('isPrivateCompany')">
+                                                <span class="menu-heading underlined">{{'Registration' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="importerexportersList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i> {{'ImporterExporterRegistration' | translate}}</a></li>
+                                                    <li><a ui-sref="DelegateList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'AgentDelegation' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                            <div ng-class="{true:'col-md-3', false:'col-md-2'}[$storage.get('isPrivateCompany')]">
+                                                <span class="menu-heading underlined">{{'Transactions' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li ng-hide="$storage.get('isPrivateCompany')"><a ui-sref="vehicleTracking" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'VehicleTracking' | translate}}</a></li>
+                                                    <li><a ui-sref="TransactionManifest" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'TransactionManifest' | translate}}</a></li>
+                                                    <li><a ui-sref="transExpCourierWayBillList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'ExpressCourier' | translate}}</a></li>
+                                                    <li><a ui-sref="ksaCreateBill" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'ksaCreateBill' | translate}}</a></li>
+                                                    <li><a ui-sref="noBillExitCert" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'NoBillExitCert' | translate}}</a></li>
+                                                    <li><a ui-sref="shortCustManifestList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'ShortCustManifest' | translate}}</a></li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="dropdown mega-menu mega-menu-wide">
+                                <a class="dropdown-toggle" data-toggle="dropdown" ng-click="validateSubscription()">{{'Accounting' | translate}} <span ng-class="{'caret': !subscriptionRequired}"></span></a>
+                                <div class="dropdown-menu dropdown-content" ng-if="!subscriptionRequired">
+                                    <div class="dropdown-content-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <span class="menu-heading underlined">{{'Accounting' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="TransactionBalanceList" ui-sref-opts="{reload: true, notify: true}">{{'TransactionBalance' | translate}}</a></li>
+                                                    <li><a ui-sref="mPayment" ui-sref-opts="{reload: true, notify: true}">{{'Accounting' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><a ui-sref="subscription" ui-sref-opts="{reload: true, notify: true}" ng-if="EnableMenu != undefined && EnableMenu == true">{{'Subscription' | translate}}</a></li>
+
+                            <li class="dropdown mega-menu mega-menu-wide">
+                                <a class="dropdown-toggle" data-toggle="dropdown" ng-click="validateSubscription()">{{'Enquiries' | translate}} <span ng-class="{'caret': !subscriptionRequired}"></span></a>
+                                <div class="dropdown-menu dropdown-content" ng-if="!subscriptionRequired">
+                                    <div class="dropdown-content-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <span class="menu-heading underlined">{{'Enquiries' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="clearingAgentActivityList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'ClearingAgentActivity' | translate}}</a></li>
+                                                </ul>
+                                                <ul class="menu-list" ng-show="$storage.get('isPrivateCompany') || $storage.get('isPcsSuperUser')">
+                                                    <li><a ui-sref="lcList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'LetterOfCredit' | translate}}</a></li>
+                                                </ul>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="queryShortageList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'QueryShortage' | translate}}</a></li>
+                                                </ul>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="harmonisedCodes" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'HSCodeSearch' | translate}}</a></li>
+                                                </ul>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="masterBodyTypeList" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'VehicleType' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="dropdown mega-menu mega-menu-wide">
+                                <a class="dropdown-toggle" data-toggle="dropdown" ng-click="validateSubscription()">{{'Reports' | translate}} <span ng-class="{'caret': !subscriptionRequired}"></span></a>
+                                <div class="dropdown-menu dropdown-content" ng-if="!subscriptionRequired">
+                                    <div class="dropdown-content-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <span class="menu-heading underlined">{{'Reports' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li><a ui-sref="agentTransactionReport" ui-sref-opts="{reload: true, notify: true}"><i class=""></i>{{'AgentTransactionReport' | translate}}</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="dropdown mega-menu mega-menu-wide">
+                                <a class="dropdown-toggle" data-toggle="dropdown" ng-click="validateSubscription()">{{'UserManual' | translate}} <span ng-class="{'caret': !subscriptionRequired}"></span></a>
+                                <div class="dropdown-menu dropdown-content" ng-if="!subscriptionRequired">
+                                    <div class="dropdown-content-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <span class="menu-heading underlined">{{'UserManual' | translate}}</span>
+                                                <ul class="menu-list">
+                                                    <li ng-if="language == 'en'">
+                                                        <a title="{{'OpenUserManual'|translate}}" href="../UserManual/En/manual.html" target="_blank"><i class="far fa-question-circle"></i>{{'UserManual' | translate}}</a>
+                                                    </li>
+                                                    <li ng-if="language == 'ae'">
+                                                        <a title="{{'OpenUserManual'|translate}}" href="../UserManual/Ar/manual.html" target="_blank"><i class="far fa-question-circle"></i>{{'UserManual' | translate}}</a>
+                                                    </li>
+                                                    <li>
+                                                        <a ui-sref="survey" ui-sref-opts="{reload: true, notify: true}"><i class="far fa-question-circle"></i>{{'Survey' | translate}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            @*<li><a ui-sref="mPayment" ui-sref-opts="{reload: true, notify: true}">{{'Accounting' | translate}}</a></li>*@
+                        </ul>
+                        <ul class="nav navbar-nav navbar-nav-material navbar-right">
+                            <li class="lang">
+                                <select id="selLang" class="selectpicker" style="color:black !important;" ng-options="language.Code as language.Name for language in languages" ng-model="language" ng-change="switchLanguage()"></select>
+                            </li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-cog3"></i>
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li class="active" ng-hide="!IsAuthorizedUserForMenu"><a ui-sref="changeAccount({isNavigated : 'Y'})" ui-sref-opts="{reload: true, notify: true}" title="{{'SwitchAccount' | translate}}"><i class="fal fa-user-circle"></i>{{'SwitchAccount' | translate}}</a></li>
+                                    <li class="divider"></li>
+                                    <li><a ui-sref="AdminRecord" ui-sref-opts="{reload: true, notify: true}" ng-show="PCSSuperUser && QueryManagerEnabled" title="Query Manager"><i class="fal fa-users-cog userMg"></i>Query Manager</a></li>
+                                    <li><a ui-sref="UserManagement" ui-sref-opts="{reload: true, notify: true}" ng-hide="!IsAuthorizedUserForUserManagement" title="{{'UserManagement' | translate}}"><i class="fal fa-users-cog userMg"></i>{{'UserManagement' | translate}}</a></li>
+                                    <li><a ui-sref="AnnouncementMaster" ui-sref-opts="{reload: true, notify: true}" ng-show="PCSSuperUser" title="{{'Announcements' | translate}}"><i class="fa fa-bullhorn"></i>{{'Announcements' | translate}}</a></li>
+                                    <li class="divider" ng-hide="!IsAuthorizedUserForUserManagement"></li>
+                                    <li><a href="@Url.Action("LogOff","Account")" title="{{'Logout' | translate}}"><i class="fa fa-power-off"></i>{{'Logout' | translate}}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- /second navbar -->
+        </div>
+    </div>
+    <!-- /page header -->
+    <!-- Page container -->
+    <div class="page-container">
+        <!-- Page content -->
+        <div class="page-content" ui-view>
+            <!--ALL THE VIEWS WILL BE RENDERED HERE-->
+        </div>
+    </div>
+    <div id="loadingScreen">
+        <div class="overlay">
+            <div class="loading-img"></div>
+        </div>
+    </div>
+    <div id="loadingInvoiceScreen" style="display:none;">
+        <div class="overlay">
+            <div class="loading-img"></div>
+        </div>
+    </div>
+    <div id="loadingChargeScreen">
+        <div class="overlay">
+            <div class="loading-img"></div>
+        </div>
+    </div>
+
+    <div class="divDummy">
+        <!--DO NOT REMOVE THIS DIV, THIS IS USED TO LOAD FONTS IN ARABIC CSS PRIOR TO SWITCH LANGUAGE, TO AVOID REFRESH-->
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <input type="hidden" value="@User.Identity.Name" id="username" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/angular")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/bootstrap/tpls")
+    @Scripts.Render("~/bundles/assets")
+    @Scripts.Render("~/bundles/app")
+    <script src="~/Scripts/jquery.signalR-2.4.1.js"></script>
+    <script src="~/signalr/Hubs"></script>
+    <script src="~/Scripts/libs/jquery/toastr.min.js"></script>
+
+    <script>
+        function isNullOrEmptyOrUndefined(value) {
+            return !value;
+        }
+        toastr.options.timeOut = 0;
+        toastr.options.extendedTimeOut = 0;
+        toastr.options.onclick = function (e) {
+            console.log('clicked');
+            toastr.options.hideDuration = 0;
+            toastr.options.timeOut = 0;
+
+            //WarningModalOnFormM($scope.Warning);
+            //$('#WarningModalOnForm2').modal('show');
+        }
+        var notify = $.connection ? $.connection.mamarHub : '';
+        if ($.connection)
+            $.connection.hub.start();
+        //toastr.error("Testing");
+        var InvoiceWarning = [];
+        var strInvoiceWarning = '';
+        var ChassisWarning = [];
+        var strChassisWarning = '';
+
+        var InvoiceDetailWarning = [];
+        var strInvoiceDetailWarning = '';
+        var messageFrom = "";//"File Uploaded By Talha against JobNumber (1232323),"
+        //WarningMsgInvoiceDetail
+
+        notify.client.chassisResponse = function (message, isValid, JobNumber, currentUser, ValidayteResponse) {
+            $(".toast-info").hide();
+            toastr.options.timeOut = 0;
+            toastr.options.extendedTimeOut = 0;
+            var Response = message.split('|')[0];
+            console.log(ValidayteResponse);
+            $('#ChassisdivResults').empty();
+            //$('#ChassisdivResults').remove();
+            if (isValid == "false") {
+                messageFrom = "Error While Uploading File By " + currentUser + " against JobNumber (" + JobNumber + "),"
+                toastr.error(messageFrom, message.split('|')[0] + "  " + message.split('|')[1]);
+            }
+            else {
+                messageFrom = "File Uploaded By " + currentUser + " against JobNumber (" + JobNumber + "),"
+                toastr.success(messageFrom, message.split('|')[0]);
+
+            }
+            try {
+
+                if (!isNullOrEmptyOrUndefined(message.split('|')[2].split(':')[1])) {
+                    console.log(message.split('|')[2]);
+                    messageFrom = "Warning While Uploading File By " + currentUser + " against JobNumber (" + JobNumber + ")";
+                    toastr.warning(messageFrom, 'Chassis Warning');//'Please click to see the Warning'
+                    ChassisWarning = [];
+                    strChassisWarning = '';
+                    var information = message.split('|');
+                    strChassisWarning = "<table class='table table - bordered' border='1'>";
+
+                    //information[2].split('WarningMsgChasssis:')[1].split('#').length
+                    for (a = 0; a < information[2].split('WarningMsgChasssis:')[1].split('#').length; a++) {
+                        let weather =
+                        {
+                            Warning: information[2].split('WarningMsgChasssis:')[1].split('#')[a]
+                        }
+                        if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+                            strChassisWarning += "<tr><td><i class='fa fa - warning' style='font - size: 20px'>" + weather.Warning + "</i></td></tr>";
+                            ChassisWarning.push(Object.assign(weather.Warning));
+                        }
+                    }
+                    strChassisWarning += "</table>";
+                    $('#ChassisdivResults').append(strChassisWarning);
+                    ChassisInvoiceWarningModalOnForm(strChassisWarning);
+
+                    $('ChassisWarningForSignalR').append(messageFrom);
+                    $('#ChassisWarningModalOnForm').modal('show');
+                }
+                if (!isNullOrEmptyOrUndefined(message.split('|')[3].split(':')[1])) {
+                    console.log(message.split('|')[3]);
+                    messageFrom = "Warning While Uploading File By " + currentUser + " against JobNumber (" + JobNumber + ")";
+                    toastr.warning(messageFrom, 'Invoice Group Warning');
+                    strInvoiceWarning = '';
+                    InvoiceWarning = [];
+                    var information = message.split('|');
+                    strInvoiceWarning = "<table class='table table - bordered' border='1'>";
+                    for (a = 0; a < information[3].split('WarningMsgInvoiceGroup:')[1].split('#').length; a++) {
+                        let weather =
+                        {
+                            Warning: information[3].split('WarningMsgInvoiceGroup:')[1].split('#')[a] //information[3].split('WarningMsgInvoiceGroup:')[a]
+                        }
+                        if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+
+                            strInvoiceWarning += "<tr><td><i class='fa fa - warning' style='font - size: 20px'>" + weather.Warning + "</i></td></tr>";
+                            InvoiceWarning.push(Object.assign(weather.Warning));
+                        }
+                    }
+                    strInvoiceWarning += "</table>";
+                    $('#ChassisdivResults').append(strInvoiceWarning);
+                    $('ChassisWarningForSignalR').append(messageFrom);
+                    ChassisInvoiceWarningModalOnForm(strInvoiceWarning);
+                    $('#ChassisWarningModalOnForm').modal('show');
+                }
+                if (!isNullOrEmptyOrUndefined(message.split('|')[4].split(':')[1])) {
+                    console.log(message.split('|')[4]);
+
+                    messageFrom = "Warning While Uploading File By " + currentUser + " against JobNumber (" + JobNumber + ")";
+                    toastr.warning(messageFrom, 'Invoice Detail Warning');
+
+                    InvoiceDetailWarning = [];
+                    strInvoiceDetailWarning = '';
+
+                    var information = message.split('|');
+                    strInvoiceDetailWarning = "<table class='table table - bordered' border='1'>";
+                    for (a = 0; a < information[4].split('WarningMsgInvoiceDetail:')[1].split('#').length; a++) {
+                        let weather =
+                        {
+                            Warning: information[4].split('WarningMsgInvoiceDetail:')[1].split('#')[a]//information[4].split('WarningMsgInvoiceDetail:')[a]
+                        }
+                        if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+                            strInvoiceDetailWarning += "<tr><td><i class='fa fa - warning' style='font - size: 20px'>" + weather.Warning + "</i></td></tr>";
+                            InvoiceDetailWarning.push(Object.assign(weather.Warning));
+                        }
+                    }
+                    strInvoiceDetailWarning += "</table>";
+                    $('#ChassisdivResults').append(strInvoiceDetailWarning);
+                    $('ChassisWarningForSignalR').append("<span>" + messageFrom + "</span>");
+                    ChassisInvoiceWarningModalOnForm(strInvoiceDetailWarning);
+                    $('#ChassisWarningModalOnForm').modal('show');
+                }
+
+            }
+            catch (err) {
+            }
+            // toastr.error("Better one");
+            //alert(message);
+        }
+
+
+        function GetWarningMessage(data) {
+            var information = data.split('|');
+            let counter = 0;
+            if (information.length > 2) {
+                $scope.Warning = [];
+
+
+                information[2].split('WarningMsgChasssis:')[1].split('#').filter(v => v != '').map((item) => {
+
+                    let weather = {
+                        ID: counter,
+                        Warning: item
+                    }
+                    if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+                        $scope.Warning.push(Object.assign(weather));
+                        counter++;
+                    }
+
+                    if ($scope.Warning && $scope.Warning.length > 0) {
+                        WarningModalOnFormM($scope.Warning);
+                        $('#WarningModalOnForm2').modal('show');
+                    }
+                });
+
+                information[3].split('WarningMsgInvoiceGroup:').filter(v => v != '').map((item) => {
+
+                    let weather = {
+                        ID: counter,
+                        Warning: item
+                    }
+                    if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+                        $scope.Warning.push(Object.assign(weather));
+                        counter++;
+                    }
+                });
+
+                information[4].split('WarningMsgInvoiceDetail:').filter(v => v != '').map((item) => {
+
+                    let weather = {
+                        ID: counter,
+                        Warning: item
+                    }
+                    if (!isNullOrEmptyOrUndefined(weather.Warning)) {
+                        $scope.Warning.push(Object.assign(weather));
+                        counter++;
+                    }
+                });
+            }
+            //if ($scope.Warning && $scope.Warning.length > 0) {
+            //    WarningModalOnFormM($scope.Warning);
+            //    $('#WarningModalOnForm2').modal('show');
+            //}
+
+            if ($scope.Warning && $scope.Warning.length > 0) {
+                WarningModalOnFormM($scope.Warning);
+                $('#WarningModalOnForm2').modal('show');
+            }
+        }
+       
+    </script>
+
+    <div class="modal" id="MSsurveyModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Customer Satisfaction Questionnaire for MAMAR</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body surveyModal">
+
+                    <div id="MSProgress" class="progress survey" ng-show="showbar">
+                        <div id="MsPbar" class="progress-bar"></div>
+                    </div>
+                    <!-- page 1-->
+                    <div class="Mspage " id="Mspage1">
+
+                        <!--English description -->
+                        <p class="mt-10">
+                            Dear User,<br><br>
+
+                            Thank you for using Mamar services.<br>
+
+                            As Mamar is a newly launched service, we are conducting a survey in order for us to enhance the quality of
+                            our system to ensure your satisfaction.
+
+                            The survey will only take a few minutes, and you can choose to complete it at your convenience.<br><br>
+
+                            Your valuable feedback is highly appreciated!<br><br>
+
+                            Kind Regards,<br>
+
+                            Maqta Gateway Team<br>
+                        </p>
+
+                        <!-- /English description -->
+
+                    </div>
+                    <!-- /page 1-->
+                    <!--  page 2-->
+                    <!-- progress bar -->
+
+                    <div class="Mspage" id="Mspage2">
+
+                        <div class="notesurvey">The Below answers are based on a scale of 1-5, 1 being the lowest, and 5 being the highest. </div><br />
+
+                    </div>
+                    <!-- /page 2-->
+                    <!--  page 3-->
+                    <div class="Mspage" id="Mspage3">
+                        <div class="notesurvey">The Below answers are based on a scale of 1-5, 1 being the lowest, and 5 being the highest. </div><br />
+
+
+                    </div>
+                    <!-- /page 3-->
+                    <!--  page 4-->
+                    <div class="Mspage" id="Mspage4">
+                        <div class="notesurvey">The Below answers are based on a scale of 1-5, 1 being the lowest, and 5 being the highest. </div><br />
+
+
+                    </div>
+                    <!-- /page 4-->
+                    <!-- page 5-->
+                    <div class="Mspage" id="Mspage5">
+                    </div>
+                    <!-- /page 5-->
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <div class="m-10" id="surveyPageNo">
+                        <span>Page</span> <span id="MsPageNumber"></span> <span ng-show="questions && questions.length > 8"> of 5</span><span ng-show="questions && questions.length == 8"> of 3</span>
+                    </div>
+
+                    <!-- /progress bar -->
+                    <!-- actions buttons-->
+                    <div class="MSactionBtn">
+                        <button id="MSbackBtn" type="button" class="btn btn-default" ng-click="goBack()">Back</button>
+                        <button id="MSnextBtn" type="button" class="btn btn-green" ng-click="goNext()">Next</button>
+                        <button id="MSsubmitBtn" type="button" class="btn btn-green" ng-click="submitAnswers()" ng-disabled="$storage.get('isPcsSuperUser')">Submit</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                    <!-- /actions buttons-->
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+﻿<div class="content-wrapper">
+    <style>
+        .td-min-max-width{
+                min-width: 77px;
+                max-width: 120px;
+                overflow: hidden;
+            }
+    </style>
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="trans-list-head">
+                    {{'AgentTransactionReport' | translate}}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select
+                                    id="ddlModeTransport"
+                                    class="form-control select"
+                                    ng-model="selectedTransMode"
+                                    ng-options="transMode.key as transMode.value for transMode in transModes"
+                                    ng-change="onModeChanged()"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select
+                                    id="ddlCenterCode"
+                                    class="form-control select"
+                                    ng-model="selectedCenterCode"
+                                    ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                    ng-change="onCenterCodeChanged()"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title">
+                            <h6>{{'SearchBy' | translate}}</h6>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">
+                                        {{'FromDate' | translate}}
+                                        <span>*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input
+                                                id="fromDateId"
+                                                type="search"
+                                                class="form-control pickadate"
+                                                placeholder="{{'SelectDate' | translate}}"
+                                                ng-model="searchParams.fromDate"
+                                            >
+                                            <span class="input-group-addon" id="fromDateId-icon">
+                                                <i class="icon-calendar22"></i>
+                                            </span>
+                                        </div>
+                                        <label class="validation-error-label" ng-show="invalidFromDate">
+                                            {{'InvalidDate' | translate}}
+                                        </label>
+                                        <label class="validation-error-label" ng-show="invalidStartToDate">
+                                            {{'ErrInValidFromToDate' | translate}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">
+                                        {{'ToDate' | translate}}
+                                        <span>*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input
+                                                id="toDateId"
+                                                type="search"
+                                                class="form-control pickadate"
+                                                placeholder="{{'SelectDate' | translate}}"
+                                                ng-model="searchParams.toDate"
+                                            >
+                                            <span class="input-group-addon" id="toDateId-icon">
+                                                <i class="icon-calendar22"></i>
+                                            </span>
+                                        </div>
+                                        <label class="validation-error-label" ng-show="invalidToDate">
+                                            {{'InvalidDate' | translate}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">
+                                                {{ 'BillType' | translate }}
+                                            </label>
+                                            <div class="col-lg-8">
+                                                <select
+                                                    id="dplBillType"
+                                                    class="form-control select"
+                                                    ng-if="language == 'en'"
+                                                    ng-options="billType.Code as billType.NameEnglish for billType in lookupBillTpResult"
+                                                    ng-model="searchParams.billType"
+                                                    ng-disabled="isBLDODisabled"
+                                                ></select>
+                                                <select
+                                                    id="dplBillType"
+                                                    class="form-control select"
+                                                    ng-if="language == 'ae'"
+                                                    ng-options="billType.Code as billType.NameArabic for billType in lookupBillTpResult"
+                                                    ng-model="searchParams.billType"
+                                                    ng-disabled="isBLDODisabled"
+                                                ></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-8">
+                                    <label class="control-label col-md-2">
+                                        {{'Importer/Exporter' | translate}}
+                                    </label>
+                                    <div class="col-md-10">
+                                        <div
+                                            angucomplete-alt
+                                            id="ImporterExporter"
+                                            pause="50"
+                                            placeholder="{{'ImporterXporterph' | translate}}"
+                                            ng-model="Importer"
+                                            search-str="searchImporterExporterText"
+                                            show-title="true"
+                                            local-data="importersExporters"
+                                            input-changed="ImporterExporterChanged"
+                                            search-fields="Code,EnglishName,ArabicName"
+                                            title-field="Code,EnglishName,ArabicName"
+                                            minlength="3"
+                                            input-class="form-control white"
+                                            match-class="highlight"
+                                            input-name="ImporterExporter"
+                                            selected-object="selectedImporterExporterCode"
+                                        ></div>
+                                        <span class="validation-error-label" ng-show="invalidImporter">
+                                            {{'InvalidImporterExporter'|translate}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-lg-4">
+                                        {{'JobNumber' | translate}}
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input
+                                            type="search"
+                                            class="form-control"
+                                            only-numbers
+                                            restrict-space
+                                            ng-model="searchParams.jobNumber"
+                                            maxlength="11"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pullleftExport">
+                                <button
+                                    type="button"
+                                    class="btn btn-find"
+                                    ng-disabled="clearingAgentTransactionList ==null"
+                                    ng-click="exportToExcel()"
+                                >
+                                    {{'Export' | translate}}
+                                    <i class="fa fa-file-export" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-clear" ng-click="resetSearchFilters()">
+                                    {{'Clear' | translate}}
+                                    <i class="fal fa-times-square" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-find" ng-click="getSearchResult()">
+                                    {{'Find' | translate}}
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <div class="col-md-12">
+                        <div class="mt20 mb20">
+                            <fieldset ng-disabled="$storage.get('isPcsSuperUser')">
+                                <div style="overflow-x: auto;" class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th class="td-min-max-width">{{'JobNumber' | translate}}</th>
+                                                <th class="td-min-max-width">{{'DODate' | translate}}</th>
+                                                <th class="td-min-max-width">{{'BillDate' | translate}}</th>
+                                                <th class="td-min-max-width">{{'Shipper' | translate}}</th>
+                                                <th class="td-min-max-width">{{'ImporterCode' | translate}}</th>
+                                                <th class="td-min-max-width">{{'ImporterNameEng' | translate}}</th>
+                                                <th class="td-min-max-width">{{'ImporterNameArb' | translate}}</th>
+                                                <th class="td-min-max-width">{{'GoodsDescription' | translate}}</th>
+                                                <th class="td-min-max-width">{{'BillType' | translate}}</th>
+                                                <th class="td-min-max-width">{{'BillNo' | translate}}</th>
+                                                <!-- <th class="td-min-max-width">{{'BillCenter' | translate}}</th> -->
+                                                <th class="td-min-max-width">{{'Year' | translate}}</th>
+                                                <th class="td-min-max-width">{{'DOCreatedUser' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tr dir-paginate="item in clearingAgentTransactionList | itemsPerPage: searchParams.pageSize" total-items="totalCount" current-page="searchParams.pageNumber">
+                                            <td>{{item.JobNumber}}</td>
+                                            <td>{{item.DODate | date : 'dd/MM/yyyy'}}</td>
+                                            <td>{{item.BillDate | date : 'dd/MM/yyyy'}}</td>
+                                            <td>{{item.CUSTOMER}}</td>
+                                            <td>{{item.ImporterCode}}</td>
+                                            <td>{{item.ImporterDescEng}}</td>
+                                            <td>{{item.ImporterDescArb}}</td>
+                                            <td>{{item.GoodsDescription}}</td>
+                                            <td>{{item.BillType}}</td>
+                                            <td>{{item.BillNumber}}</td>
+                                            <!-- <td>{{item.BillCenter}}</td> -->
+                                            <td>{{item.BillYear}}</td>
+                                            <td>{{item.DOCreatedUser}}</td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="clearingAgentTransactionList == null || clearingAgentTransactionList.length == 0">
+                                            <td colspan="15">{{'NoItems' | translate}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="clearingAgentTransactionList == null || clearingAgentTransactionList.length == 0">
+                        <dir-pagination-controls
+                            direction-links="true"
+                            boundary-links="true"
+                            max-size="10"
+                            on-page-change="loadMoreRecords(newPageNumber)"
+                        ></dir-pagination-controls>
+                        <div class="col-md-2 pull-right" ng-show="clearingAgentTransactionList.length > 0">
+                            <strong>
+                                {{'total' | translate}} :
+                                <span class="num">{{totalCount}}</span>
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("input.pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+    $(document).ready(function() {
+        $("#toDateId-icon").click(function(event){
+            $('#toDateId').trigger("click");
+            event.stopPropagation();
+            event.preventDefault();
+        });
+        $("#fromDateId-icon").click(function(event){
+            $('#fromDateId').trigger("click");
+            event.stopPropagation();
+            event.preventDefault();
+        });
+    });
+</script>

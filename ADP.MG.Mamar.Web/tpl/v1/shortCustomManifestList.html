@@ -1,0 +1,151 @@
+﻿<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="trans-list-head">
+                    {{'ShortCustList' | translate}}
+                </div>
+                <div class="col-md-4">
+                    <fieldset ng-disabled="$storage.get('isPcsSuperUser')">
+                        <button class="btn btn-new mt-15 ml-40" ng-click="gotoShortCustomManifestDetails()">{{'AddNew' | translate}}</button>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                        ng-options="transMode.key as transMode.value for transMode in transModes"
+                                        ng-change="onModeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                        ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                        ng-change="onCenterCodeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-space ng-model="searchParams.JobNumber" maxlength="11" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'BillType' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlBillType" class="form-control select" ng-model="searchParams.BillType"
+                                                ng-options="billType.Code as (billType.Code + '  ' + billType.NameEnglish + '   ' + billType.NameArabic) for billType in listBillType"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'Date' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="- Select Date -" ng-model="searchParams.CreatedDate">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'ImporterCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-space ng-model="searchParams.ImporterCode" maxlength="11" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-clear" ng-click="resetSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-find" ng-click="getSearchResult()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="globalDisableFlag">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'JobNumber' | translate}}</th>
+                                            <th>{{'BillType' | translate}}</th>
+                                            <th>{{'Importer' | translate}}</th>
+                                            <th>{{'GoodsDescription' | translate}}</th>
+                                            <th>{{'NetWeight' | translate}}</th>
+                                            <th>{{'GrossWeight' | translate}}</th>
+                                            <th>{{'Quantity' | translate}}</th>
+                                            <th>{{'CreatedDate' | translate}}</th>
+                                            <th>{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tr dir-paginate="item in shortManifestList | itemsPerPage: searchParams.pageSize" total-items="totalCount" current-page="searchParams.pageNumber">
+                                        <td>{{item.JobNumber}}</td>
+                                        <td>{{item.BillType}}</td>
+                                        <td>{{item.ImporterCode}} {{item.ImporterNameEng}} {{item.ImporterNameArb}}</td>
+                                        <td>{{item.GoodDescription}}</td>
+                                        <td>{{item.NetWeight}}</td>
+                                        <td>{{item.GrossWeight}}</td>
+                                        <td>{{item.Quantity}}</td>
+                                        <td>{{item.DOCreatedDate | date : 'dd/MM/yyyy hh:mm:ss'}}</td>
+                                        <td style="width:7%">
+                                            <a title="{{'Show'|translate}}" ng-click="gotoShipmentDetails(item)"><i class="fa fa-eye"></i></a>
+                                            <a title="{{'PrintEntryExitCertificate'|translate}}"  ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && printEntryExitCertificate(item)"><i class="fa fa-print"></i></a> 
+                                        </td>
+
+                                    </tr>
+                                    <tr class="no-records" ng-show="shortManifestList == null || shortManifestList.length == 0"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="shortManifestList == null || shortManifestList.length == 0">
+                        <dir-pagination-controls direction-links="true" boundary-links="true" max-size="10"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="shortManifestList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+<script type="text/javascript">
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

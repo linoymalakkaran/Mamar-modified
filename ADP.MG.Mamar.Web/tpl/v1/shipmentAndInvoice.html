@@ -1,0 +1,187 @@
+﻿<style>
+    .validationmsg {
+        color: red;
+    }
+
+    ul {
+        list-style: outside none none;
+    }
+
+    .mbp4 {
+        margin-bottom: 4%;
+    }
+
+    #snackbarEn {
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: darkred;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 10px;
+        position: fixed;
+        z-index: 1;
+        left: 8%;
+        bottom: 0px;
+        font-size: 14px;
+    }
+
+    #snackbarAr {
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: darkred;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 10px;
+        position: fixed;
+        z-index: 1;
+        left: 92%;
+        bottom: 0px;
+        font-size: 14px;
+    }
+</style>
+
+
+<div class="page-content">
+    <!-- Main content -->
+    <div class="content-wrapper">
+        <!-- Main -->
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="panel panel-flat bdr bdrt pb20 mt30">
+                    <div class="tabbable">
+                        <ul class="{{jobNumber!='' ? 'nav nav-tabs nav-tabs-solid nav-justified' : 'nav nav-tabs nav-tabs-solid nav-justified mbp4'}}" style="width:40%">
+                            <li ng-Show="jobNumber!=''" ng-class="{active: selectedTab == 'shipmentdetails'}"><a ng-click="shipmentClicked()" style="border-left:none">{{'ShipmentDetails' | translate}}</a></li>
+                            <li ng-Show="jobNumber!=''" ng-class="{active: selectedTab == 'invoice'}"><a ng-click="invoiceClicked()">{{'Invoice' | translate}}</a></li>
+                            <li class="save-pclr-btn "> <a ng-click="gototransactions();" data-toggle="tab">{{'GoToTransactions' | translate}}</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                                <div ng-if="selectedTab== 'invoice'" ng-include="'../tpl/invoice.html'" class="tab-pane active" id="solid-justified-tab1">
+                                </div>
+                                <div ng-if="selectedTab== 'shipmentdetails'" ng-include="'../tpl/shipmentDetails.html'" class="tab-pane active" id="solid-justified-tab1">
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /main  -->
+        <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    </div>
+</div>
+
+<!--<div ng-if="language=='en' && jobNumber!='' && $storage.get('preclearanceInProgress')" id="snackbarEn" >{{'preclearancestatusmessage' | translate}}</div>
+<div ng-if="language=='ae' && jobNumber!='' && $storage.get('preclearanceInProgress')"  id="snackbarAr">{{'preclearancestatusmessage' | translate}}</div>-->
+<!-- /main content -->
+<!--<div class="pull-right">
+    <ul class="fab-menu fab-menu-bottom-right" data-fab-toggle="click" data-fab-state="closed">
+        <li>
+            <a class="btn btn-red btn-rounded btn-icon btn-float sticky" ng-Show="showPreClearance" ng-click="PreClearance()">{{'PreClearance' | translate}}</a>
+        </li>
+    </ul>
+</div>-->
+<!--ng-hide="$storage.get('preclearanceInProgress')"-->
+<div title="{{'ValidateDeclaration'|translate}}" class="corner-slide">
+    <button ng-click="validateClicked()" id="trigger-overlay" type="button">
+        <img ng-show="language == 'en'" src="../assets/img/bot-plus.png" alt="">
+        <img ng-show="language == 'ae'" src="../assets/img/bot-plus-ar.png" alt="">
+    </button>
+</div>
+<fieldset ng-disabled="$storage.get('isPcsSuperUser')">
+    <div class="overlay-bottom overlay-slidedown" style="height: 60%">
+        <a class="overlay-close alwaysEnabled"></a>
+        <nav>
+            <ul>
+                <li ng-class="{'overlay-fade': AuthorityStatus.FREEZONE_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.FREEZONE_BTN_VISIBLE!='SHOW' || SendToAuthority('FREEZONE');">
+                        <img src="../assets/img/freezone_icon.png" alt=""><span>Send to FREEZONE</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.CUSTOMS_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.CUSTOMS_BTN_VISIBLE!='SHOW' || SendToAuthority('CUSTOMS')">
+                        <img src="../assets/img/govt_icon.png" alt=""><span>Send to CUSTOMS</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.ADFCA_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.ADFCA_BTN_VISIBLE!='SHOW' || SendToAuthority('ADFCA')">
+                        <img src="../assets/img/adfca_icon.png" alt=""><span>Send to ADFCA</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.ZONE_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.ZONE_BTN_VISIBLE!='SHOW' || SendToAuthority('IDB')">
+                        <img src="../assets/img/idb_icon.png" alt=""><span>Send to IDB</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.ETIHAD_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.ETIHAD_BTN_VISIBLE!='SHOW' || SendToAuthority('ETIHAD')">
+                        <img src="../assets/img/etihad_icon.png" alt=""><span>Send to ETIHAD</span>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li ng-class="{'overlay-fade': AuthorityStatus.ADNOC_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.ADNOC_BTN_VISIBLE!='SHOW' || SendToAuthority('ADNOC')">
+                        <img src="../assets/img/oil_icon.png" alt=""><span>Send to OIL COMPANY</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.MOEW_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.MOEW_BTN_VISIBLE!='SHOW' || SendToAuthority('MOEW')">
+                        <img src="../assets/img/moew_icon.png" alt=""><span>Send to MOCCAE</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.FANR_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.FANR_BTN_VISIBLE!='SHOW' || SendToAuthority('FANR')">
+                        <img src="../assets/img/fanr_icon.png" alt=""><span>Send to FANR</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.MOFA_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.MOFA_BTN_VISIBLE!='SHOW' || SendToAuthority('MOFA')">
+                        <img src="../assets/img/moew_icon.png" alt=""><span>Send to MOFA</span>
+                    </a>
+                </li>
+                <li ng-class="{'overlay-fade': AuthorityStatus.ESMA_BTN_VISIBLE!='SHOW'}">
+                    <a ng-click="AuthorityStatus.ESMA_BTN_VISIBLE!='SHOW' || SendToAuthority('ESMA')">
+                        <img src="../assets/img/esma_icon.png" alt=""><span>Send to ESMA</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <a class="btn btn-red btn-rounded btn-icon btn-float sticky" ng-Show="showPreClearance" ng-click="PreClearance()">{{'PreClearance' | translate}}</a>
+    </div>
+</fieldset>
+<div class="modal fade" id="confirmSendModalPopup" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{'Confirm' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{'ConfirmSendMsg' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                    <button type="button" class="btn btn-red alwaysEnabled" ng-click="confirmSend()">{{'Send' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //$('#trigger-overlay').on('click', function(){
+    //	$(".overlay-bottom").addClass('open');
+    //});
+    $('.overlay-close').on('click', function () {
+        $(".overlay-bottom").removeClass('open');
+    });
+    $("[data-toggle=tooltip]").tooltip();
+</script>

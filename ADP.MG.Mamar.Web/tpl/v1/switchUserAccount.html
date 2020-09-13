@@ -1,0 +1,118 @@
+﻿<!--<style>
+    .overl {
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: rgba(102,102,102,.8);
+        overflow-x: hidden;
+    }
+
+    .overl-content {
+        position: relative;
+        top: 25%;
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .panel {
+        border-radius: 0px;
+        box-shadow: 0px 0px 10px #888;
+        border-color: #266590;
+    }
+
+    .col-centered {
+        float: none;
+        margin: 0 auto;
+    }
+</style>
+
+
+
+
+<div id="dvswitchAccount" class="overl">
+    <div class="overl-content">
+        <div class="col-md-6 col-centered">
+            <div class="panel">
+                <div class="panel-heading">SELECT ACCOUNT</div>
+                <div class="panel-body mt-20">
+                    <div class="col-md-12 form-horizontal">
+                        <div class="form-group col-centered">
+                            <div class="col-md-6">
+                                <select id="ddlUserAccount" class="form-control select col-md-6" ng-model="selectedAccount"
+                                        ng-options="ua.pKey as ua.pValue for ua in userAccounts"
+                                        ng-change="onAccountChange(selectedAccount)"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-green col-md-3" ui-sref="dashboard" ui-sref-opts="{reload: true, notify: true}">CONTINUE</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-default col-md-3" ng-click="goBack()" ng-show="isNavigated == 'Y'">CANCEL</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<style>
+    #myModal {
+        padding-top: 15%;
+    }
+    .error-message
+    {
+        color:red;
+    }
+
+    .angucomplete-dropdown{
+        width:100% !important;
+    }
+</style>
+
+<div id="myModal" role="dialog" data-keyboard="false" data-backdrop="static" class="modal">
+    <div id="dvswitchAccount" class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="goBack()" ng-show="isNavigated == 'Y'" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title">{{'SelectAccount'|translate}}</h5>
+            </div>
+
+            <form action="#" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <div class="col-sm-12">
+                               
+                                <!--<select id="ddlUserAccount"  class="form-control select" data-width="100%" ng-model="selectedAccount"
+                                    ng-options="ua.pKey as ua.pValue for ua in userAccounts"
+                                    ng-change="onAccountChange(selectedAccount)"></select>-->
+
+                                <div>
+                                    <div angucomplete-alt placeholder="{{'accountph' | translate}}" ng-model="selectedAccountSuperUser"
+                                         selected-object="selectedAccountChange" local-data="userAccounts"  focus-in="OnFocusInAngucomplete()"
+                                         search-fields="pValue,pCompany" title-field="pValue,pCompany" minlength="0" show-title="true"
+                                         match-class="highlight" auto-match="true" input-class="form-control" input-name="ddlSuperUserAccount"
+                                         name="ddlSuperUserAccount" id="ddlSuperUserAccount">
+                                    </div>
+                                    <span class="error-message" ng-show="!isValidAccount">{{'ErrUserAccount' | translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 mt-10">
+                            <a ng-click="gotToDashboard();" class="btn btn-red mr-20">{{'Continue'|translate}}</a>
+                            <a class="btn btn-default text-center alwaysEnabled" ng-click="goBack()" ng-show="isNavigated == 'Y'" id="CloseModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+

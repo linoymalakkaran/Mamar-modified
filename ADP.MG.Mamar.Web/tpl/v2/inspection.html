@@ -1,0 +1,114 @@
+﻿<div>
+    <div ng-show="loading">
+        <div class="overlay">
+            <div class="loading-img"></div>
+        </div>
+    </div>
+    <div class="modal-header">
+        <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+        <h5 class="modal-title">{{'InspectionDetails'|translate}}</h5>
+    </div>
+    <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+        <div class="modal-body">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button ng-click="RecordToSave.ReferenceNumber='';addingNew=true;closingNew=false;closedNew=false;Message='';AddNewClick();" title="{{ closedNew ? ('AddNew'|translate) : ('RowAddedAlready'|translate)}}"
+                                ng-disabled="addingNew==true && !(closingNew && !RecordToSave.ReferenceNumber)" type="button" class="btn btn-green pull-right">
+                            <span class="fa fa-plus"></span> {{'AddNew'|translate}}
+                        </button>
+                    </div>
+                    <div class="row">{{inspectionModel}}</div>
+                </div>
+                <div style="padding-top:10px" class="row mt10">
+                    <div class="col-md-12">
+                        <div ng-show="closingEdit && RecordToEdit.ReferenceNumber!=inspectionModel.ReferenceNumber" class="alert alert-warning fade in">
+                            {{'DiscardConfirm'|translate}}<a style="font-weight:bold" ng-click="closingEdit=false;closedEdit=true;RecordToEdit.SerialNumber=0;RecordToEdit.ReferenceNumber='';PopulateData()">
+                                {{'Yes'|translate}}
+                            </a> | <a style="font-weight:bold" ng-click="closingEdit=false;"> {{'No'|translate}}</a>
+                        </div>
+                        <div ng-show="closingNew && RecordToSave.ReferenceNumber" class="alert alert-warning fade in">
+                            {{'SaveConfirm'|translate}}<a style="font-weight:bold" ng-click="Message='';closedNew=true;saveInspection();addingNew=false;closingNew=false;RecordToSave.ReferenceNumber=''">
+                                {{'Yes'|translate}}
+                            </a> | <a style="font-weight:bold" ng-click="Message='';RecordToSave.ReferenceNumber='';dataEnteredForNew=false;closedNew=true;addingNew=false;closingNew=false;"> {{'No'|translate}} </a>
+                        </div>
+                        <div ng-show="isGoingToDelete==true" class="alert alert-warning fade in">
+                            {{'DeleteConfirm'|translate}}<a style="font-weight:bold" ng-click="Message='';isGoingToDelete=false;addingNew=false;closingNew=false;deleteConfirmed();">
+                                {{'Yes'|translate}}
+                            </a> | <a style="font-weight:bold" ng-click="Message='';isGoingToDelete=false;"> {{'No'|translate}} </a>
+                        </div>
+                        <div class="alert alert-success" ng-show="IsValid && Message && Message!=''">
+                            {{ Message|translate}}
+                        </div>
+                        <div class="alert alert-warning" ng-show="!IsValid && Message && Message!=''">
+                            {{ Message|translate}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb20">
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{{'InspectionRef'|translate}}</th>
+                                <th style="width:20%"> {{'Action'|translate}}</th>
+                                <th>{{'Print'|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-show="addingNew && !(closingNew && !RecordToSave.ReferenceNumber)">
+                                <td>
+                                    <input placeholder="{{'InspectionRefph'|translate}}" ng-change="dataEnteredForNew=true;closingNew=false;" focus-on-condition="addingNew"
+                                           ng-model="RecordToSave.ReferenceNumber;" valid-number
+                                           allow-decimal="false" allow-negative="false" pre-decimal-upto="20" decimal-upto="0" maxlength="20" style="width:100%" type="text" />
+                                </td>
+                                <td>
+                                    <a ng-show="RecordToSave.ReferenceNumber" ng-click="saveInspection();closedNew=true" title="{{'saveInspection'|translate}}"><i class="fa fa-check"></i></a>
+                                    <a title="{{'Close'|translate}}" ng-click="closingNew=true;"><i class="fa fa-close"></i></a>
+                                </td>
+                            </tr>
+                            <tr dir-paginate="inspectionModel in existingInspections | itemsPerPage: Pagination.pageSize" current-page='Pagination.pageNumber' total-items="totalCount">
+                                <td>
+                                    <span ng-hide="RecordToEdit.SerialNumber==inspectionModel.SerialNumber">{{inspectionModel.ReferenceNumber}}</span>
+                                    <input placeholder="{{'InspectionRefph'|translate}}" focus-on-condition="RecordToEdit.SerialNumber==inspectionModel.SerialNumber" valid-number
+                                           allow-decimal="false" allow-negative="false" pre-decimal-upto="20" decimal-upto="0" maxlength="20"
+                                           style="width:100%" type="text" ng-model="inspectionModel.ReferenceNumber" ng-show="RecordToEdit.SerialNumber==inspectionModel.SerialNumber" />
+                                </td>
+                                <td ng-hide="RecordToEdit.SerialNumber==inspectionModel.SerialNumber">
+                                    <a title="{{'Edit'|translate}}" ng-click="closedEdit=false;Message='';RecordToEdit.SerialNumber=inspectionModel.SerialNumber;RecordToEdit.ReferenceNumber=inspectionModel.ReferenceNumber;">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </a>
+                                    <a ng-disabled="isGoingToDelete" title="{{'Delete'|translate}}" ng-click="deletingDataModel=inspectionModel;deleting=true;deleteInspection(deletingDataModel);">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                <td ng-show="RecordToEdit.SerialNumber==inspectionModel.SerialNumber">
+                                    <a ng-show="inspectionModel.ReferenceNumber" ng-click="updateInspection(inspectionModel);RecordToEdit.SerialNumber=0;Message='';" title="{{'SaveInspection'|translate}}"><i class="fa fa-check"></i></a>
+                                    <a title="{{'Close'|translate}}" ng-click="Message='';closingEditMode()"><i class="fa fa-close"></i></a>
+                                </td>
+                                <td>
+                                    <a ng-class="{alwaysEnabled: !$storage.get('isPcsSuperUser')}" ng-hide="RecordToEdit.SerialNumber==inspectionModel.SerialNumber" title="{{'Print'|translate}}" ng-click="PrintInspection(inspectionModel.ReferenceNumber)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                                </td>
+                            </tr>
+                            <tr ng-show="existingInspections == null && !addingNew">
+                                <td colspan="3">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="existingInspections == null">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="modal-footer">
+        <button type="button" ng-click="closeModal()" title="{{'Close'|translate}}" class="btn btn-green pull-right">{{'Close'|translate}}</button>
+    </div>
+</div>

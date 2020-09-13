@@ -1,0 +1,212 @@
+﻿<style>
+    .white {
+        color: white !important;
+    }
+    .pullrightExport {
+        float: right !important;
+    }
+
+    .pullleftExport {
+        float: left !important;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="trans-list-head">{{'ImportersBankLC' | translate}}</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row importcentrecodedp">
+                        <div class="col-md-7">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                                ng-options="transMode.key as transMode.value for transMode in transModes"
+                                                ng-change="onModeChanged()"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                                ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                                ng-change="onCenterCodeChanged()"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label col-lg-4">{{'Importer/Exporter' | translate}}</label>
+                                    <div class="col-lg-8">
+                                        <div tabindex="7" angucomplete-alt id="ImporterExporter" pause="50" placeholder="{{'ImporterXporterph' | translate}}" ng-model="importer" search-str="searchImporterExporterText" show-title="true"
+                                             local-data="importersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control white" match-class="highlight"
+                                             input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidImporter">{{'InvalidImporterExporter'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'StartDate' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParameter.startDate">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                        <span class="validation-error-label" ng-show="invalidStartEndDate">{{'ErrInValidDate'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'EndDate' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectEndDate' | translate}}" ng-model="searchParameter.endDate">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'LCNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.lcNumber">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pullrightExport" ng-show="language=='ae'">
+                        <button type="button" class="btn btn-green" ng-click="!$storage.get('isPcsSuperUser') && exportLCtoExcel('#exportTable')" ng-disabled="$storage.get('isPcsSuperUser')">
+                            {{'Export' | translate}} <i class="fa fa-file-export" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="pullleftExport" ng-if="language=='en'">
+                        <button type="button" class="btn btn-green" ng-click="!$storage.get('isPcsSuperUser') && exportLCtoExcel('#exportTable')" ng-disabled="$storage.get('isPcsSuperUser')">
+                            {{'Export' | translate}} <i class="fa fa-file-export" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-green" ng-click="getLCListBySearch()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'ImporterCode' | translate}}</th>
+                                        <th>{{'Description' | translate}}</th>
+                                        <th>{{'StartDate' | translate}}</th>
+                                        <th>{{'EndDate' | translate}}</th>
+                                        <th>{{'LCNumber' | translate}}</th>
+                                        <th>{{'LCAmount' | translate}}</th>
+                                        <th>{{'LCBalance' | translate}}</th>
+                                        <th>{{'StopFlag' | translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr dir-paginate="lc in lcList | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                    <td>{{lc.MLC_IMP_CODE}}</td>
+                                    <td>{{lc.MLC_IMP_DESC_ENG}} {{lc.MLC_IMP_DESC_ARB}}</td>
+                                    <td>{{::lc.MLC_START_DATE |  date:'dd/MM/yyyy'}}</td>
+                                    <td>{{::lc.MLC_END_DATE |  date:'dd/MM/yyyy'}}</td>
+                                    <td>{{lc.MLC_LC_NUMBER}}</td>
+                                    <td>{{lc.MLC_LC_AMOUNT}}</td>
+                                    <td>{{lc.MLC_LC_BALANCE}}</td>
+                                    <td>
+                                        <div class="form-group form-checkbox">
+                                            <div class="fleft">
+                                                <label class="control control--checkbox">
+                                                    <input type="checkbox" ng-model="lc.MLC_STOP_FLAG" ng-checked="lc.MLC_STOP_FLAG == 'Y'" disabled="disabled">
+                                                    <span class="control__indicator"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a><i class="fa fa-eye" aria-hidden="true" title="{{'View' | translate}}" ng-click="gotoLCDetails()"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="lcList == null || lcList.length == 0"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="lcList == null || lcList.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-if="lcList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                </div>
+            </div>
+            <table id="exportTable" style="display:none" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="background-color:#A29061;">{{'ImporterCode' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'Description' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'StartDate' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'EndDate' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'BankGuaranteeNumber' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'IssueDate' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'ExpiryDate' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'LCAmount' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'LCBalance' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'Remarks' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'BankCode' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'BankName' | translate}}</th>
+                        <th style="background-color:#A29061;">{{'ReportDate' | translate}}</th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="item in lcReportData">
+                    <td>{{item.IMP_CODE}}</td>
+                    <td>{{item.IMP_NAME_ENG}} {{item.IMP_NAME_ARB}}</td>
+                    <td>{{item.START_DATE | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{item.END_DATE | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{item.BANK_GAURANTEE_NUM}}</td>
+                    <td>{{item.ISSUE_DATE | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{item.EXP_DATE | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{item.LC_AMOUNT}}</td>
+                    <td>{{item.LC_BALANCE}}</td>
+                    <td>{{item.REMARKS}}</td>
+                    <td>{{item.BANK_CODE}}</td>
+                    <td>{{item.BANK_NAME}}</td>
+                    <td>{{item.REPORT_DATE | date : 'dd/MM/yyyy'}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="../Scripts/libs/jquery/jquery.table2excel.min.js"></script>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>
+
+
+

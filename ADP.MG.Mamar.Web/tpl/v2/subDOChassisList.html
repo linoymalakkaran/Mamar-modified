@@ -1,0 +1,201 @@
+﻿<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'ChassisDetails' | translate}}</div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <div class="row g-grey-shade">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'ChassisNo' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" placeholder="" ng-model="parameters.searchString">
+                                    </div>
+                                    <button type="button" class="btn btn-green" ng-click="GetSearchResult()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="pull-right">
+                                    <div class="pull-right">
+                                        <fieldset ng-disabled="$storage.get('isPcsSuperUser') || clearanceFlag == 'Y'">
+                                            <a class="btn btn-red" ng-click="addNewChassis()">{{'AddNew' | translate}}</a>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="$storage.get('isPcsSuperUser') || clearanceFlag == 'Y'">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'ChassisNumber' | translate}}</th>
+                                            <th>{{'EngineNumber' | translate}}</th>
+                                            <th>{{'EnginePower' | translate}}</th>
+                                            <th>{{'Payload' | translate}}</th>
+                                            <th>{{'Weight' | translate}}</th>
+                                            <!--<th>{{'MadeIn' | translate}}</th>-->
+                                            <th>{{'Model' | translate}}</th>
+                                            <th>{{'Color' | translate}}</th>
+                                            <!--<th>{{'PoliceColor' | translate}}</th>-->
+                                            <th>{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="savedSuccess" class="alert-success">
+                                            <td colspan="8">
+                                                <span>{{'SavedSuccess'|translate}}</span>
+                                                <a ng-click="savedSuccess=false" class="close" style="font-size:19px">&times;</a>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="addNew" ng-keydown="onKeyDownChassisList($event)" class="border">
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="recordToSave.ChassisNumber" restrict-space restrict-special-chars-exclude ng-change="validateChassisNo()" maxlength="30" />
+                                                <span class="col-md-12 validation-error-label" ng-show="!validChassis">{{'ChassisNoRequired' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="recordToSave.EngineNo" restrict-space restrict-special-chars-exclude maxlength="30" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="recordToSave.EnginePower" restrict-space only-digits maxlength="6" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="recordToSave.Payload" restrict-space only-digits maxlength="6" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" ng-model="recordToSave.Weight" restrict-space only-digits maxlength="6" />
+                                            </td>
+                                            <!--<td>
+                                                <div ng-keydown="lookupKeyDown($event,'MadeIn','add',null)" angucomplete-alt placeholder="{{'Countryph' | translate}}" class="col-md-10" ng-model="selectedMadeInModel"
+                                                     local-data="madeIn" search-fields="Code,EnglishName,ArabicName" title-field="Code" minlength="1"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlMadeIn" id="MadeIn" selected-object="selectedMadeIn" tabindex="2" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('MadeIn','add',null)"></i></a>
+                                                <span class="col-md-12 validation-error-label" ng-show="!countryValid">{{'CountryRequired' | translate}}</span>
+                                            </td>-->
+                                            <td>
+                                                <input type="text" class="form-control" restrict-space only-digits ng-model="recordToSave.ModelYear" ng-change="ValidateModelYear()" maxlength="4" />
+                                                <span class="col-md-12 validation-error-label" ng-show="!validModelYr">{{'ModelYearInvalidMsg' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <div ng-keydown="lookupKeyDown($event,'Color','add',null)" id="Color" angucomplete-alt placeholder="{{'ColorNameph' | translate}}" field-required="true" class="col-md-10"
+                                                     local-data="color" search-fields="Code,EnglishName,ArabicName" title-field="EnglishName" minlength="1" ng-model="selectedColorCode"
+                                                     input-class="form-control" match-class="highlight" input-name="Color" selected-object="selectedColor" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Color','add',null)"></i></a>
+                                                <span class="col-md-12 validation-error-label" ng-show="!colorValid">{{'ValidColor' | translate}}</span>
+                                            </td>
+                                            <!--<td>
+                                                <div ng-keydown="lookupKeyDown($event,'PoliceColor')" angucomplete-alt id="PoliceColorCode" placeholder="{{'PoliceColorNameph' | translate}}" ng-model="selectedPColor" class="col-md-10" search-str="selectedPColor"
+                                                     local-data="policeColor" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control" match-class="highlight"
+                                                     input-name="PoliceColorCode" selected-object="selectedPoliceColor" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('PoliceColor')"></i></a>
+                                                <div class="col-md-12 error-message" ng-show="!validPoliceColor">{{'ValidPoliceColor' | translate}}</div>
+                                            </td>-->
+                                            <td>
+                                                <a><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveChassis('add')"></i></a>
+                                                <a><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelChassisSave()"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        <tr dir-paginate="chassis in chassisList | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.ChassisNumber}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" ng-model="recordToSave.ChassisNumber" restrict-space restrict-special-chars-exclude ng-change="validateChassisNo()" maxlength="30" />
+                                                <span class="col-md-12 validation-error-label" ng-show="!validChassis">{{'ChassisNoRequired' | translate}}</span>
+                                            </td>
+
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.EngineNo}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" ng-model="recordToSave.EngineNo" restrict-space restrict-special-chars-exclude maxlength="30" />
+                                            </td>
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.EnginePower}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" ng-model="recordToSave.EnginePower" restrict-space only-digits maxlength="6" />
+                                            </td>
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.Payload}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" ng-model="recordToSave.Payload" restrict-space only-digits maxlength="6" />
+                                            </td>
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.Weight}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" ng-model="recordToSave.Weight" restrict-space only-digits maxlength="6" />
+                                            </td>
+
+                                            <!--<td ng-show="!editRecord[chassis.RNum]">{{chassis.CountryCode}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <div ng-keydown="lookupKeyDown($event,'MadeIn','edit',chassis.RNum)" angucomplete-alt placeholder="{{'Countryph' | translate}}" class="col-md-10" ng-model="selectedMadeInModelEdit[chassis.RNum]"
+                                                     local-data="madeIn" search-fields="Code,EnglishName,ArabicName" title-field="Code" minlength="1"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlMadeInEdit" id="MadeInEdit" selected-object="selectedMadeInEdit[chassis.RNum]" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('MadeIn','edit',chassis.RNum)"></i></a>
+                                                <span class="col-md-12 validation-error-label" ng-show="!countryValid">{{'CountryRequired' | translate}}</span>
+                                            </td>-->
+
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.ModelYear}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <input type="text" class="form-control" restrict-space only-digits ng-model="recordToSave.ModelYear" ng-change="ValidateModelYear()" maxlength="4" />
+                                                <span class="col-md-12 validation-error-label" ng-show="!validModelYr">{{'ModelYearInvalidMsg' | translate}}</span>
+                                            </td>
+
+                                            <td ng-show="!editRecord[chassis.RNum]">{{chassis.ColorArabic}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <div ng-keydown="lookupKeyDown($event,'Color','edit',chassis.RNum)" id="ColorEdit" angucomplete-alt placeholder="{{'ColorNameph' | translate}}" field-required="true" class="col-md-10"
+                                                     local-data="color" search-fields="Code,EnglishName,ArabicName" title-field="EnglishName" minlength="1" ng-model="selectedColorCodeEdit[chassis.RNum]"
+                                                     input-class="form-control" match-class="highlight" input-name="ColorEdit" selected-object="selectedColorEdit[chassis.RNum]" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Color','edit',chassis.RNum)"></i></a>
+                                                <div class="col-md-12 validation-error-label" ng-show="!colorValid">{{'ValidColor' | translate}}</div>
+                                            </td>
+
+                                            <!--<td ng-show="!editRecord[chassis.RNum]"><span ng-show="chassis.PoliceColorCode != '0'">{{chassis.PoliceColorCode}}</span>{{chassis.PoliceColorEngName}}{{chassis.PoliceColorArbName}}</td>
+                                            <td ng-show="editRecord[chassis.RNum]">
+                                                <div ng-keydown="lookupKeyDown($event,'PoliceColor')" angucomplete-alt id="PoliceColorCode" placeholder="{{'PoliceColorNameph' | translate}}" ng-model="selectedPColor" class="col-md-10" search-str="selectedPColor"
+                                                     local-data="policeColor" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control" match-class="highlight"
+                                                     input-name="PoliceColorCode" selected-object="selectedPoliceColor" show-Title="true">
+                                                </div>
+                                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('PoliceColor')"></i></a>
+                                                <div class="col-md-12 error-message" ng-show="!validPoliceColor">{{'ValidPoliceColor' | translate}}</div>
+                                            </td>-->
+
+                                            <td>
+                                                <a ng-show="editRecord[chassis.RNum]"><i class="fa fa-check" aria-hidden="true" title="{{'Save' | translate}}" ng-click="saveChassis('edit', chassis)"></i></a>
+                                                <a ng-show="editRecord[chassis.RNum]"><i class="fa fa-times" aria-hidden="true" title="{{'Cancel' | translate}}" ng-click="cancelChassisSave(chassis)"></i></a>
+                                                <a ng-show="!editRecord[chassis.RNum]"><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="editChassisDetails(chassis)"></i></a>
+                                                <a ng-show="!editRecord[chassis.RNum]" title="{{'Delete' | translate}}" ng-click="deleteChassis($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="chassisList == null || chassisList.length == 0"><td colspan="8">{{'NoItems' | translate}}</td></tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <span class="col-md-4 pl-15" ng-show="chassisList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        <div class="pull-right mr-10">
+                            <a class="btn btn-green" ng-click="backtoSubDoDetails()">{{'Back' | translate}}</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="chassisList == null || chassisList.length == 0">
+                        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+</div>

@@ -1,0 +1,557 @@
+﻿<style>
+    #ConfirmDeleteModalPopup, #successModal, #saveSuccessModal, #errorModal .modal-dialog, ConfirmSaveVehicleRegistration {
+        padding-top: 15%;
+    }
+
+    #saveSuccessModal, #successModal {
+        z-index: 9999999;
+    }
+</style>
+<div class="modal" id="errorModal" tabindex="-1" style="z-index:9999999;" role="dialog">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="alert alert-danger">Something went wrong. Please try again.</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="errorModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="warningModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="alert alert-warning">{{'Warning' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="warningModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="warningModalConfirm" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                  <i class="fa fa-warning"></i> {{'Warning' | translate}} 
+                </div>
+                <div class="modal-body">
+                    <p class="alert alert-warning">{{'Warning' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" ng-click="warningMsgOKClick()" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="successModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="alert alert-success">{{'DoneSuccessfully' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="CloseModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="saveSuccessModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="alert alert-success">{{'DoneSuccessfully' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="CloseSuccessModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="ConfirmDeleteModalPopup" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{'ConfirmDelete' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{'ConfirmDelMsg' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                    <button type="button" class="btn btn-red alwaysEnabled" ng-click="deleteOkay()">{{'Delete' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ConfirmDeleteIDModalPopup" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{'ConfirmDelete' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{'ConfirmDelMsg' | translate}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                    <button type="button" class="btn btn-red alwaysEnabled" ng-click="deleteOkayID()">{{'Delete' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmDeleteConsolidatedModalPopup" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{'ConfirmDelete' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{'ConfirmDelMsg' | translate}}</p>
+                    <div class="col-md-12">
+                        <label>
+                            <input type="radio" name="houseBL" ng-checked="true" value="true" ng-model="IsHouseBL" ng-click="isHouseBL()">
+                            {{'HouseBL' | translate}}  <label style="color:red">({{cHouseBL}})</label>
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <label>
+                            <input type="radio" name="houseBL" ng-model="IsMasterBL" ng-click="isMasterBL()">
+                            {{'MasterBL' | translate}} <label style="color:red">{{masterBLDeleteMessage}} </label>
+                        </label>
+                    </div>
+                    </br>
+                    </br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                    <button type="button" class="btn btn-red alwaysEnabled" ng-click="deleteOkay()">{{'Delete' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmUserAccount" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title">CONFIRM ACCOUNT</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Please select an account to proceed.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-red" ng-click="switchAccount('POSTPAID')">POSTPAID</button>
+                    <button type="button" class="btn btn-red" ng-click="switchAccount('PREPAID')">PREPAID</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="importerExporterLookup" role="dialog">
+    <div style="width:90%" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{'importerexporter' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <div class="panel panel-flat bdr bdrt pb-10 mt-15">
+                    <div class="panel-body">
+                        <div class="row g-grey-shade col-md-12">
+                            <div class="col-md-12 sub-title">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <h6>
+                                            {{'SearchBy' | translate }}
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'ImporterCode' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.importerCode" type="text" class="form-control" placeholder="" ng-trim="false">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'ImporterName' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.importername" type="text" class="form-control" placeholder="" ng-trim="false">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'TelNumber' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.telephone" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.telephone" only-numbers>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'MobileNumber' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.mobile" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.mobile" only-numbers>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'FileNumber' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.fileNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.fileNumber">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'AdccCode' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.addcCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.addcCode">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'MunicipalityCode' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.municipCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.municipCode">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'POBox' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.poBox" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.poBox" only-numbers>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'CityCode' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.cityCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.cityCode">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'Category' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <select id="selectCategory" name="selectCategory" ng-model="searchParameter.categoryCode" class="form-control select"
+                                                        ng-options="item.CategoryCode as (item.CategoryCode + ' - ' + item.CategoryEngName + ' ' + item.CategoryArbName) for item in categoryCodes"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'VATTransaction' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input ng-model="searchParameter.vatTrn" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.poBox" only-numbers>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'UAEID' | translate}}</label>
+                                            <div class="col-lg-8">
+                                                <input name="uaeId" type="text" class="form-control" ng-model="searchParameter.uaeId" restrict-space only-Digits maxlength="15">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                                {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                            </button>
+                            <button type="submit" class="btn btn-green" ng-click="searchResults()">
+                                {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered lookupTable">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'Importer/Exporter' | translate}}</th>
+                                            <th>{{'POBox' | translate}}</th>
+                                            <th>{{'Tel' | translate}}</th>
+                                            <th>{{'Mob' | translate}}</th>
+                                            <th>{{'ADCC' | translate}}</th>
+                                            <th>{{'Munc'| translate}}</th>
+                                            <th>{{'Category' | translate}}</th>
+                                            <th>{{'VATTransaction' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tr ng-class="{selected: gridItem.ImporterCode==importerExporterItemSelected.ImporterCode}" ng-click="setImporterExporter(gridItem)" dir-paginate="gridItem in importersExporters | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber" pagination-id="importerExporterListPagination">
+                                        <td>{{gridItem.ImporterCode}} {{gridItem.ImporterDescEng}} {{gridItem.ImporterDescArb}}</td>
+                                        <td>{{gridItem.ImporterPOBox}}</td>
+                                        <td>{{gridItem.ImporterTelPhoneNo}}</td>
+                                        <td>{{gridItem.ImporterMobileNo}}</td>
+                                        <td>{{gridItem.ImporterADCCCode}}</td>
+                                        <td>{{gridItem.ImporterMuncipalityCode}}</td>
+                                        <td>{{gridItem.ImporterCategoryCode}}</td>
+                                        <td>{{gridItem.VATTransaction}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span></td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="importersExporters == null || importersExporters.length == 0"><td colspan="8">{{'NoItems' | translate}}</td></tr>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12 pagination pl25 mb20 mr10" ng-hide="importersExporters == null || importersExporters.length == 0">
+                            <dir-pagination-controls pagination-id="importerExporterListPagination" direction-links="true" boundary-links="true"
+                                                     on-page-change="loadMoreRecords(newPageNumber)">
+                            </dir-pagination-controls>
+                            <span class="col-md-2 pull-right" ng-show="importersExporters.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="WarningModalOnForm" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:250px">
+                        <p class="alert alert-warning">{{'Warning' | translate}}</p>
+                        <table class="table table-bordered" border="1">
+                            <tr ng-repeat="x in Warning">
+                                <td><i class="fa fa-warning" style="font-size:20px"></i>{{x.Warning}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="WarningModalOnForm3" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal" id="ChassisWarningModalOnForm" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:800px;">
+                <div class="modal-body">
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:250px">
+                        <p class="alert alert-warning">{{'Warning' | translate}}</p>
+                        <div id="ChassisdivResults">
+                        </div>
+                        <table class="table table-bordered" id="ChassisWarningList" border="1">
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="ChassisWarningModalOnForm3" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="ConfirmSaveVehicleRegistration" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{'SaveDescription' | translate}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{'VehicleRegistrationDescription' | translate}}</p>
+                    </br>
+                    </br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                    <button type="button" class="btn btn-red alwaysEnabled" ng-click="SaveVehicleInformation()">{{'ok' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="ChassisErrorModalOnForm" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:800px;">
+                <div class="modal-body">
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:250px">
+                        <p class="alert alert-warning">{{'Error' | translate}}</p>
+                        <div id="ChassisErrordivResults">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="ChassisErrorModalOnForm3" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var errorList = {};
+    //ConfirmSaveVehicleRegistration
+    function ChassisErrorModalOnForm(msg)
+    {
+        $('#ChassisErrorModalOnForm p.alert-danger').text(msg);
+        $('#ChassisErrorModalOnForm').modal('show');
+    }
+    function ChassisInvoiceWarningModalOnForm(msg) {
+        $('#ChassisWarningModalOnForm p.alert-danger').text(msg);
+        $('#ChassisWarningModalOnForm').modal('show');
+    }
+
+    function WarningModalOnFormM(msg) {
+        $('#WarningModalOnForm p.alert-danger').text(msg);
+        $('#WarningModalOnForm').modal('show');
+    }
+
+    function modalErrorShow(msg) {
+        $('#errorModal p.alert-danger').html(msg);
+        $('#errorModal').modal('show');
+    }
+    function modalSuccessShow(msg) {
+        $('#successModal p.alert-success').html(msg);
+        $('#successModal').modal('show');
+    }
+    function modalWarningShow(msg) {
+        $('#warningModal p.alert-warning').html(msg);
+        $('#warningModal').modal('show');
+    }
+    function modalWarningConfirmShow(msg) {
+        $('#warningModalConfirm p.alert-warning').html(msg);
+        $('#warningModalConfirm').modal('show');
+    }
+    function notifyErrorMessage(msg)
+    { 
+        new Noty({
+            text: msg,
+            type: 'error',
+            timeout: false
+        }).show();
+    }
+    function notifySuccessMessage(msg) {
+        new Noty({
+            text: msg,
+            type: 'success',
+            timeout: false
+        }).show();
+    }
+    function showSuccessMessage(msg) {
+        swal({
+            title: '',
+            text: msg,
+            confirmButtonColor: "#66BB6A",
+            type: "success",
+            html: true
+        });
+    }
+    function showErrorMessage(msg) {
+        swal({
+            title: '',
+            text: msg + "!",
+            confirmButtonColor: "#EF5350",
+            type: "error"
+        });
+    }
+</script>

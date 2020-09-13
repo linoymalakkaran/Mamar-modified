@@ -1,0 +1,383 @@
+﻿<script src="../Subscription/js/subscriptionController.js"></script>
+<div ng-app="mamarApp" ng-controller="subscriptionController">
+    <div class="row" ng-show="isHeaderMenu">
+        <div class="col-md-12">
+            <div>
+                <div class="col-md-4 card-content mt20">
+                    <button ng-if="isReport" class="btn-tab" ng-click="mainManu()">{{ 'Subscription' |  translate }}</button>
+                    <button ng-if="!isReport" class="btn-tab" ng-click="mainManu()">{{ 'Paymentadvice' | translate }}</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="!isReport">
+        <!-- Subscribe By User-->
+        <div id="subscriptionContent" ng-show="!isAdmin && isSubscriptionRequired != null">
+            <div>
+                <div class="">
+                    <div class="col-md-12 card-title" ng-show="subStartDate == null">
+                        <img src="../Subscription/img/subscribe-icon.png" width="45" alt="" ng-if="language == 'en'" />
+                        <img src="../Subscription/img/subscribe-icon.png" width="45" alt="" ng-if="language == 'ae'" style="float: right;" />
+                        <h1>{{'SubscriptionMsg'|translate}} <a class="fas fa-info-circle fa-lg" title="Maqta Services" style="color:mediumvioletred" ng-click="showMaqtaService()"></a></h1>
+                        <h4> {{'SubscriptionHeader4Msg'| translate}}</h4>
+                        <!--<h4>All Companies are required to subscribe to MAQTA Portal in order to access all e-services. You may choose the most convenient subscription plan that<br />  caters for your business needs.</h4>-->
+                    </div>
+                    <div class="col-md-12 card-title" ng-show="subStartDate != null">
+                        <img src="../Subscription/img/subscribe-icon.png" width="45" alt=""  ng-if="language == 'en'" />
+                        <img src="../Subscription/img/subscribe-icon.png" width="45" alt="" ng-if="language == 'ae'" style="float: right;" />
+                        <h1>
+                            {{'SubscriptionHeader1Msg'| translate}}
+                            <a class="fas fa-info-circle fa-lg" title="Maqta Services" style="color:mediumvioletred" ng-click="showMaqtaService()"></a>
+                            <!--Thank You For Subscribing to Maqta and manage your business online-->
+                        </h1>
+                        <h4>{{'SubscriptionValidMsg'| translate}} {{ subEndDate | date: "dd/MMM/yyyy"   }}  </h4>
+                    </div>
+                    <!-- Card 1 -->
+                    <div ng-repeat="sub in subscriptionContent">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="card-container manual-flip">
+                                <div class="card">
+                                    <div class="front">
+                                        <div class="card-content">
+                                            <h3 ng-if="language == 'en'">{{ sub.name }}</h3>
+                                            <h3 ng-if="language == 'ae'">{{ sub.nameArb }}</h3>
+                                            <div class="card-main">
+                                                <h2 ng-if="language == 'en'"><span>{{ sub.fee }}</span> {{ sub.shortDescription }}</h2>
+                                                <h2 ng-if="language == 'ae'"><span>{{ sub.fee }}</span> {{ sub.shortDescriptionArb }}</h2>
+
+                                                <div>
+                                                    <h4 class="card-subtitle text-center" ng-show="sub.isVAT">{{'SubjecttoVAT' | translate }}<span>({{ sub.vatamt | number:2 }} AED) </span></h4>
+                                                    <div ng-if="language == 'en'" ng-repeat="vat in sub.vatDescriptions">
+                                                        <p title="{{vat}}">{{vat.substr(0,40)}}</p>
+                                                    </div>
+                                                    <div ng-if="language == 'ae'" ng-repeat="vat in sub.vatDescriptionsArb">
+                                                        <p title="{{vat}}">{{vat.substr(0,40)}}</p>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <ul class="list-group">
+                                                    <li ng-if="language == 'en'" ng-repeat="unlimit in sub.unlimitedAccessDesc" style="text-overflow:ellipsis" title="{{ unlimit }}"><i class="fas fa-check-circle"></i>{{ unlimit.substr(0,40) }}</li>
+                                                    <li ng-if="language == 'ae'" ng-repeat="unlimit in sub.unlimitedAccessDescArb" style="text-overflow:ellipsis" title="{{ unlimit }}"><i class="fas fa-check-circle"></i>{{ unlimit.substr(0,40) }}</li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn btn-primary" ng-click="rotateCard()" id="{{sub.id }}" ng-disabled="">{{buttonSubscribeText }}</button>
+                                            <!--<button ng-if="SubscriptionData.isRenewal" class="btn btn-primary" ng-click="rotateCard()" id="{{sub.id }}" ng-disabled="">{{'Renew' | translate}}</button>-->
+                                        </div>
+                                    </div> <!-- end front panel -->
+
+                                    <div class="back">
+                                        <div class="card-content">
+                                            <h3 ng-if="language == 'en'">{{ sub.name }}</h3>
+                                            <h3 ng-if="language == 'ae'">{{ sub.nameArb }}</h3>
+                                            <div class="card-main">
+                                                <h2 ng-if="language == 'en'"><span>{{ sub.fee }}</span> {{ sub.shortDescription }}</h2>
+                                                <h2 ng-if="language == 'ae'"><span>{{ sub.fee }}</span> {{ sub.shortDescriptionArb }}</h2>
+                                                <h4 class="card-subtitle text-center" ng-show="sub.isVAT">{{'SubjecttoVAT' | translate }}<span>({{ sub.vatamt | number:2 }}  AED) </span></h4>
+                                                <hr>
+                                                <p>
+                                                    {{'PayFeeTxt'| translate}}
+                                                    <!--You may pay the fees online or alternatively choose to pay later by cash/cheque at MG counter.-->
+                                                </p>
+                                            </div>
+                                            <button ng-click="Pay(sub.id)" class="btn btn-primary">{{'PayOnline'| translate}}</button>
+                                        </div>
+                                    </div> <!-- end back panel -->
+                                </div> <!-- end card -->
+                            </div> <!-- end card-container -->
+                        </div>
+                        <!-- End Card 1 -->
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right p-later">
+                        <!--<a href="#" class="btn btn-primary" style="color:white" ng-click="payLater()">{{subLaterText}}</a>-->
+                        <button class="btn btn-primary" style="color:white" ng-click="payLater()">{{subLaterText}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Subscribe By Admin-->
+        <div id="subscriptionAdmin" class="subscribe" ng-show="isAdmin && isSubscriptionRequired != null">
+            <div class="row">
+                <div class="col-md-12 card-title">
+                    <img src="../subscription/img/subscribe-icon.png" width="45" alt="" />
+                    <h1>Subscribe for a company</h1>
+                </div>
+                <form id="chequePaymentForm" name="chequePaymentForm">
+                    <div class="col-md-12">
+                        <div class="col-md-4 col-sm-6 form-group">
+                            <label class="control-label">Company Name<sup>*</sup></label>
+                            <input class='form-control' type='text' data-placeholder="Choose Company" placeholder="Search By Company Name or UCID" id="subCustomerName" required />
+                        </div>
+                        <div class="col-md-4 col-sm-6 form-group">
+                            <label class="control-label">Unique Customer ID<sup></sup></label>
+                            <input type="text" class="form-control" placeholder="Unique Customer ID" ng-model="selectedCompany.ucid" ng-disabled="true">
+                        </div>
+                        <div class="col-md-4 col-sm-6 form-group">
+                            <label class="control-label">TRN (VAT Registration Number)<sup></sup></label>
+                            <input type="text" class="form-control" placeholder="VAT Registration Number" ng-model="selectedCompany.vattrnno" ng-disabled="true">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class=" sub-panel">
+                            <div class="col-md-3 col-sm-6 form-group">
+                                <label class="control-label mycheck">
+                                    Cheque Payment
+                                    <input type="checkbox" ng-disabled="!subscribeCompany.subscriptionRequired || selectedCompany.ucid == null || selectedCompany.ucid == ''" ng-click="onClickChequePayment()" ng-checked="paymentData.ChequePayment == true" ng-model="paymentData.ChequePayment" />
+                                </label>
+                            </div>
+                            <div ng-show="paymentData.ChequePayment">
+
+                                <div class="col-md-3 col-sm-6 form-group">
+                                    <label class="control-label">Cheque No<sup>*</sup></label>
+                                    <input class='form-control' type="text" placeholder="Cheque No" ng-model="paymentData.ChequeNumber" only-Digits-Input maxlength="6" required />
+                                </div>
+                                <div class="col-md-3 col-sm-6 form-group">
+                                    <label class="control-label">Cheque Date<sup>*</sup></label>
+                                    <input type="date" id="chequeDate" class="form-control unstyled" placeholder="yyyy-MM-dd" ng-model="paymentData.ChequeDate" ng-keyup="chequeDateKeyPress($event)" required />
+                                </div>
+                                <div class="col-md-3 col-sm-6 form-group">
+                                    <label class="control-label">Bank Name<sup>*</sup></label>
+                                    <input type="text" class="form-control" placeholder="Bank Name" ng-model="paymentData.BankName" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Card N -->
+                <div ng-repeat="sub in subscriptionContent">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card-container manual-flip">
+                            <div class="card">
+                                <div class="front">
+                                    <div class="card-content">
+                                        <h3>{{sub.name}}</h3>
+                                        <div class="card-main">
+                                            <h2><span>{{sub.fee}}</span> {{ sub.shortDescription }}</h2>
+                                            <h4 class="card-subtitle text-center" ng-show="sub.isVAT">Subject to VAT <span>({{ sub.vatamt | number:2 }} AED) </span></h4>
+                                        </div>
+                                        <button class="btn btn-primary" ng-click="rotateCard()" id="admin{{sub.id }}">{{subscriptionTextCompany}}</button>
+                                    </div>
+                                </div> <!-- end front panel -->
+
+                                <div class="back">
+                                    <div class="card-content">
+                                        <h3>{{sub.name}}</h3>
+                                        <div class="card-main">
+                                            <h2><span>{{sub.fee}}</span> {{ sub.shortDescription }}</h2>
+                                            <h4 class="card-subtitle text-center" ng-show="sub.isVAT">Subject to VAT <span>({{ sub.vatamt | number:2 }} AED) </span></h4>
+                                        </div>
+                                        <button ng-click="Pay(sub.id)" class="btn btn-primary" ng-disabled="!isEnablePay && chequePaymentForm.$invalid">{{ payOnlineText}}</button>
+                                    </div>
+                                </div> <!-- end back panel -->
+                            </div> <!-- end card -->
+                        </div> <!-- end card-container -->
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right p-later">
+                        <button class="btn btn-primary" style="color:white" ng-click="payLater('admin')">Subscribe Later</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--Model Popup-->
+    <div class="modal" id="messagePopup" role="dialog" aria-labelledby="messagePopup"
+         aria-hidden="true" style="padding-top:15%">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">NOTICE</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                    <p ng-bind-html="message">
+                    </p>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="subscribe_later" role="dialog" aria-labelledby="subscribe_later" 
+         aria-hidden="true" style="padding-top:15%">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">{{'Notice' | translate}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                    <p ng-if="!SubscriptionData.isGracePeriodOver  && ( SubscriptionData.subscriptionRequired)">
+                        {{ 'NoOfDaysLeftMsg1' | translate }}<b> {{ SubscriptionData.numberofDaysleft }} </b>{{ 'NoOfDaysLeftMsg2' | translate }} 
+                    </p>
+                    <p ng-if="SubscriptionData.subscriptionRequired && SubscriptionData.isGracePeriodOver">
+                        {{ 'SubscriptionExpired' | translate }}
+                    </p>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <div class="pull-right mt-20">
+                        <button class="btn btn-primary" ng-click="payLaterOK()">{{ 'Ok' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="payfformwrp"></div>
+    <div id="report" class="card-content" ng-show="isReport">
+        <div>
+            <div class="">
+                <div class="col-md-12">
+                    <div class="col-md-12 reportHeader sub-panel">
+                        <div ng-show="isAdmin">
+                            <div class="col-md-4 col-sm-6 form-group">
+                                <label class="control-label">{{ 'Company' | translate }}</label>
+                                <input class='form-control' type='text' data-placeholder="Choose Company" placeholder="Search By Company Name or UCID" ng-model="searchParam.UCID" id="repCustomerName" />
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6 form-group">
+                            <label class="control-label">{{ 'SubscriptionNo' | translate }}</label>
+                            <input type="text" class="form-control unstyled" ng-model="searchParam.SubscriptionNo" />
+                        </div>
+                        <div class="col-md-2 col-sm-6 form-group">
+                            <label class="control-label">{{ 'OnlineRef' | translate }}</label>
+                            <input type="text" class="form-control unstyled" ng-model="searchParam.PaymentRefNo" />
+                        </div>
+                        <div class="col-md-2 col-sm-6 form-group">
+                            <label class="control-label">{{ 'FromDate' | translate }}</label>
+                            <input type="date" id="fromDate" class="form-control unstyled" ng-model="searchParam.FromDate" ng-change="fromDateValidate()" placeholder="yyyy-MM-dd" />
+                        </div>
+                        <div class="col-md-2 col-sm-6 form-group">
+                            <label class="control-label">{{ 'ToDate' | translate }}</label>
+                            <input type="date" id="toDate" class="form-control unstyled" ng-model="searchParam.ToDate" placeholder="yyyy-MM-dd" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right  mt20">
+                        <button class="btn btn-primary" ng-click="getReportData()">{{ 'Find' | translate }}</button>
+                        <button class="btn btn-primary" ng-click="clearSearch()">{{ 'Clear' | translate }}</button>
+                    </div>
+                </div>
+                <div class="col-md-12 table-responsive  mb20">
+                    <div class="col-md-12  sub-panel plr20">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td style="width:7%;">{{ 'SubscriptionNo' | translate }}</td>
+                                    <td style="width:10%;">{{ 'Type' | translate }}</td>
+                                    <td style="width:14%;">{{ 'SubscriptionDate' | translate }}</td>
+                                    <td style="width:3%;">{{ 'Status' | translate }}</td>
+                                    <td style="width:6%;">{{ 'PaymentDate' | translate }}</td>
+                                    <td style="width:3%;">{{ 'Amount' | translate }}</td>
+                                    <td style="width:9%;">{{ 'OnlineRef' | translate }}</td>
+                                    <td ng-if="isAdmin" style="width:20%;">Company</td>
+                                    <td style="width:5%;">{{ 'Action' | translate }}</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr dir-paginate="gridItem in subReport | itemsPerPage: searchParam.PageSize" total-items="totalCount" current-page="searchParam.PageNumber" pagination-id="subReportPager" ng-class="{ redcolor:gridItem.subscription == 'Expired'}">
+                                    <td class="tdbreak">{{gridItem.subscriptionNo}}</td>
+                                    <td class="tdbreak">{{gridItem.subscriptionTypeText}}</td>
+                                    <td class="tdbreak">{{gridItem.fromDate | date:'[ dd-MMM-yyyy ]'}} - {{gridItem.toDate | date:'[ dd-MMM-yyyy ]'}}</td>
+                                    <td class="tdbreak">{{gridItem.subscription}}</td>
+                                    <td class="tdbreak">{{gridItem.paymentDate | date:'dd/MM/yyyy'}}</td>
+                                    <td class="tdbreak">{{gridItem.amount | number : 2}}</td>
+                                    <td class="tdbreak">{{gridItem.paymentRefNumber}}</td>
+                                    <td ng-if="isAdmin" class="tdbreak">{{gridItem.companyName}}</td>
+                                    <td class="tdbreak">
+                                        <a title="Download Payment Advice" ng-click="downloadReport(gridItem,'paymentadvice')"><img src="../subscription/img/download_paymentadvice.png" width="25" alt="" /></a>
+                                        <a title="Download Receipt" ng-click="downloadReport(gridItem,'receipt')" ng-hide="gridItem.paymentRefNumber == null || gridItem.paymentRefNumber == ''"><img src="../subscription/img/download_receipt.png" width="25" alt="" /></a>
+                                    </td>
+                                </tr>
+                                <tr ng-show="subReport == null">
+                                    <td colspan="10">
+                                        {{ 'NoItems'| translate }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="col-md-2" ng-show="subReport != null">
+                            <label class="control-label">Item Per Page</label>
+                            <select ng-model="searchParam.PageSize" ng-options="v for v in lstPageData"></select>
+                        </div>
+
+                        <div class="col-md-8">
+                            <dir-pagination-controls pagination-id="subReportPager" on-page-change="loadMoreRecords(newPageNumber)" direction-links="true" boundary-links="true">
+                            </dir-pagination-controls>
+                        </div>
+                        <div class="col-md-2" ng-show="subReport != null">
+                            <label class="control-label">Total Records :{{ totalCount }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="maqtaServicePopup" role="dialog" aria-labelledby="messagePopup" aria-hidden="true" style="display:none">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <h4 class="modal-title">{{'MaqtaService' | translate}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body" style="text-align: left;">
+                    <div class="col-md-12 table-responsive" style="overflow-y:auto;height:450px">
+                        <table class="table table-bordered plr20">
+                            <thead>
+                                <tr>
+                                    <th>{{'ServiceName' | translate }}</th>
+                                    <th>{{'Type' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in items | orderBy : 'isPaid' : true">
+                                    <td>{{item.name}}</td>
+                                    <td ng-show="item.isPaid">Paid</td>
+                                    <td ng-show="!item.isPaid">Free</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    <hr />
+                        <div class="">
+                         
+                            <div class="col-md-3"  style="margin-top: 10px;" ng-show="items != null">
+                                <label class="control-label">Total Records :{{ items.length }}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Footer-->
+                <div class="modal-footer">
+                    <div class="pull-right mt-20">
+                        <button class="btn btn-primary" data-dismiss="modal">{{ 'Close' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<link href="../Subscription/css/subscription.css" rel="stylesheet" />

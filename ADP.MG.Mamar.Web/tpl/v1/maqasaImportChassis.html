@@ -1,0 +1,79 @@
+﻿<div class="modal" id="maqasaChassisDetails" role="dialog">
+    <div style="width:70%" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ng-click="cancelChassis()">&times;</button>
+                <h4 class="modal-title bold">{{'ChassisDetails' | translate}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row g-grey-shade">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'ChassisNumber' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" id="txtChassisNo" ng-model="searchChassisParameter.searchString" ng-change="searchImportByDefault('chassisNo')" class="form-control" placeholder="">
+                                    </div>
+                                    <button type="button" class="btn btn-green col-lg-3" ng-click="searchChassis()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="table-responsive mt20 mb20">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="2%">
+                                </th>
+                                <th>{{'ChassisNumber'|translate}}</th>
+                                <th>{{'Color' | translate}}</th>
+                                <th>{{'Model' | translate}}</th>
+                                <th>{{'VehicleType' | translate}}</th>
+                                <th>{{'SubType' | translate}}</th>
+                                <th>{{'Amount'|translate}}</th>
+                                <th>{{'CuurencyCode'|translate}}</th>
+                                <th>{{'CIFinDHS' | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr dir-paginate="Item in allChassisDetailsData | itemsPerPage: searchChassisParameter.pageSize" total-items="totalCountChassis" pagination-id="chassisPagination" current-page="searchChassisParameter.pageNumber">
+                                <td>
+                                    <div class="form-group form-checkbox">
+                                        <div class="fleft">
+                                            <label class="control control--checkbox">
+                                                <input ng-model="selectedChassisIdsTemp[Item.ChassisNumber]" ng-change="pushOrPopSelectedChassis(Item)" ng-checked="selectedChassisIdsTemp[Item.ChassisNumber]" type="checkbox" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{Item.ChassisNumber}}
+                                </td>
+                                <td>{{Item.ChassisColorEngName}} {{Item.ChassisColorArbName}}</td>
+                                <td>{{Item.ChassisModelYear}}</td>
+                                <td>{{Item.VehicleTypeEng}} {{Item.VehicleTypeArb}}</td>
+                                <td>{{Item.SubTypeEngName}} {{Item.SubTypeArbName}}</td>
+                                <td>{{Item.Price}}</td>
+                                <td>{{Item.CurrencyCode}}</td>
+                                <td>{{Item.INFO}}</td>
+                            </tr>
+                            <tr class="no-records" ng-show="allChassisDetailsData == null || allChassisDetailsData.length == 0"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="allChassisDetailsData == null || allChassisDetailsData.length == 0">
+                    <dir-pagination-controls direction-links="true" pagination-id="chassisPagination" boundary-links="true" on-page-change="loadMoreChassisRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-show="allChassisDetailsData.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCountChassis}}</span></strong></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="saveChassisDetails()" title="{{'Save'|translate}}" class="btn btn-green mt20 pull-right">{{'Save'|translate}}</button>
+                <button ng-click="cancelChassis()" style="margin-right:10px" type="button" title="{{'Close'|translate}}" class="btn btn-default mt20 pull-right">{{'Cancel'|translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

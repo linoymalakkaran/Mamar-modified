@@ -1,0 +1,263 @@
+﻿<style>
+   
+    #modalVehicle {
+        padding-top: 3%;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>{{'VehicleList' | translate}}</h4>
+            <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                <button type="button" class="btn btn-new mt-15 ml-40" ng-disabled="Status" ng-click="addVehicle()">{{'AddNew' | translate}}</button>
+            </fieldset>
+            <div class="panel panel-flat bdr pb20">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20" ng-show="false">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckNumber" maxlength="11" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckNationality' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="parameters.TruckNationality" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckType' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckType" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckDriver' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckDriver" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'DriverNationality' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.DriverNationality" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label col-lg-3">{{jobNumber}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="pull-right" ng-show="false">
+                        <button type="button" class="btn btn-clear" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-find" ng-click="GetSearchResult()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+
+                    <div id="notificationMsg" class="notificationMsg">
+                        <div class="alert alert-success fade in" ng-show="deleteSuccess">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Success' | translate}}!</strong>{{'deleteChassisSuccessMsg' | translate}}.
+                        </div>
+                        <div class="alert alert-danger fade in" ng-show="deleteFailed">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Error' | translate}}!</strong>  {{errReturned}}
+                        </div>
+                    </div>
+
+
+                    <!--#endregion-->
+                    <!-- #region Vehicle List-->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <form id="empform" ng-submit="submitEmployee()">
+                                <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>{{'TruckNumber' | translate}}</th>
+                                                <th>{{'TruckNational' | translate}}</th>
+                                                <th>{{'TruckType' | translate}}</th>
+                                                <th>{{'DriverName' | translate}}</th>
+                                                <th>{{'DriverNationality' | translate}}</th>
+                                                <th>{{'PermitNumber' | translate}}</th>
+                                                <th style="width:12%;">{{'Action' | translate}}</th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                            <tr pagination-id="joblistPagination" dir-paginate="item in vehicleList | itemsPerPage: 10" total-items="totalCount" current-page="searchParams.pageNumber">
+                                                <td>
+                                                    <label name="OldTruckNumber{{$index}}" ng-model="item.TruckNumber" ng-hide="true">{{item.TruckNumber}}</label>
+                                                    <input type="text" name="TruckNumber{{$index}}" maxlength="20"  ng-model="item.TruckNumber" class="form-control" ng-disabled="!enabledEdit[{{$index}}]" data-ng-required ng-change="checkRegistrationEnabled(item)" />
+                                                </td>
+                                                <td>
+                                                    <!--searchParams.pageSize <div angucomplete-alt id="truckNationalityLookup" placeholder="{{'TruckNationalityph' | translate}}"
+                                ng-model="item.TruckNationality" search-str="truckNationalitySearch" ng-show="enabledDropDown[{{$index}}] || enabledInputField[{{$index}}]"
+                                local-data="truckNationalities" search-fields="Code,EngName,ArbName" show-title="true"
+                                title-field="Code,EngName,ArbName" minlength="1" input-class="form-control" match-class="highlight"
+                                input-name="truckNationalityLookup" selected-object="truckNationalityObj" input-changed="truckNationalityChanged"
+                                tabindex="11" name="TruckNationality{{$index}}">
+                                </div>-->
+
+                                                    <label name="OldTruckNationality{{$index}}" ng-model="item.TruckNationality" ng-hide="true">{{item.TruckNationality}}</label>
+                                                    <input name="TruckNationality{{$index}}" maxlength="20" ng-model="item.TruckNationality" ng-show="!enabledDropDown[{{$index}}]"
+                                                           class="form-control"
+                                                           ng-disabled="!enabledEdit[{{$index}}]" ng-change="checkRegistrationEnabled(item,$index,'TruckNationality')" />
+                                                </td>
+
+                                                <td>
+                                                    <input name="TruckType{{$index}}" maxlength="25" ng-model="item.TruckType" class="form-control" ng-disabled="!enabledEdit[{{$index}}]" ng-change="checkRegistrationEnabled(item,$index,'TruckType')" />
+                                                </td>
+                                                <td>
+                                                    <input name="TruckDriver{{$index}}" maxlength="40" ng-model="item.TruckDriver" class="form-control" ng-disabled="!enabledEdit[{{$index}}]" ng-change="checkRegistrationEnabled(item,$index,'TruckDriver')" />
+                                                </td>
+                                                <td>
+                                                    <input name="DriverNationality{{$index}}" maxlength="20" ng-model="item.DriverNationality" class="form-control" ng-disabled="!enabledEdit[{{$index}}]" ng-change="checkRegistrationEnabled(item,$index,'DriverNationality')" />
+                                                </td>
+                                                <td>
+                                                    <input name="PermitNumber{{$index}}" maxlength="20" ng-model="item.PermitNumber" class="form-control" ng-disabled="!enabledEdit[{{$index}}]" />
+                                                </td>
+                                                <td>
+                                                    <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                                                        <a title="{{'Delete' | translate}}" ng-click="DeleteVehicle(item)" ng-show="VisibleDeleteButton[{{$index}}]"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                        <a title="{{'Edit' | translate}}" ng-click="edit($index)" ng-show="enabledEditButton[{{$index}}]"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                                        <a title="{{'Save' | translate}}" ng-click="SaveVehicleInformation($index)" ng-show="enabledSave[{{$index}}]"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                                        <span title="{{'RegisterTruck' | translate}}" ng-show="enabledPreClearn[{{$index}}]">
+                                                            <a ng-click="registerVehicle(item)"><i class="fa fa-truck-moving" aria-hidden="true"></i></a>
+                                                        </span>
+                                                        <a title="{{'Cancel' | translate}}" ng-click="Delete($index)" ng-show="enabledRemove[{{$index}}]"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                                                        <a title="{{'Cancel' | translate}}" ng-click="CancelEdit($index)" ng-show="enabledCancel[{{$index}}]"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                                    </fieldset>
+                                                </td>
+                                            </tr>
+                                            <tr class="no-records" ng-show="vehicleList == null || vehicleList.length == 0">
+                                                <td colspan="7">
+                                                    {{'NoItems' | translate}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <!--<span class="col-md-4 pl-15" ng-show="vehicleList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>-->
+                        <div class="pull-right mr-10">
+                            <button class="btn btn-green alwaysEnabled" ng-click="gotoShipmentDetails()">{{'Back' | translate}}</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20">
+                        <!--<div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleList != null || vehicleList.length > 0">-->
+                        <dir-pagination-controls pagination-id="joblistPagination" ng-if="vehicleList != null && vehicleList.length != 0"
+                                                 direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="vehicleList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                    <!--</div>-->
+                    <!-- #endregion Vehicle List-->
+                </div>
+                </div>
+        </div>
+    </div>
+
+    <!-- #region Add/Edit Vehicle Modal Popup-->
+    <div class="modal" id="modalVehicle" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="closeModalPopUp()">&times;</button>
+                    <h5 class="modal-title bold" ng-show="action == 'add'">{{'AddNewVehicle' | translate}}</h5>
+                    <h5 class="modal-title bold" ng-show="action == 'edit'">{{'EditVehicle' | translate}}</h5>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="frmAddEditVehicle" class="form-horizontal" ng-submit="saveVehicle()">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckNumber' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckNational' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckNationality" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckType' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckType" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'DriverName' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckDriver" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'DriverNationality' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.DriverNationality" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'PermitNumber' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.PermitNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pull-right mr-10 mt-20">
+                            <button type="button" class="btn btn-default" ng-click="closeModalPopUp()">{{'Cancel' | translate}}</button>
+                            <button type="submit" class="btn btn-green">{{'Save' | translate}}</button>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #endregion Add New Container Modal Popup-->
+
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+</div>

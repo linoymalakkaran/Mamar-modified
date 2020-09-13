@@ -1,0 +1,252 @@
+﻿<style>
+    .lbl {
+        font-weight: bold;
+        padding-top: 13px;
+        font-family: 'Roboto';
+    }
+
+    .gridLnk {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: red !important;
+    }
+
+    .selectNw {
+        height: 30px !important;
+    }
+
+    .tdbreak {
+        word-break: break-all
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">
+                {{'AgentDelegateList' | translate}}
+            </div>
+            <div class="col-md-4">
+                <fieldset ng-disabled="isSuperUser == 'True'">
+                    <button class="btn btn-new mt-15 ml-40" ui-sref="delegateDetail(({'centerCode':selectedCenterCode,'TransportMode':selectedTransMode}))">{{'AddNew' | translate}}</button>
+                </fieldset>
+            </div>
+            <div class="col-md-6">
+
+                <div class="row importcentrecodedp">
+                    <div class="col-md-7">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                                <div class="col-md-8">
+                                    <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                            ng-options="transMode.key as transMode.value for transMode in transModes"
+                                            ng-change="onModeChanged()"></select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-5">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                                <div class="col-md-8">
+                                    <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                            ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                            ng-change="onCenterCodeChanged()"></select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'DelegateNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.DelegateNumber" maxlength="11" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'AgentCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="parameters.AgentCode" maxlength="11" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'ImporterCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.ImporterCode" maxlength="11" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'PeriodStart' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="parameters.PeriodStart">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'PeriodEnd' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectEndDate' | translate}}" ng-model="parameters.PeriodEnd">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-clear" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-find" ng-click="GetSearchResult()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+
+                    <div id="notificationMsg" class="notificationMsg">
+                        <div class="alert alert-success fade in" ng-show="deleteSuccess">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Success' | translate}}!</strong>{{'deleteChassisSuccessMsg' | translate}}.
+                        </div>
+                        <div class="alert alert-danger fade in" ng-show="deleteFailed">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Error' | translate}}!</strong>  {{errReturned}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="globalDisableFlag">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:3%;">{{'CenterCode' | translate}}</th>
+                                            <th style="width:5%;">{{'Number' | translate}}</th>
+                                            <th style="width:5%;">{{'AgentCode' | translate}}</th>
+                                            <th style="width:8%;">{{'AgentName' | translate}}</th>
+                                            <th style="width:4%;">{{'Importer' | translate}}</th>
+                                            <th style="width:10%;">{{'ImporterName' | translate}}</th>
+                                            <th style="width:5%;">{{'PeriodStart' | translate}}</th>
+                                            <th style="width:5%;">{{'PeriodEnd' | translate}}</th>
+                                            <th style="width:8%;">{{'HAWB' | translate}}</th>
+                                            <th style="width:8%;">{{'AWB' | translate}}</th>
+                                            <th style="width:10%;">{{'JobNumber' | translate}}</th>
+                                            <th style="width:5%;">{{'Open' | translate}}</th>
+                                            <th style="width:5%;">{{'Approved' | translate}}</th>
+                                            <th style="width:10%;">{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tr dir-paginate="Delegate in DelegateList | itemsPerPage: 10" total-items="totalCount" current-page="parameters.pagenumber">
+                                        <td>
+                                            {{Delegate.CenterCode}}
+                                        </td>
+                                        <td>{{Delegate.DelegateNumber}}</td>
+                                        <td>{{Delegate.AgentCode}}</td>
+
+                                        <td class="tdbreak">{{Delegate.AgentArbName}}</td>
+
+                                        <td>{{Delegate.ImporterCode}}</td>
+
+                                        <td class="tdbreak">{{Delegate.ImporterArbName}}</td>
+                                        <td>
+                                            {{Delegate.StartDate| date:'dd/MM/yyyy'}}
+                                        </td>
+                                        <td>
+                                            {{Delegate.EndDate| date:'dd/MM/yyyy'}}
+                                        </td>
+                                        <td class="tdbreak">
+                                            {{Delegate.HouseBlNumber}}
+                                        </td>
+                                        <td class="tdbreak">
+                                            {{Delegate.MasterBlNumber}}
+                                        </td>
+                                        <td>
+                                            {{Delegate.DoCode}}
+                                        </td>
+                                        <td>
+                                            <div ng-if="Delegate.OpenFlag!='Y'">
+                                                <input disabled="disabled" type="checkbox" />
+                                            </div>
+                                            <div ng-if="Delegate.OpenFlag=='Y'">
+                                                <input disabled="disabled" type="checkbox" checked="checked" />
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div ng-if="Delegate.Approved!='Y'">
+                                                <input disabled="disabled" type="checkbox" />
+                                            </div>
+                                            <div ng-if="Delegate.Approved=='Y'">
+                                                <input disabled="disabled" type="checkbox" checked="checked" />
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <div class="col-md-4">
+                                                <a><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="showDoDetails(Delegate)"></i></a>
+                                            </div>
+                                            <fieldset ng-disabled="isSuperUser == 'True'">
+                                                <div class="col-md-4">
+                                                    <a title="{{'Delete' | translate}}" ng-hide="true" ng-click="deleteConfimDelegate(Delegate.DelegateNumber)" ng-if="Delegate.Approved == null || Delegate.Approved =='N'"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                </div>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="DelegateList == null || DelegateList.length == 0"><td colspan="14">{{'NoItems' | translate}}</td></tr>
+                                </table>
+                            </fieldset>
+
+                            <div class="alert-msg" ng-hide="true">
+                                <div class="col-md-6">
+                                    <div class="alert alert-success alert-bordered">
+                                        <span class="text-semibold">No Records Found!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="DelegateList == null || DelegateList.length == 0">
+                        <dir-pagination-controls direction-links="true" boundary-links="true" max-size="10"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="DelegateList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>
+
+

@@ -1,0 +1,66 @@
+﻿<div class="modal" id="openMaterialCategoryLookup" role="dialog">
+    <div class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{'MaterialCategory' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input
+                    id="materialCategorySearchText"
+                    type="text"
+                    ng-model="searchPopUpModels.materialCategorySearchText"
+                    ng-change="filterMaterialCategoryRecordsClientSide();"
+                    class="form-control disabledInputWithBorder col-md-12"
+                >
+                <div class="table-responsive mb20">
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th>{{'CategoryId'|translate}}</th>
+                                <th>{{'CategoryName'|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr 
+                            ng-click="setMaterialCategoryType(material)" 
+                            dir-paginate="material in materialCategoryListFiltered | itemsPerPage: 10" 
+                            pagination-id="materialTypePager"
+                            >
+                                <td>
+                                    {{material.CategoryID}}
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='en'">
+                                    {{material.CategoryDescEng}}
+                                    <span class="showOnHover pull-right">
+                                        <a>
+                                            {{'ClickToSelect'|translate}}
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='ae'">
+                                    {{material.CategoryDescArb}}
+                                    <span class="showOnHover pull-right">
+                                        <a>
+                                            {{'ClickToSelect'|translate}}
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr ng-show="materialCategoryListFiltered == null">
+                                <td colspan="2">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="materialCategoryListFiltered == null">
+                    <dir-pagination-controls pagination-id="materialTypePager" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

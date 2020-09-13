@@ -1,0 +1,785 @@
+﻿<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>{{'TrailerList' | translate}}</h4>
+            <button type="button" class="btn btn-new mt-15 ml-40" ng-disabled="Status" ng-click="addVehicle()">{{'AddNew' | translate}}</button>
+            <div class="panel panel-flat bdr pb20">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20" ng-show="false">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckNumber" maxlength="11" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckNationality' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="parameters.TruckNationality" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckType' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckType" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'TruckDriver' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.TruckDriver" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'DriverNationality' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" only-numbers restrict-Space ng-model="parameters.DriverNationality" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <label class="control-label col-lg-3">{{jobNumber}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="pull-right" ng-show="false">
+                        <button type="button" class="btn btn-clear" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-find" ng-click="GetSearchResult()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+
+                    <div id="notificationMsg" class="notificationMsg">
+                        <div class="alert alert-success fade in" ng-show="deleteSuccess">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Success' | translate}}!</strong>{{'deleteChassisSuccessMsg' | translate}}.
+                        </div>
+                        <div class="alert alert-danger fade in" ng-show="deleteFailed">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Error' | translate}}!</strong>  {{errReturned}}
+                        </div>
+                    </div>
+                    <div name="VehicleType" id="ddlVehicleType" ng-hide="true" ng-keydown="vehicleTypeKeyDown($event)"
+                         angucomplete-alt placeholder="{{'phVehicleType' | translate}}" ng-model="selectedVehicleType"
+                         local-data="vehicleTypes" search-fields="Code,EngName,ArbName"
+                         title-field="Code,EngName,ArbName" show-title="true" class="col-lg-3" search-str="searchVehicleTypeText"
+                         minlength="1" input-class="form-control" match-class="highlight"
+                         input-name="ddlVehicleType" selected-object="selectedVehicleTypeObj" input-changed="onVehicleTypeChange" only-numbers required>
+                    </div>
+
+
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{'ChassisNo' | translate}}</th>
+                                    <th>{{'TrailerColor' | translate}}</th>
+                                    <th>{{'VehicleType' | translate}}</th>
+                                    <th>{{'VehicleCategory' | translate}}</th>
+                                    <th>{{'TrailerNo' | translate}}</th>
+                                    <th>{{'CenterOpen' | translate}}</th>
+                                    <th>{{'CenterClose' | translate}}</th>
+                                    <th>{{'AuditorDateOpen' | translate}}</th>
+                                    <th>{{'AuditorDateClose' | translate}}</th>
+                                    <th>{{'AuditorUserClose' | translate}}</th>
+                                    <th>{{'AuditorUserOpen' | translate}}</th>
+                                    <th>{{'Open' | translate}}</th>
+                                    <th>{{'Close' | translate}}</th>
+                                    <th style="width:0%;">{{'Action' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="AddingNew">
+                                    <td style="word-break: break-all;">
+                                        <input type="text" restrictSpecialChars maxlength="30" ng-model="RecordToSave.ChassisNumber" class="form-control"
+                                               data-ng-required ng-change="checkRegistrationEnabled(item)" />
+                                    </td>
+                                    <td>
+                                        <div class="col-md-12">
+                                            <div name="Trailer" id="ddlTrailerCategories"
+                                                 angucomplete-alt placeholder="{{'TrailerCategories' | translate}}"
+                                                 ng-model="RecordToSave.Trailer" selected-object="SelectTrailorColors"
+                                                 ng-keydown="PressDownTrailer($event)"
+                                                 local-data="TrailerCategoriesList" search-fields="Code,EnglishName,ArabicName"
+                                                 title-field="Code,EnglishName,ArabicName" show-title="true"
+                                                 class="col-md-11" search-str="TrailerText"
+                                                 minlength="1" input-class="form-control" match-class="highlight" input-name="ddlTrailerCategories"
+                                                 input-changed="onTrailerCategoriesChange" required>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div name="VehicleType" id="ddlVehicleType"
+                                             ng-keydown="vehicleTypeKeyDown($event)"
+                                             angucomplete-alt placeholder="{{'phVehicleType' | translate}}"
+                                             ng-model="RecordToSave.selectedVehicleType"
+                                             local-data="vehicleTypes"
+                                             search-fields="Code,EngName,ArbName"
+                                             title-field="Code,EngName,ArbName" show-title="true"
+                                             class="col-md-11" search-str="searchVehicleTypeText"
+                                             minlength="1" input-class="form-control"
+                                             match-class="highlight" input-name="ddlVehicleType"
+                                             selected-object="selectedVehicleTypeObj1"
+                                             input-changed="onVehicleTypeChange"
+                                             only-numbers required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div name="VehicleCategory" id="ddlVehicleCategory[{{$index}}]" ng-keydown="vehicleCategoryKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleCategory' | translate}}"
+                                             ng-model="RecordToSave.selectedVehicleCategory1" show-title="true" class="col-md-11"
+                                             local-data="vehicleCategoryList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" search-str="searchVehicleCategoryText"
+                                             input-class="form-control" match-class="highlight" input-name="ddlVehicleCategory" selected-object="selectedVehicleCategoryObj"
+                                             input-changed="onVehicleCatChange" required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="TrailerNo{{$index}}" maxlength="30" restrictSpecialChars
+                                               ng-model="RecordToSave.TrailerNo" class="form-control" data-ng-required />
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-md-1">
+                                        <a title="{{'Save' | translate}}" ng-click="SaveVehicleInformation($index)"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                        <a title="{{'Cancel' | translate}}" ng-click="CancelEdit($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                    </td>
+                                </tr>
+                                <tr pagination-id="joblistPagination" 
+                                    dir-paginate="item in vehicleList | itemsPerPage: 10" total-items="totalCount" current-page="searchParams.pageNumber">
+                                    <td style="word-break: break-all;">
+                                        <label name="TrailerSerialNo{{$index}}" ng-hide="true">{{item.TrailerSerialNo}}</label>
+                                        <label name="ChassisNo{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.ChassisNumber}}</label>
+                                        <input type="text" name="ChassisNo{{$index}}" restrictSpecialChars maxlength="30" ng-model="RecordToSave.ChassisNumber" class="form-control"
+                                               ng-hide="!enabledEdit[{{$index}}]" data-ng-required ng-change="checkRegistrationEnabled(item)" />
+                                    </td>
+                                    <td>
+                                        <label name="Trailer{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.Trailer}}</label>
+                                        <div class="col-md-12">
+                                            <div name="Trailer" id="ddlTrailerCategories"
+                                                 angucomplete-alt placeholder="{{'TrailerCategories' | translate}}"
+                                                 ng-model="RecordToSave.Trailer" selected-object="SelectTrailorColors"
+                                                 ng-keydown="PressDownTrailer($event)"
+                                                 local-data="TrailerCategoriesList" search-fields="Code,EnglishName,ArabicName"
+                                                 title-field="Code,EnglishName,ArabicName" show-title="true"
+                                                 class="col-md-11" search-str="TrailerText"
+                                                 minlength="1" input-class="form-control" match-class="highlight" input-name="ddlTrailerCategories"
+                                                 input-changed="onTrailerCategoriesChange" required
+                                                 ng-hide="!enabledEdit[{{$index}}]">
+
+                                            </div>
+                                            <label ng-hide="true" name="Trailers{{$index}}" ng-model="Trailer"></label>
+                                            <!--<a class="col-md-1 mt-10"><i class="fa fa-search" title="{{'Click' | translate}}" ng-click="openTrailerLookup()"></i></a>-->
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <label name="VehicleType{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.selectedVehicleType}}</label>
+
+                                        <div name="VehicleType" id="ddlVehicleType"
+                                             ng-keydown="vehicleTypeKeyDown($event)"
+                                             angucomplete-alt placeholder="{{'phVehicleType' | translate}}"
+                                             ng-model="RecordToSave.selectedVehicleType"
+                                             local-data="vehicleTypes" ng-hide="!enabledEdit[{{$index}}]"
+                                             search-fields="Code,EngName,ArbName"
+                                             title-field="Code,EngName,ArbName" show-title="true"
+                                             class="col-md-11" search-str="searchVehicleTypeText"
+                                             minlength="1" input-class="form-control"
+                                             match-class="highlight" input-name="ddlVehicleType"
+                                             selected-object="selectedVehicleTypeObj1"
+                                             input-changed="onVehicleTypeChange"
+                                             only-numbers required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <label name="VehicleCategory{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.selectedVehicleCategory}}</label>
+                                        <div name="VehicleCategory" id="ddlVehicleCategory[{{$index}}]" ng-keydown="vehicleCategoryKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleCategory' | translate}}"
+                                             ng-model="RecordToSave.selectedVehicleCategory1" show-title="true" class="col-md-11"
+                                             local-data="vehicleCategoryList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" search-str="searchVehicleCategoryText"
+                                             input-class="form-control" match-class="highlight" input-name="ddlVehicleCategory" selected-object="selectedVehicleCategoryObj"
+                                             input-changed="onVehicleCatChange" required
+                                             ng-hide="!enabledEdit[{{$index}}]">
+                                        </div>
+                                    </td>
+                                    <td style="word-break: break-all;">
+                                        <label name="TrailerNo{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.TrailerNo}}</label>
+                                        <input type="text" name="TrailerNo{{$index}}" maxlength="30" restrictSpecialChars
+                                               ng-model="RecordToSave.TrailerNo" class="form-control" ng-disabled="enableTrailerNumber[{{$index}}]"
+                                               ng-hide="!enabledEdit[{{$index}}]" data-ng-required />
+                                    </td>
+                                    <td>
+                                        <label name="CenterO{{$index}}">{{item.CenterO}}</label>
+                                    </td>
+                                    <td>
+                                        <label name="CenterC{{$index}}">{{item.CenterC}}</label>
+                                    </td>
+                                    <td>
+                                        <label name="AuditorDateOpen{{$index}}">{{item.AuditorDateOpen |  date:'dd/MM/yyyy HH:mm:ss'}}</label>
+                                    </td>
+                                    <td>
+                                        <label name="AuditorDateClose{{$index}}">{{item.AuditorDateClose |  date:'dd/MM/yyyy HH:mm:ss'}}</label>
+                                    </td>
+                                    <td>
+                                        <label name="AuditorUserC{{$index}}">{{item.AuditorUserC}}</label>
+                                    </td>
+                                    <td>
+                                        <label name="AuditorUserO{{$index}}">{{item.AuditorUserO}}</label>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="OpCheck" ng-model="item.Open" ng-hide="!enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                        <input type="checkbox" id="OpenCheckBox" ng-model="item.Open" ng-hide="enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="ClosCheck" ng-model="item.Close" ng-hide="!enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                        <input type="checkbox" id="CloseCheckBox" ng-model="item.Close" ng-hide="enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                    </td>
+                                    <td class="col-md-1">
+                                        <a title="{{'Delete' | translate}}" ng-click="DeleteVehicle(item)" ng-hide="true" ng-show="VisibleDeleteButton[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        <a title="{{'Edit' | translate}}"   ng-click="edit($index,item)"  ng-show="IsShow[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                        <a title="{{'Save' | translate}}"   ng-click="SaveVehicleInformation($index)" ng-show="enabledSave[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                        <a title="{{'Cancel' | translate}}" ng-click="Delete($index)" ng-disabled="enabledPreClearn[{{$index}}]" ng-show="enabledRemove[{{$index}}]"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                                        <a title="{{'Cancel' | translate}}" ng-click="CancelEdit($index)" ng-show="enabledCancel[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="vehicleList == null || vehicleList.length == 0">
+                                    <td colspan="14">
+                                        {{'NoItems' | translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                           
+                        </table>
+                    </div>
+             
+                    <!--#endregion-->
+                    <!-- #region Vehicle List-->
+                    <div class="col-md-12">
+
+                        <div class="table-responsive mt20 mb20">
+                            <!--<form id="empform" ng-submit="SaveVehicleInformation()">-->
+                            <fieldset ng-disabled="globalDisableFlag">
+                                <table class="table table-bordered" ng-disabled="Status" ng-hide="true">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'ChassisNo' | translate}}</th>
+                                            <th>{{'TrailerColor' | translate}}</th>
+                                            <th>{{'VehicleType' | translate}}</th>
+                                            <th>{{'VehicleCategory' | translate}}</th>
+                                            <th>{{'TrailerNo' | translate}}</th>
+                                            <th>{{'CenterOpen' | translate}}</th>
+                                            <th>{{'CenterClose' | translate}}</th>
+                                            <th>{{'AuditorDateOpen' | translate}}</th>
+                                            <th>{{'AuditorDateClose' | translate}}</th>
+                                            <th>{{'AuditorUserClose' | translate}}</th>
+                                            <th>{{'AuditorUserOpen' | translate}}</th>
+                                            <th>{{'Open' | translate}}</th>
+                                            <th>{{'Close' | translate}}</th>
+                                            <th style="width:0%;">{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr pagination-id="joblistPagination" dir-paginate="item in vehicleList | itemsPerPage: 10" total-items="totalCount" current-page="searchParams.pageNumber">
+                                            <td style="word-break: break-all;">
+                                                <label name="TrailerSerialNo{{$index}}" ng-hide="true">{{item.TrailerSerialNo}}</label>
+                                                <label name="ChassisNo{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.ChassisNumber}}</label>
+                                                <input type="text" name="ChassisNo{{$index}}" restrictSpecialChars maxlength="30" ng-model="item.ChassisNumber" class="form-control"
+                                                       ng-hide="!enabledEdit[{{$index}}]" data-ng-required ng-change="checkRegistrationEnabled(item)" />
+                                            </td>
+                                            <td>
+                                                <label name="Trailer{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.Trailer}}</label>
+                                                <div class="col-md-12">
+                                                    <div name="Trailer" id="ddlTrailerCategories"
+                                                         angucomplete-alt placeholder="{{'TrailerCategories' | translate}}"
+                                                         ng-model="Trailer" selected-object="SelectTrailorColors"
+                                                         ng-keydown="PressDownTrailer($event)"
+                                                         local-data="TrailerCategoriesList" search-fields="Code,EnglishName,ArabicName"
+                                                         title-field="Code,EnglishName,ArabicName" show-title="true"
+                                                         class="col-md-11" search-str="TrailerText"
+                                                         minlength="1" input-class="form-control" match-class="highlight" input-name="ddlTrailerCategories"
+                                                         input-changed="onTrailerCategoriesChange" required
+                                                         ng-hide="!enabledEdit[{{$index}}]">
+
+                                                    </div>
+                                                    <label ng-hide="true" name="Trailers{{$index}}" ng-model="Trailer"></label>
+                                                    <!--<a class="col-md-1 mt-10"><i class="fa fa-search" title="{{'Click' | translate}}" ng-click="openTrailerLookup()"></i></a>-->
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <label name="VehicleType{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.selectedVehicleType}}</label>
+
+                                                <div name="VehicleType" id="ddlVehicleType"
+                                                     ng-keydown="vehicleTypeKeyDown($event)"
+                                                     angucomplete-alt placeholder="{{'phVehicleType' | translate}}"
+                                                     ng-model="selectedVehicleType"
+                                                     local-data="vehicleTypes" ng-hide="!enabledEdit[{{$index}}]"
+                                                     search-fields="Code,EngName,ArbName"
+                                                     title-field="Code,EngName,ArbName" show-title="true"
+                                                     class="col-md-11" search-str="searchVehicleTypeText"
+                                                     minlength="1" input-class="form-control"
+                                                     match-class="highlight" input-name="ddlVehicleType"
+                                                     selected-object="selectedVehicleTypeObj1"
+                                                     input-changed="onVehicleTypeChange"
+                                                     only-numbers required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <label name="VehicleCategory{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.selectedVehicleCategory}}</label>
+                                                <div name="VehicleCategory" id="ddlVehicleCategory[{{$index}}]" ng-keydown="vehicleCategoryKeyDown($event)" angucomplete-alt placeholder="{{'phVehicleCategory' | translate}}"
+                                                     ng-model="selectedVehicleCategory1" show-title="true" class="col-md-11"
+                                                     local-data="vehicleCategoryList" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" search-str="searchVehicleCategoryText"
+                                                     input-class="form-control" match-class="highlight" input-name="ddlVehicleCategory" selected-object="selectedVehicleCategoryObj"
+                                                     input-changed="onVehicleCatChange" required
+                                                     ng-hide="!enabledEdit[{{$index}}]">
+                                                </div>
+                                            </td>
+                                            <td style="word-break: break-all;">
+                                                <label name="TrailerNo{{$index}}" ng-hide="enabledEdit[{{$index}}]">{{item.TrailerNo}}</label>
+                                                <input type="text" name="TrailerNo{{$index}}" maxlength="30" restrictSpecialChars
+                                                       ng-model="item.TrailerNo" class="form-control" ng-disabled="enableTrailerNumber[{{$index}}]"
+                                                       ng-hide="!enabledEdit[{{$index}}]" data-ng-required />
+                                            </td>
+                                            <td>
+                                                <label name="CenterO{{$index}}">{{item.CenterO}}</label>
+                                            </td>
+                                            <td>
+                                                <label name="CenterC{{$index}}">{{item.CenterC}}</label>
+                                            </td>
+                                            <td>
+                                                <label name="AuditorDateOpen{{$index}}">{{item.AuditorDateOpen |  date:'dd/MM/yyyy HH:mm:ss'}}</label>
+                                            </td>
+                                            <td>
+                                                <label name="AuditorDateClose{{$index}}">{{item.AuditorDateClose |  date:'dd/MM/yyyy HH:mm:ss'}}</label>
+                                            </td>
+                                            <td>
+                                                <label name="AuditorUserC{{$index}}">{{item.AuditorUserC}}</label>
+                                            </td>
+                                            <td>
+                                                <label name="AuditorUserO{{$index}}">{{item.AuditorUserO}}</label>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" id="OpCheck" ng-model="item.Open" ng-hide="!enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                                <input type="checkbox" id="OpenCheckBox" ng-model="item.Open" ng-hide="enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" id="ClosCheck" ng-model="item.Close" ng-hide="!enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                                <input type="checkbox" id="CloseCheckBox" ng-model="item.Close" ng-hide="enabledCheckBox[{{$index}}]" ng-disabled="true">
+                                            </td>
+                                            <td class="col-md-1">
+                                                <a title="{{'Delete' | translate}}" ng-click="DeleteVehicle(item)" ng-hide="true" ng-show="VisibleDeleteButton[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                <a title="{{'Edit' | translate}}" ng-click="edit($index,item)" ng-hide="true" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                                <a title="{{'Save' | translate}}" ng-click="SaveVehicleInformation($index)" ng-show="enabledSave[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                                <a title="{{'Cancel' | translate}}" ng-click="Delete($index)" ng-disabled="enabledPreClearn[{{$index}}]" ng-show="enabledRemove[{{$index}}]"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                                                <a title="{{'Cancel' | translate}}" ng-click="CancelEdit($index)" ng-show="enabledCancel[{{$index}}]" ng-disabled="enabledPreClearn[{{$index}}]"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="vehicleList == null || vehicleList.length == 0">
+                                            <td colspan="14">
+                                                {{'NoItems' | translate}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                            <!--</form>-->
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <!--<span class="col-md-4 pl-15" ng-show="vehicleList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>-->
+                        <div class="pull-right mr-10">
+                            <button class="btn btn-green alwaysEnabled" ng-click="gotoShipmentDetails()">{{'Back' | translate}}</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20">
+                        <!--<div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleList != null || vehicleList.length > 0">-->
+                        <dir-pagination-controls pagination-id="joblistPagination" ng-if="vehicleList != null && vehicleList.length != 0"
+                                                 direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="vehicleList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                    <!--</div>-->
+                    <!-- #endregion Vehicle List-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="col-md-8">
+        <div name="TrailerCategories" id="ddlTrailerCategories"
+             angucomplete-alt placeholder="{{'TrailerCategories' | translate}}"
+             ng-model="item.Trailer" ng-keydown="PressDownTrailer($event)"
+             local-data="TrailerCategoriesList" search-fields="Code,EnglishName,ArabicName"
+             selected-object="selectedPlateColorObj.originalObject"
+             title-field="Code,EnglishName,ArabicName" show-title="true" class="col-md-11" search-str="TrailerCategoriesText"
+             minlength="1" input-class="form-control" match-class="highlight" input-name="ddlTrailerCategories"
+             input-changed="onTrailerCategoriesChange">
+        </div>
+        <a class="col-md-1 mt-10"><i class="fa fa-search" title="{{'Click' | translate}}" ng-click="openTrailerLookup()"></i></a>
+    </div>-->
+    <!-- #region Add/Edit Vehicle Modal Popup-->
+    <div class="modal" id="modalVehicle" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="closeModalPopUp()">&times;</button>
+                    <h5 class="modal-title bold" ng-show="action == 'add'">{{'AddNewVehicle' | translate}}</h5>
+                    <h5 class="modal-title bold" ng-show="action == 'edit'">{{'EditVehicle' | translate}}</h5>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="frmAddEditVehicle" class="form-horizontal" ng-submit="saveVehicle()">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckNumber' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckNational' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckNationality" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'TruckType' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckType" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'DriverName' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.TruckDriver" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'DriverNationality' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.DriverNationality" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label class="control-label col-md-3">{{'PermitNumber' | translate}}</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" ng-model="selectedVehicle.PermitNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pull-right mr-10 mt-20">
+                            <button type="button" class="btn btn-default" ng-click="closeModalPopUp()">{{'Cancel' | translate}}</button>
+                            <button type="submit" class="btn btn-green">{{'Save' | translate}}</button>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #endregion Add New Container Modal Popup-->
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+</div>
+
+
+
+
+
+
+
+<!--#REGION: F9 LOOKUP MODALS-->
+<div>
+    <div class="modal" id="plateColorLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateColor()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateColor' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateColorText" type="text" ng-model="searchPlateColorText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateColorItem.Code==plateColorItemSelected.Code}" ng-click="setPlateColor(plateColorItem)" dir-paginate="plateColorItem in plateColors | itemsPerPage: 10" current-page="lookUpCurrentPagePlateColor" pagination-id="plateColorPager">
+                                    <td>
+                                        {{plateColorItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateColorItem.EnglishName}} {{plateColorItem.ArabicName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateColors == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateColors == null">
+                        <dir-pagination-controls pagination-id="plateColorPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateOriginLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateOrigin()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateOrigin' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateOriginText" type="text" ng-model="searchPlateOriginText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateOriginItem.Code==plateOriginItemSelected.Code}" ng-click="setPlateOrigin(plateOriginItem)" dir-paginate="plateOriginItem in plateOrigins | itemsPerPage: 10" current-page="lookUpCurrentPagePlateOrigin" pagination-id="plateOriginPager">
+                                    <td>
+                                        {{plateOriginItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateOriginItem.CountryEngName}} {{plateOriginItem.CountryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateOrigins == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateOrigins == null">
+                        <dir-pagination-controls pagination-id="plateOriginPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateCategoryLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateCategory()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateCategory' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateCategoryText" type="text" ng-model="searchPlateCategoryText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateCategoryItem.CategoryCode==plateCategoryItemSelected.CategoryCode}" ng-click="setPlateCategory(plateCategoryItem)" dir-paginate="plateCategoryItem in plateCategorys | itemsPerPage: 10" current-page="lookUpCurrentPagePlateCategory" pagination-id="plateCategoryPager">
+                                    <td>
+                                        {{plateCategoryItem.CategoryCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateCategoryItem.CategoryEngName}} {{plateCategoryItem.CategoryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateCategorys == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateCategorys == null">
+                        <dir-pagination-controls pagination-id="plateCategoryPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleCategoryLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleCategory()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleCategory' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleCategoryText" type="text" ng-model="searchVehicleCategoryText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleCategoryItem.Code==vehicleCategoryItemSelected.Code}" ng-click="setVehicleCategory(vehicleCategoryItem)" dir-paginate="vehicleCategoryItem in vehicleCategoryList | itemsPerPage: 10" current-page="lookUpCurrentPageVehicleCategory" pagination-id="vehicleCategoryPager">
+                                    <td>
+                                        {{vehicleCategoryItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleCategoryItem.EngName}} {{vehicleCategoryItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleCategoryList == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleCategoryList == null">
+                        <dir-pagination-controls pagination-id="vehicleCategoryPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleColorLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleColor()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleColor' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleColorText" type="text" ng-model="searchVehicleColorText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleColorItem.Code==vehicleColorItemSelected.Code}"
+                                    ng-click="setVehicleColor(vehicleColorItem)"
+                                    dir-paginate="vehicleColorItem in vehicleColors | itemsPerPage: 10"
+                                    current-page="lookUpCurrentPageVehicleColor" pagination-id="vehicleColorPager">
+                                    <td>
+                                        {{vehicleColorItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleColorItem.EnglishName}} {{vehicleColorItem.ArabicName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleColors == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleColors == null">
+                        <dir-pagination-controls pagination-id="vehicleColorPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="vehicleTypeLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeVehicleType()">&times;</button>
+                    <h5 class="modal-title bold">{{'VehicleType' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchVehicleTypeText" type="text" ng-model="searchVehicleTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: vehicleTypeItem.Code==vehicleTypeItemSelected.Code}" ng-click="setVehicleType(vehicleTypeItem)" dir-paginate="vehicleTypeItem in vehicleTypes | itemsPerPage: 10" current-page="lookUpCurrentPageVehicleType" pagination-id="vehicleTypePager">
+                                    <td>
+                                        {{vehicleTypeItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{vehicleTypeItem.EngName}} {{vehicleTypeItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="vehicleTypes == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="vehicleTypes == null">
+                        <dir-pagination-controls pagination-id="vehicleTypePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

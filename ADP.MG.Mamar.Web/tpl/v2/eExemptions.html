@@ -1,0 +1,60 @@
+﻿<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'OffcialExemptionsOrApproval'|translate}}</h5>
+</div>
+<!--<form action="#" class="form-horizontal">-->
+<div class="modal-body">
+    <div class="table-responsive mb20">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{'Serial'|translate}}</th>
+                    <th>{{'Ref'|translate}}</th>
+                    <th>{{'Authority'|translate}}</th>
+                    <th>{{'Response'|translate}}</th>
+                    <th>{{'Date'|translate}}</th>
+                    <th>{{'AuthorityRemarks'|translate}}</th>
+                    <th style="width:7%"> {{'Print'|translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr  dir-paginate="exemptionModel in existingExemptions | itemsPerPage: eExemptionRequestObject.pageSize" total-items="totalCount">
+                    <td>
+                        {{exemptionModel.Serial}}
+                    </td>
+                    <td>
+                        {{exemptionModel.Ref}}
+                    </td>
+                    <td>
+                        {{exemptionModel.ElaCode}}
+                    </td>
+                    <td>
+                        {{exemptionModel.Response}}
+                    </td>
+                    <td>
+                        {{exemptionModel.ReferenceDate}}
+                    </td>
+                    <td>
+                        {{exemptionModel.AuthorityRemarks}}
+                    </td>
+                    <td>
+                        <a title="{{'Print'|translate}}" ng-click="PrintExemption(exemptionModel.ElaCode)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+                <tr ng-show="existingExemptions == null">
+                    <td colspan="7">
+                        {{'NoItems'|translate}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 pagination pl25 mb20" ng-hide="existingExemptions == null">
+        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                 on-page-change="loadMoreRecords(newPageNumber)">
+        </dir-pagination-controls>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" ng-click="closeModal()" title="{{'Close'|translate}}" class="btn btn-green">{{'Close'|translate}}</button>
+</div>

@@ -1,0 +1,274 @@
+﻿<style>
+    .noscroll {
+        overflow: hidden !important;
+    }
+</style>
+<div class="page-content">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-flat bdr bdrt mt30">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs nav-tabs-solid nav-justified" style="width:40%">
+                            <li ng-class="{active: selectedTab == 'lcDetails'}"><a ng-click="lcDetailsClicked()" style="border-left:none">{{'ImportersBankLCDetails' | translate}}</a></li>
+                            <li ng-class="{active: selectedTab == 'lcRenewals'}"><a ng-click="lcRenewalsClicked()">{{'Renewals' | translate}}</a></li>
+                            <li class="save-pclr-btn "> <a ng-click="gotoLCList();" data-toggle="tab">{{'Back' | translate}}</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active">
+                                <fieldset ng-disabled="$storage.get('isPcsSuperUser') || selectedTab == 'lcDetails'">
+                                    <form name="lcForm" novalidate class="form-horizontal">
+                                        <div class="panel-body">
+                                            <div class="col-md-12 g-grey-shade">
+                                                <div class="form-horizontal">
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label col-lg-4">{{'CenterCode' | translate}}: </label>
+                                                            <label class="control-label col-lg-8">{{$storage.get('LCCenterCode')}}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="grey-shade f-bdr-box ">
+                                                    <div class="col-md-12 mt-5">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-2">{{'Importer' | translate}}</label>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.MLC_IMP_CODE" disabled />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.MLC_IMP_DESC_ENG" disabled />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.MLC_IMP_DESC_ARB" disabled />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-5">{{'StartDate' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control pickadate" placeholder="{{'Select' | translate}}" ng-model="lcStartDate" disabled>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-5">{{'EndDate' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control pickadate" placeholder="{{'Select' | translate}}" ng-model="lcEndDate" disabled>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-5">{{'DueAmount' | translate}}</label>
+                                                                <div class="col-md-7">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.DUE_AMT" maxlength="100" disabled />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="pb-5">
+                                                    <div class="col-md-12 mt-5">
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-2">{{'Bank' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" id="bankCode" class="form-control" placeholder="{{'Find'  | translate}}" ng-model="bankDetails.bankCode" ng-trim="false" ng-blur="lookupTabOut(bankDetails.bankCode, 'bank')" ng-keydown="lookupKeyDown($event,'bank')">
+                                                                </div>
+                                                                <div class="col-md-1 mt-15">
+                                                                    <a class="mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('bank')"></i></a>
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <input type="text" class="form-control" ng-model="bankDetails.bankName" ng-disabled="true" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">{{'IssueDate' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control pickadate" placeholder="{{'Select' | translate}}" ng-model="lcIssueDate" ng-change="issueDateChanged(lcIssueDate)">
+                                                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 mt-5">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">{{'LCNumber' | translate}}</label>
+                                                                <div class="col-md-7" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{lcDetails.MLC_LC_NUMBER}}">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.MLC_LC_NUMBER" maxlength="100" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">{{'LCAmount' | translate}}</label>
+                                                                <div class="col-md-6">
+                                                                    <input type="text" ng-model="lcDetails.MLC_LC_AMOUNT" valid-number
+                                                                           allow-decimal="true" allow-negative="false" pre-decimal-upto="12" decimal-upto="0" maxlength="12" class="form-control" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">{{'ExpiryDate' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control pickadate" placeholder="{{'Select' | translate}}" ng-model="lcExpiryDate" ng-change="expiryDateChanged(lcExpiryDate)">
+                                                                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4"></div>
+                                                            <div class="col-md-8">
+                                                                <span class="validation-error-label" ng-show="!validIssueDate">{{'InValidIssueDate' | translate}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12 mt-5">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-12">{{'Remarks' | translate}}</label>
+                                                                <div class="col-md-11">
+                                                                    <textarea rows="4" cols="5" class="form-control noscroll" ng-model="lcDetails.MLC_REMARKS" maxlength="200"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-4">{{'LCBalance' | translate}}<span ng-if="selectedTab == 'lcRenewals'">*</span></label>
+                                                                <div class="col-md-6">
+                                                                    <input type="text" class="form-control" ng-model="lcDetails.MLC_LC_BALANCE" ng-disabled="true" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="col-md-5 row mt-5">
+                                                                <div class="form-group">
+                                                                    <div class="form-checkbox">
+                                                                        <div class="fleft ml-10">
+                                                                            <label class="control control--checkbox">
+                                                                                <input type="checkbox" ng-model="transitFlag" ng-checked="transitFlag" ng-change="transitFlagClick(transitFlag)">
+                                                                                <span class="control__indicator"></span>
+                                                                            </label>
+                                                                        </div>
+                                                                        <label class="control-label col-lg-9">{{'TransitOnly' | translate}}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 mt-5">
+                                                                <div class="form-group">
+                                                                    <div class="form-checkbox">
+                                                                        <div class="fleft ml-10">
+                                                                            <label class="control control--checkbox">
+                                                                                <input type="checkbox" ng-model="stopFlag" ng-checked="stopFlag" ng-change="stopFlagClick(stopFlag)">
+                                                                                <span class="control__indicator"></span>
+                                                                            </label>
+                                                                        </div>
+                                                                        <label class="control-label col-lg-9">{{'StopFlag' | translate}}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="pull-right mb-10">
+                                                    <a ng-hide="selectedTab == 'lcRenewals'" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="gotoSettle()">{{'Settle' | translate}}</a>
+                                                    <a ng-hide="selectedTab == 'lcRenewals'" ng-click="openAttachments()" class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-disabled="$storage.get('isPcsSuperUser')">{{'Attachments' | translate}}</a>
+                                                    <a ng-show="selectedTab == 'lcRenewals'" ng-disabled="$storage.get('isPcsSuperUser')" class="btn btn-green mtb5 mr-10" ng-click="renewLC()">{{'Renew' | translate}}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </fieldset>
+                                <div class="panel-body" ng-show="selectedTab == 'lcRenewals'">
+                                    <div class="f-bdr-box grey-shade">
+                                        <div class="trans-list-head">{{'RenewalHistory' | translate}} </div>
+                                        <div class="col-md-12">
+                                            <div class="table-responsive mt20 mb20">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{{'BankCode' | translate}}</th>
+                                                            <th>{{'RenewalNumber' | translate}}</th>
+                                                            <th>{{'StartDate' | translate}}</th>
+                                                            <th>{{'EndDate' | translate}}</th>
+                                                            <th>{{'Amount' | translate}}</th>
+                                                            <th>{{'Remarks' | translate}}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tr dir-paginate="lc in lcRenewalsHistory | itemsPerPage: renewHistoryParam.pageSize" total-items="renewalCount" current-page="renewHistoryParam.pageNumber">
+                                                        <td>{{lc.MLCR_BANK_CODE}}</td>
+                                                        <td>{{lc.MLCR_LC_NUMBER}}</td>
+                                                        <td>{{::lc.MLCR_START_DATE |  date:'dd/MM/yyyy'}}</td>
+                                                        <td>{{::lc.MLCR_END_DATE |  date:'dd/MM/yyyy'}}</td>
+                                                        <td>{{lc.MLCR_LC_BALANCE}}</td>
+                                                        <td>{{lc.MLCR_REMARKS}}</td>
+                                                    </tr>
+                                                    <tr class="no-records" ng-show="lcRenewalsHistory == null || lcRenewalsHistory.length == 0"><td colspan="6">{{'NoItems' | translate}}</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 pagination pl25 mb20" ng-hide="lcRenewalsHistory == null || lcRenewalsHistory.length == 0">
+                                            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                                                     on-page-change="loadMoreHistoryRecords(newPageNumber)">
+                                            </dir-pagination-controls>
+                                            <span class="col-md-2 pull-right" ng-if="lcRenewalsHistory.length > 0"><strong>{{'total' | translate}} : <span class="num">{{renewalCount}}</span></strong></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="vertical-align:central;margin-top:100px" class="modal" id="attachmentModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>{{'Attachments' | translate}}</span>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center">
+                    <a class="btn btn-green mr-10" ng-click="openAttachmentUri(true);"><i class="fa fa-paperclip"></i>{{'Attach' | translate}}</a>
+                    <a class="btn btn-green mr-10 alwaysEnabled" ng-click="openAttachmentUri(false);"><i class=""></i>{{'Preview' | translate}}</a>
+                </div>
+                <div class="col-md-12">
+                    <div class="pull-right mt-20">
+                        <a class="btn btn-default alwaysEnabled" id="CloseModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-include="'../tpl/LookUpTemplate.html'"></div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

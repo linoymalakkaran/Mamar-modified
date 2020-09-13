@@ -1,0 +1,175 @@
+﻿<style>
+    .highZindex {
+        z-index: 30000 !important;
+    }
+
+    .popover {
+        max-width: 100%; /* Max Width of the popover (depending on the container!) */
+    }
+</style>
+<div id="overlay" ng-click="closeDetails()" class="cont-backdrop"></div>
+<div class="content-wrapper">
+    <div class="col-md-12">
+        <div class="trans-list-head">{{'CUSTOMSRELEASESTATUS'|translate}}</div>
+
+        <div class="pull-right switch">
+            <h6>{{'CustomsStatus'|translate}}</h6>
+            <div class="btn-group mr-40">
+                <button type="button" ng-click="searchParams.customsStatus='HOLD';searchParams.pageNo=1;Search()" class="btn btn-primary btn-cont-yellow">{{'Hold'|translate}}</button>
+                <button type="button" ng-click="searchParams.customsStatus='RELEASE';searchParams.pageNo=1;Search()" class="btn btn-primary btn-cont-green">{{'Released'|translate}}</button>
+            </div>
+            <div class="btn-group">
+                <button title="{{'Find'|translate}}" type="submit" ng-click="searchOpen=true" class="btn cont-search">
+                    {{'Find'|translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div ng-show="searchOpen" class="col-lg-12 mt20">
+        <form action="#" class="form-horizontal panel">
+            <div class="row g-grey-shade pb-20">
+                <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6><span ng-click="searchOpen=false" class="pull-right mr-10"><i class="fa fa-close" style="color:white;" aria-hidden="true"></i></span></div>
+                <div class="col-md-12 form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label col-md-5">{{'VehicleNumber' | translate}}</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" restrict-Space ng-model="searchParams.plateNumber" maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-5">{{'ContainerNumber' | translate}}</label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" restrict-Space ng-model="searchParams.containerNumber" maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-6">{{'InspectionDetails' | translate}}</label>
+                            <div class="col-md-6">
+                                <select class="form-control select" ng-model="searchParams.inspectionDetails" ng-options="c.id as c.name for c in InspectionStatus"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="control-label col-md-4">{{'Type' | translate}}</label>
+                            <div class="col-md-8">
+                                <select class="form-control select" ng-model="searchParams.frieghtKind" ng-options="c.id as c.name for c in FrieghtKind"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <button type="reset" ng-click="Initialize();" class="btn btn-clear mt20 mb20">
+                    {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-find mt20 mb20 mr-10" ng-click="searchParams.pageNo=1;Search()">
+                    {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Main -->
+    <div class="col-md-12 filter-list mt-15">
+        <div class="row no-gutter">
+
+            <div dir-paginate="container in ContainerData | itemsPerPage:20" current-page="searchParams.pageNo" total-items="totalCount">
+
+                <div ng-click="selectContainer(container,$index);" ng-class="{'highZindex':container.containerNumber==selectedContainer.containerNumber}" class="col-lg-3">
+                    <div id="parent{{$index}}" ng-class="{'well' : container.customsStatus=='RELEASE','well hold' : container.customsStatus!='RELEASE'}">
+                        <div class="cont-left">
+                            <h6> Container/Truck</h6>
+
+                            <!--<h6>{{'Container'|translate}}/{{'Truck'|translate}}</h6>-->
+                            <h4>{{container.containerNumber}}/{{container.plateNumber}}
+                            </h4>
+                        </div>
+                        <div class="cont-right">
+                            <h6>{{'Status'|translate}}</h6>
+                            <h4>{{container.customsStatus}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="show[$index]" id="details{{$index}}" class="highZindex col-lg-12">
+                    <div></div>
+                    <span ng-click="closeDetails();" class="pull-right mr20"><i class="fa fa-close" style="color:black;"></i></span>
+                    <form action="#" class="form-horizontal panel cont-box">
+                        <div class="form-group mt20">
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'VehicleNumber'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.plateNumber}}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'Terminal'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.terminal}}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'Type'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.frieghtKind}}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'Category'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.category}}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="control-label col-sm-4">{{'InspectionDetails'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.inspectionDetails}}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'TerminalGatedOut'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{formatDate(selectedContainer.terminalDepartureDT);}}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="control-label col-sm-4">{{'CustomsStatus'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{selectedContainer.customsStatus}}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="control-label  col-sm-4">{{'CustomsStatusTime'|translate}}</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly value="{{formatDate(selectedContainer.customsReceivedDT)}}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button ng-click="closeDetails()" style="margin-right:10px" type="button" title="{{'Close'|translate}}" class="btn btn-default mt20 pull-right">{{'Close'|translate}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--ng-hide="ChasisDetails == null"-->
+    <div class="col-md-12 pagination pl25 mt20">
+        <dir-pagination-controls on-page-change="Search()" direction-links="true" boundary-links="true">
+        </dir-pagination-controls>
+    </div>
+
+</div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+
+
+</script>

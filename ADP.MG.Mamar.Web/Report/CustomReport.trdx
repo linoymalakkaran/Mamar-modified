@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="objectDataSource1" Width="8.4in" Name="Chassis Details" xmlns="http://schemas.telerik.com/reporting/2012/3.8">
+  <DataSources>
+    <ObjectDataSource DataMember="GetChassisDetails" Name="objectDataSource1">
+      <DataSource>
+        <ClrType FullName="ADP.MG.Mamar.Web.ReportHelper.ReportHelper" Assembly="ADP.MG.Mamar.Web" />
+      </DataSource>
+      <Parameters>
+        <ObjectDataSourceParameter Name="centerCode">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.centerCode.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="jobNumber">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.jobNumber.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="searchString">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.searchString.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="pageNumber">
+          <DataType>System.Int32</DataType>
+          <Value>
+            <String>= Parameters.pageNumber.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="pageSize">
+          <DataType>System.Int32</DataType>
+          <Value>
+            <String>= Parameters.pageSize.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="UCode">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.UCode.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="CCode">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.CCode.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+        <ObjectDataSourceParameter Name="token">
+          <DataType>System.String</DataType>
+          <Value>
+            <String>= Parameters.token.Value</String>
+          </Value>
+        </ObjectDataSourceParameter>
+      </Parameters>
+    </ObjectDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.0416666666666667in" Name="pageHeaderSection1">
+      <Style>
+        <Font Name="Arial" />
+      </Style>
+    </PageHeaderSection>
+    <DetailSection Height="0.5in" Name="detailSection1">
+      <Style>
+        <Font Name="Arial" />
+      </Style>
+      <Items>
+        <TextBox Width="1.4in" Height="0.5in" Left="0in" Top="0in" Value="= Fields.ChassisNumber" Name="textBox2">
+          <Style TextAlign="Left" VerticalAlign="Top" LineWidth="0cm">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" />
+            <BorderWidth Default="1px" Left="1px" Right="0px" />
+            <Font Name="Arial" Size="8pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.4in" Height="0.5in" Left="1.4in" Top="0in" Value="= Fields.EngineNumber" Name="textBox4">
+          <Style TextAlign="Left" VerticalAlign="Top" LineStyle="Solid" LineWidth="0px">
+            <BorderStyle Default="None" Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderWidth Default="1px" Left="1px" Right="1px" />
+            <Font Name="Arial" Size="8pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.4in" Height="0.5in" Left="2.8in" Top="0in" Value="= Fields.CountryCode" Name="textBox16">
+          <Style TextAlign="Left" VerticalAlign="Top" LineWidth="0px">
+            <BorderStyle Default="None" Top="Solid" Bottom="Solid" Left="Solid" Right="None" />
+            <BorderWidth Default="1px" Left="1px" Right="0px" />
+            <Font Name="Arial" Size="8pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.4in" Height="0.5in" Left="4.2in" Top="0in" Value="=IIF(Fields.ModelYear IS Null,&quot;&quot;,Fields.ModelYear) &#xD;&#xA;" Name="textBox22">
+          <Style TextAlign="Left" VerticalAlign="Top" LineWidth="1px">
+            <BorderStyle Default="None" Top="Solid" Bottom="Solid" Left="Solid" Right="None" />
+            <BorderWidth Default="1px" Left="1px" Right="0px" />
+            <Font Name="Arial" Size="10pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.4in" Height="0.5in" Left="5.6in" Top="0in" Value="=IIF(Fields.ColorEngName IS Null,Fields.ColorArbName,Fields.ColorEngName) &#xD;&#xA;" Name="textBox27">
+          <Style TextAlign="Left" VerticalAlign="Top" LineWidth="1px">
+            <BorderStyle Default="None" Top="Solid" Bottom="Solid" Left="Solid" Right="None" />
+            <BorderWidth Default="1px" Bottom="1px" Left="1px" />
+            <Font Name="Arial" Size="8pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.4in" Height="0.5in" Left="7in" Top="0in" Value="=IIF(Fields.PoliceColorEngName IS Null,Fields.PoliceColorArbName,Fields.PoliceColorEngName) &#xD;&#xA;" Name="textBox7">
+          <Style TextAlign="Left" VerticalAlign="Top" LineWidth="1px">
+            <BorderStyle Default="None" Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderWidth Default="1px" Bottom="1px" Left="1px" Right="1px" />
+            <Font Name="Arial" Size="8pt" Bold="False" />
+            <Padding Left="10px" Right="10px" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings>
+    <PageSettings PaperKind="A4" Landscape="False">
+      <Margins>
+        <MarginsU Left="0.400000005960464in" Right="0.400000005960464in" Top="0.400000005960464in" Bottom="0.400000005960464in" />
+      </Margins>
+    </PageSettings>
+  </PageSettings>
+  <Groups>
+    <Group Name="TestGroup">
+      <GroupHeader>
+        <GroupHeaderSection Height="0.5in" Name="groupHeaderSection">
+          <Items>
+            <Panel Width="8.3999989827474in" Height="0.2in" Left="0.00000101725265722in" Top="0.3in" Name="panel3">
+              <Style>
+                <BorderStyle Default="None" />
+                <Font Name="Calibri" Size="12px" Bold="True" />
+              </Style>
+              <Items>
+                <TextBox Width="1.4in" Height="0.2in" Left="2.7999989827474in" Top="0in" Value="Made In" Name="textBox5">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Left="Solid" Right="None" />
+                    <BorderWidth Default="1px" Left="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" />
+                  </Style>
+                </TextBox>
+                <TextBox Width="1.4in" Height="0.2in" Left="4.1999989827474in" Top="0in" Value="Model" Name="textBox6">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Right="None" />
+                    <BorderWidth Default="1px" Left="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" />
+                  </Style>
+                </TextBox>
+                <TextBox Width="1.4in" Height="0.2in" Left="5.5999989827474in" Top="0in" Value="Color" Name="textBox9">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Right="Solid" />
+                    <BorderWidth Default="1px" Left="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" />
+                  </Style>
+                </TextBox>
+                <TextBox Width="1.4in" Height="0.2in" Left="1.3999989827474in" Top="0in" Value="Engine No." TextWrap="True" Name="textBox17">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Right="None" />
+                    <BorderWidth Default="1px" Left="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" />
+                  </Style>
+                </TextBox>
+                <TextBox Width="1.3999989827474in" Height="0.2in" Left="0in" Top="0in" Value="Chassis No." Name="textBox15">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Right="None" />
+                    <BorderWidth Default="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" Top="0in" Bottom="0in" />
+                  </Style>
+                </TextBox>
+                <TextBox Width="1.4in" Height="0.2in" Left="6.9999989827474in" Top="0in" Value="Police Color" Name="textBox3">
+                  <Style BackgroundColor="16, 176, 189" Color="Black" TextAlign="Center" VerticalAlign="Top" LineWidth="1px">
+                    <BorderStyle Default="Solid" Right="Solid" />
+                    <BorderWidth Default="1px" Left="1px" />
+                    <Font Name="Arial" Size="10pt" Bold="False" />
+                    <Padding Left="10px" Right="10px" />
+                  </Style>
+                </TextBox>
+              </Items>
+            </Panel>
+            <Panel Width="8.4in" Height="0.3in" Left="0in" Top="0in" Name="panel7">
+              <Style BackgroundColor="" Color="White">
+                <BorderStyle Default="None" Bottom="None" />
+                <Font Name="Calibri" />
+              </Style>
+              <Items>
+                <TextBox Width="8.4in" Height="0.3in" Left="0in" Top="0in" Value="Chassis Details" Name="textBox1">
+                  <Style BackgroundColor="29, 202, 211" Color="Black" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Arial" Size="14pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </Items>
+            </Panel>
+          </Items>
+        </GroupHeaderSection>
+      </GroupHeader>
+      <GroupFooter>
+        <GroupFooterSection PageBreak="After" Height="0.0416666666666667in" Name="groupFooterSection" />
+      </GroupFooter>
+    </Group>
+  </Groups>
+  <ReportParameters>
+    <ReportParameter Name="centerCode">
+      <Value>
+        <String>N</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="jobNumber">
+      <Value>
+        <String>123</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="searchString" AllowNull="True">
+      <Value>
+        <String>""</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="pageNumber" Type="Integer" AllowNull="True">
+      <Value>
+        <String>0</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="pageSize">
+      <Value>
+        <String>0</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="UCode" Text="UCode">
+      <Value>
+        <String>UCode</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="CCode" Text="CCode">
+      <Value>
+        <String>CCode</String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="token" Text="token">
+      <Value>
+        <String>token</String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

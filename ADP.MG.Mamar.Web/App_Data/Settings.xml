@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<appSettings>
+  <add key="DashBoardServicePS" value="/ADPorts_MQ_DashBoardService/DashBoardServicePS" />
+  <add key="CustLicenseCollectionPS" value="/ADPorts_MQ_CustLicenseCollection/CustLicenseCollectionPS" />
+  <add key="CustTrxPS" value="/ADPorts_MQ_CustTxn/CustTrxPS" />
+  <add key="CustomerTxnDetailsPS" value="/ADPorts_MQ_CustomerTxnDetails/CustomerTxnDetailsPS" />
+  <add key="ApplicationDetailsPS" value="/ADPorts_MQ_ApplicationDetails/ApplicationDetailsPS" />
+  <add key="ApplyCreditPS" value="/ADPorts_MQ_ApplyCredit/ApplyCreditPS" />
+  <add key="MiscReceiptsPS" value="/ADPorts_MQ_MiscReceipts/MiscReceiptsPS" />
+  <add key="VATEnquiryPS" value="/ADPorts_MQG_ERP_VATEnquiry/VATEnquiryPS" />
+</appSettings> 

@@ -1,0 +1,321 @@
+﻿<style>
+    #frmAddEditContainer .control-label {
+        font-size: 14px !important;
+    }
+
+    .clear {
+        padding-top: 4%;
+    }
+
+    #modalContainer {
+        padding-top: 3%;
+    }
+
+    .no-records {
+        background-color: #eaeeef;
+        color: darkgray;
+    }
+
+    /*.modal-header {
+        padding: 12px;
+    }*/
+
+    .error {
+        display: inline-block;
+        color: red;
+    }
+    .clsUpload {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'ContainerList' | translate}}</div>
+            <div class="pull-right mt-20 mb-10">
+                <div id="Attach" class="btn btn-green" ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                    <label for="upfiles" class="fa fa-paperclip"></label>
+                    {{'Upload' | translate }}
+                    <input id="upfiles" type="file" upload-Files name="attachment" value="" class="clsUpload" accept={{ acceptFiles }} ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                </div>
+                <a class="btn btn-green" href="../Content/Template/Container_Template.xltx">{{'Download' | translate }}</a>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12">
+                            <div class="col-md-6 form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'JobNumber' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <label class="control-label col-lg-3 num">{{jobNumber}}</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'ContainerNumber' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" placeholder="" ng-model="searchString" ng-change="searchByDefault()">
+                                    </div>
+                                    <button type="button" class="btn btn-green" ng-click="searchContainer()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="pull-right">
+                                    <div class="pull-right">
+                                        <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')  || $storage.get('isPcsSuperUser')">
+                                            <a class="btn btn-red" ng-click="openContainerForm(newContainer, 'add')">{{'AddNew' | translate}}</a>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <!-- #region Container List-->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>{{'ContainerNumber' | translate}}</th>
+                                            <th>{{'SealNumber' | translate}}
+                                                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'en'" data-placement="right" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                                <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'ae'" data-placement="left" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                            </th>
+                                            <th>{{'Size' | translate}}</th>
+                                            <th>{{'Service' | translate}}</th>
+                                            <th>{{'Weight' | translate}}</th>
+                                            <th>{{'Measure' | translate}}</th>
+                                            <th>{{'Remarks' | translate}}</th>
+                                            <th>{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="AddingNew">
+                                            <td>
+                                                <input type="text" class="form-control" placeholder="AAAA9999999" ng-model="RecordToSave.ContainerNumber"
+                                                       maxlength="11" restrict-space ng-change="onContainerChanged('add')" />
+                                                <span class="error" ng-show="!isValidContainerNo && action == 'add'">{{'ErrContainerFormat' | translate}}</span>
+                                                <span class="error" ng-show="!isRequiredValid && action == 'add'">{{'ErrContainerNo' | translate}}</span>
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text"
+                                                       maxlength="20"
+                                                       restrict-space allow-comma ng-model="RecordToSave.SealNumber" />
+                                            </td>
+                                            <td>
+                                            <input class="form-control" type="text" only-digits ng-model="RecordToSave.Size" maxlength="2" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" ng-model="RecordToSave.Service" maxlength="5" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Weight" maxlength="16" />
+                                            </td>
+                                            <td>
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="RecordToSave.Measure" maxlength="16" />
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" ng-model="RecordToSave.Remarks" maxlength="50"></textarea>
+                                            </td>
+                                            <td>
+                                                <a title="{{'Save' | translate}}" ng-click="saveContainer(RecordToSave,'add',$index)"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                                <a title="{{'Cancel' | translate}}" ng-click="closeModalPopUp()"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <tr dir-paginate="item in containerList | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.ContainerNumber}}</label>
+                                                <input type="text" class="form-control" placeholder="AAAA9999999" ng-model="selectedContainer.ContainerNumber"
+                                                       ng-hide="!enabledEdit[{{$index}}]"
+                                                       ng-readonly="action == 'edit'" maxlength="11" restrict-space ng-change="onContainerChanged()" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.SealNumber}}</label>
+                                                <input class="form-control" type="text"
+                                                       maxlength="20"  ng-hide="!enabledEdit[{{$index}}]"
+                                                       restrict-space allow-comma ng-model="selectedContainer.SealNumber" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.Size}}</label>
+                                                <input class="form-control" ng-hide="!enabledEdit[{{$index}}]"
+                                                       type="text" only-digits ng-model="selectedContainer.Size" maxlength="2" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.Service}}</label>
+                                                <input class="form-control" type="text"
+                                                       ng-hide="!enabledEdit[{{$index}}]" ng-model="selectedContainer.Service" maxlength="5" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.Weight}}</label>
+                                                <input class="form-control" type="text" valid-number allow-decimal="true" 
+                                                       allow-negative="false" ng-hide="!enabledEdit[{{$index}}]" decimal-upto="3" ng-model="selectedContainer.Weight" maxlength="16" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.Measure}}</label>
+                                                <input class="form-control" type="text" ng-hide="!enabledEdit[{{$index}}]" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="selectedContainer.Measure" maxlength="16" />
+                                            </td>
+                                            <td>
+                                                <label ng-hide="enabledEdit[{{$index}}]">{{item.Remarks}}</label>
+                                                <textarea class="form-control" ng-hide="!enabledEdit[{{$index}}]" ng-model="selectedContainer.Remarks" maxlength="50"></textarea>
+                                            </td>
+                                            <td>
+                                                <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')  || $storage.get('isPcsSuperUser')">
+                                                    <a title="{{'Edit' | translate}}" ng-hide="enabledEdit[{{$index}}]" ng-click="openContainerForm(item, 'edit',$index)"><i class="fa fa-edit" aria-hidden="true"></i></a>
+
+                                                    <a ng-disabled="$storage.get('isPcsSuperUser')" ng-hide="enabledEdit[{{$index}}]" title="{{'Delete' | translate}}" ng-click="!$storage.get('isPcsSuperUser') && deleteConfirm($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+
+                                                    <a title="{{'Save' | translate}}" ng-click="saveContainer(item,'edit',$index)" ng-hide="!enabledEdit[{{$index}}]"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                                    <a title="{{'Cancel' | translate}}" ng-hide="!enabledEdit[{{$index}}]" ng-click="closeModalPopUp($index)"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+                                                </fieldset>
+                                            </td>
+                                        </tr>
+                                        <tr class="no-records" ng-show="containerList == null">
+                                            <td colspan="8">
+                                                {{'NoItems' | translate}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+
+                            <!--<div class="alert-msg" ng-show="containerList == null">
+                                <div class="col-md-6">
+                                    <div class="alert alert-success alert-bordered">
+                                        <span class="text-semibold">No Records Found!</span>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 ">
+                        <span class="col-md-4 pl-15" ng-show="containerList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        <div class="pull-right mr-10">
+                            <button class="btn btn-green alwaysEnabled" ng-click="gotoShipmentDetails()">{{'Back' | translate}}</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="containerList == null">
+                        <dir-pagination-controls direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                    </div>
+                    <!-- #endregion Container List-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- #region Add New Container Modal Popup-->
+    <div class="modal" id="modalContainer" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="closeModalPopUp()">&times;</button>
+                    <h5 class="modal-title bold" ng-show="action == 'add'">{{'AddNewContainer' | translate}}</h5>
+                    <h5 class="modal-title bold" ng-show="action == 'edit'">{{'EditContainer' | translate}}</h5>
+                </div>
+                <div class="modal-body">
+                    <form role="form" id="frmAddEditContainer" class="form-horizontal" ng-submit="saveContainer()">
+                        <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'ContainerNumber' | translate}}<span>*</span></label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" placeholder="AAAA9999999" ng-model="selectedContainer.ContainerNumber"
+                                               ng-readonly="action == 'edit'" maxlength="11" restrict-space ng-change="onContainerChanged()" />
+                                        <span class="error" ng-show="!isValidContainerNo && action == 'add'">{{'ErrContainerFormat' | translate}}</span>
+                                        <span class="error" ng-show="!isRequiredValid && action == 'add'">{{'ErrContainerNo' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'SealNumber' | translate}}</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text"
+                                               maxlength="70"
+                                               restrict-space allow-comma ng-model="selectedContainer.SealNumber" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'Size' | translate}}</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" only-digits ng-model="selectedContainer.Size" maxlength="2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'Weight' | translate}}</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="selectedContainer.Weight" maxlength="12" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'Service' | translate}}</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" ng-model="selectedContainer.Service" maxlength="5" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'Measure' | translate}}</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" type="text" valid-number allow-decimal="true" allow-negative="false" decimal-upto="3" ng-model="selectedContainer.Measure" maxlength="12" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label class="control-label  col-sm-4">{{'Remarks' | translate}}</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" ng-model="selectedContainer.Remarks" maxlength="50"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="pull-right mr-10 mt-20">
+                            <button type="button" class="btn btn-default" ng-click="closeModalPopUp()">{{'Cancel' | translate}}</button>
+                            <button type="submit" class="btn btn-green" ng-if="!$storage.get('isPcsSuperUser')" ng-disabled="!isValidContainerNo && action == 'add'">{{'Save' | translate}}</button>
+                        </div>
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- #endregion Add New Container Modal Popup-->
+
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+</div>
+
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+</script>

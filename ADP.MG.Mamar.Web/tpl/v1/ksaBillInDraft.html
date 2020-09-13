@@ -1,0 +1,435 @@
+﻿<style type="text/css">
+    .selected {
+        background-color: black;
+        color: black;
+        font-weight: bold;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-flat bdr bdrt pb20 mt30">
+                <div class="tabbable">
+                    <ul class="{{'nav nav-tabs nav-tabs-solid nav-justified'}}" style="width:15%">
+                        <li class="active"><a style="border-left:none">{{'ksaBillDetails' | translate}}</a></li>
+                        <li class="save-pclr-btn"> <a class="btn btn-dark-grey btn-block" ng-click="NavigateToKSABill()" ui-sref-opts="{reload: true, notify: true}">{{'goToKsaBillList' | translate}}</a></li>
+                        <!--<li class="save-pclr-btn" ng-if="isConsolidatorAccount"> <a ng-click="gototransactions();" data-toggle="tab">{{'Back' | translate}}</a></li>-->
+                    </ul>
+                    <div class="tab-content">
+                        <div class="col-md-12 g-grey-shade">
+                            <form class="form-horizontal">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'JobNumber' | translate}}: </label>
+                                            <label class="control-label col-md-8 num">{{HeaderInformation.JobNumber}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">{{'declarationType' | translate}}:</label>
+                                            <label class="control-label col-md-7 num">{{HeaderInformation.DeclarationType}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'declarationNbr' | translate}}:</label>
+                                            <label class="control-label col-md-8 num">{{HeaderInformation.DeclarationNumber}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5">{{'declarationDate' | translate}}:</label>
+                                            <label class="control-label col-md-6 num">{{HeaderInformation.DeclarationDate | date:'dd/MM/yyyy'}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-heading panel-flat mt20 pl-20">
+                                {{'ShipmentDetails' |translate}}
+                            </div>
+                            <fieldset ng-disabled="$storage.get('isPcsSuperUser')">
+                                <div class="col-md-12 grey-shade form-horizontal">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'exporterName' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.ExporterName}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'exportToName' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.ExportToNumber}} {{HeaderInformation.ExportToName}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'finalCountry' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.FinalCountryCode}} {{HeaderInformation.FinalCountryName}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <!--<div class="col-md-5">-->
+                                            <label class="control-label col-md-4">{{'uaeImpCode' | translate}}<span>*</span></label>
+                                            <div class="col-md-8">
+                                                <div id="ddlExpressAgent"
+                                                     ng-keydown="ImportKSAKeyDown($event)"
+                                                     class="col-md-10" disable-input="IsDisableInput"
+                                                     angucomplete-alt
+                                                     placeholder="{{'Find' | translate}}..."
+                                                     ng-model="selectedExpressAgent"
+                                                     local-data="expressAgents"
+                                                     search-fields="ImporterCode,ImporterEng,ImporterArb"
+                                                     title-field="ImporterCode,ImporterEng,ImporterArb"
+                                                     minlength="3" show-Title="true"
+                                                     search-str="searchCourierAgentText"
+                                                     input-class="form-control white"
+                                                     match-class="highlight"
+                                                     input-name="ddlExpressAgent"
+                                                     selected-object="selectedExpressAgentObj"
+                                                     input-changed="onImporterKSAChange">
+                                                </div>
+                                                <a class="col-md-1 mt-10">
+                                                    <i class="fa fa-search" ng-hide="IsDisableInput"
+                                                       aria-hidden="true"
+                                                       title="{{'Click' | translate}}"
+                                                       ng-click="openImporterKSALookup()">
+                                                    </i>
+                                                </a>
+                                                <span class="validation-error-label col-md-12"
+                                                      ng-show="invalidExpressCourierAgent">
+                                                    {{'InvalidExpressCourierAgentMessage'|translate}}
+                                                </span>
+                                            </div>
+                                            <!--</div>-->
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'msgType' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.MsgType}}" />
+                                                <!--<input type="text" ng-if="language=='ae'" class="form-control" ng-disabled="true" ng-model="VoyageArrivalDate" />-->
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'Notes' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.NOTES}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'oilOrderNumber' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.OilOrderNumber}}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'Port' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.PORTCD}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'declarationType' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.DeclarationType}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'uaeAgentCode' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.AgentCode}}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-hide="true">
+                                            <label class="control-label col-md-4">{{'uaeImpCode' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.ImpCode}} {{HeaderInformation.ImpEngName}} {{HeaderInformation.ImpArbName}}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'manufacturerNo' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.ManufacturerNumber}}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-4">{{'manufacturerName' | translate}}</label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" ng-disabled="true" value="{{HeaderInformation.ManufacturerName}}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="col-md-12  form-horizontal">
+                                <div class="pull-right mt-10 mr-10">
+                                    <button type="button" ng-click="WarningKSABill()" style="background-color:#c4b28a;" class="btn btn-default" data-dismiss="modal">{{'CreateJob' | translate}}</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="panel">
+                            <div class="panel-heading panel-flat mt20 pl-20">
+                                {{'InvGrp' |translate}}
+                            </div>
+                            <br />
+                            <div class="col-md-12">
+                                <div class="table-responsive mt18 mb20">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>{{'Currency' | translate}}</th>
+                                                <th>{{'FrieghtCode' | translate}}</th>
+                                                <th>{{'InvoiceExRate' | translate}}</th>
+                                                <th>{{'Invoice' | translate}}</th>
+                                                <th>{{'InvoiceType' | translate}}</th>
+                                                <th>{{'TotalExpense' | translate}}</th>
+                                                <th>{{'OrgCode' | translate}}</th>
+                                                <!--<th>{{'Action' | translate}}</th>-->
+                                            </tr>
+                                        </thead>
+                                        <tr dir-paginate="gridItem in GroupInformation | itemsPerPage: 1000"
+                                            current-page="1"
+                                            ng-click="setClickedRowColor($index,gridItem)"
+                                            ng-class="{'selected':$index == selectedRow}">
+                                            <td>{{gridItem.CurrencyEng}} {{gridItem.CurrencyCode}} {{gridItem.CurrencyArb}}</td>
+                                            <td>{{gridItem.FrieghtCode}}</td>
+                                            <td>{{gridItem.InvoiceExRate}}</td>
+                                            <td>{{gridItem.InvoiceNumber}}</td>
+                                            <td>{{gridItem.InvoiceType}}</td>
+                                            <td>{{gridItem.TotalExpense}}</td>
+                                            <td>{{gridItem.OrgCode}} {{gridItem.OrgEng}} {{gridItem.OrgArb}}</td>
+                                            <!--<td>
+                                                <a><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="setClickedRow(gridItem)"></i></a>
+                                            </td>-->
+                                        </tr>
+                                        <tr class="no-records" ng-hide="true"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="MaqtaListedUser == null">
+                                    <dir-pagination-controls pagination-id="userlistPagination" ng-hide="true" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                    <span class="col-md-2 pull-right" ng-hide="true" ng-if="MaqtaListedUser.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="panel">
+                            <br />
+                            <div class="panel-heading panel-flat mt20 pl-20">
+                                {{'InvoiceDetail' |translate}}
+                            </div>
+                            <br />
+                            <div class="col-md-12">
+                                <div class="table-responsive mt18 mb20">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>{{'InvoiceNumber' | translate}}</th>
+                                                <th>{{'InvoiceType' | translate}}</th>
+                                                <th>{{'Country' | translate}}</th>
+                                                <th>{{'FinalTariffCode' | translate}}</th>
+                                                <th>{{'ItemDescription' | translate}}</th>
+                                                <th>{{'MSRUnit' | translate}}</th>
+                                                <th>{{'InvQuantity' | translate}}</th>
+                                                <th>{{'BarrelQuantity' | translate}}</th>
+                                                <th>{{'BarrelCost' | translate}}</th>
+                                                <th>{{'OilDensity' | translate}}</th>
+                                                <th>{{'UnitPerPack' | translate}}</th>
+                                                <th>{{'InvoiceCost' | translate}}</th>
+                                                <th>{{'GrossWeight' | translate}}</th>
+                                                <th>{{'NetWeight' | translate}}</th>
+                                                <th>{{'InsCode' | translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tr dir-paginate="gridItem in ChildDetails | itemsPerPage: 1000"
+                                            current-page="1">
+                                            <td>{{gridItem.InvoiceNumber}}</td>
+                                            <td>{{gridItem.InvoiceType}}</td>
+                                            <td>{{gridItem.CountryCode}} {{gridItem.CountryEng}} {{gridItem.CountryArb}}</td>
+                                            <td>{{gridItem.FinalTariffCode}}</td>
+                                            <td>{{gridItem.ItemDescription}}</td>
+                                            <td>{{gridItem.MSRUnit}} {{gridItem.MSREng}} {{gridItem.MSRArb}}</td>
+                                            <td>{{gridItem.InvQuantity}}</td>
+                                            <td>{{gridItem.BarrelQuantity}}</td>
+                                            <td>{{gridItem.BarrelCost}}</td>
+                                            <td>{{gridItem.OilDensity}}</td>
+                                            <td>{{gridItem.UnitPerPack}}</td>
+                                            <td>{{gridItem.InvoiceCost}}</td>
+                                            <td>{{gridItem.GrossWeight}}</td>
+                                            <td>{{gridItem.NetWeight}}</td>
+                                            <td>{{gridItem.InsCode}}</td>
+
+                                            <!--<td>
+                                                <a><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="setClickedRow(gridItem)"></i></a>
+                                            </td>-->
+                                        </tr>
+                                        <tr class="no-records" ng-hide="true"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="MaqtaListedUser == null">
+                                    <dir-pagination-controls pagination-id="userlistPagination" ng-hide="true" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                    <span class="col-md-2 pull-right" ng-hide="true" ng-if="MaqtaListedUser.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Mamar Phase 2 Do Update-->
+    </div>
+    <!-- /horizontal form modal -->
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+    <div class="modal" id="expressAgentLookup" role="dialog">
+        <div style="width: 50%" class="modal-dialog">
+            <div style="min-height: 200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            ng-click="closeExpressAgent()">
+                        &times;
+                    </button>
+                    <h5 class="modal-title bold">{{'ExpressCourierAgent' | translate}}</h5>
+                </div>
+                <div style="overflow: auto" class="modal-body">
+                    <input id="searchExpressAgentText"
+                           type="text"
+                           ng-model="searchExpressAgentText"
+                           class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="expressAgents == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: expressAgentItem.ImporterCode==expressAgentItemSelected.ImporterCode}"
+                                    ng-click="setImportKSA(expressAgentItem)"
+                                    dir-paginate="expressAgentItem in expressAgents | itemsPerPage: 10"
+                                    current-page="lookUpCurrentPageExpressAgent"
+                                    pagination-id="expressAgentPager">
+                                    <td>
+                                        {{expressAgentItem.ImporterCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word; min-width: 160px; max-width: 160px; white-space: normal;">
+                                        {{expressAgentItem.ImporterEng}} {{expressAgentItem.ImporterEng}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="expressAgents == null || expressAgents.length == 0">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20"
+                         ng-hide="expressAgents == null">
+                        <dir-pagination-controls pagination-id="expressAgentPager"
+                                                 direction-links="true"
+                                                 boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="KSABILLDraftconfirmSendModalPopup" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">{{'Confirm' | translate}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{'ConfirmSendMsg' | translate}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default alwaysEnabled" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                        <button type="button" class="btn btn-red alwaysEnabled" ng-click="CreateKSABill()">{{'Send' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="KSABILLError" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close alwaysEnabled" data-dismiss="modal" aria-hidden="true">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">{{'Confirm' | translate}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{'ConfirmSendMsg' | translate}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-red alwaysEnabled" ng-click="NavigateKSABill()">{{'OK' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="KSABILLsuccessModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p class="alert alert-success">{{'DoneSuccessfully' | translate}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-red alwaysEnabled" ng-click="NavigateToKSABill(true)">{{'Close' | translate}}</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="KSABILLErrorModal" tabindex="-1" style="z-index:9999999;" role="dialog">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p class="alert alert-danger">Something went wrong. Please try again.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default text-center alwaysEnabled" ng-click="NavigateToKSABill()" data-dismiss="modal">{{'Close' | translate}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+
+</script>

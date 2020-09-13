@@ -1,0 +1,446 @@
+﻿<style>
+    .error
+    {
+        color:white !important;
+    }
+</style>
+<!-- Main content -->
+<div class="content-wrapper">
+    <div class="row mb-20">
+        <div class="col-md-12">
+            <div class="trans-list-head col-md-2">
+                {{'ExpressCourier' | translate}}
+            </div>
+            <div class="col-md-3">
+                <!--<fieldset ng-disabled="isSuperUser == 'True'">-->
+                <button class="btn btn-new mt-15 ml-40" ui-sref="transExpCourierWayBillDetail(({'refNum':0,'centerCode':selectedCenterCode,'CenterArabicName':CenterArabicName,'CenterEnglishName':CenterEnglishName}))">{{'AddNew' | translate}}</button>
+                <!--</fieldset>-->
+            </div>
+            <div class="col-md-7">
+                <div class="row importcentrecodedp">
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-horizontal form-group">
+                            <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                        ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                        ng-change="onCenterCodeChanged()"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-flat bdr pb20">
+        <div class="panel-body">
+
+            <!-- #region Search Panel-->
+            <div class="row g-grey-shade pb-20">
+                <div class="sub-title">
+                    <h6>{{'SearchBy' | translate}}</h6>
+                </div>
+                <div class="col-md-12 form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'ExpressCourierAgentCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <div id="ddlExpressAgent" style="color: #FFF !important;"
+                                     ng-keydown="expressAgentKeyDown($event)"
+                                     class="col-md-10"
+                                     angucomplete-alt
+                                     placeholder="{{'Find' | translate}}..."
+                                     ng-model="selectedExpressAgent"
+                                     local-data="expressAgents"
+                                     search-fields="AgentCode,AgentDescEng,AgentDescArb"
+                                     title-field="AgentCode,AgentDescEng,AgentDescArb"
+                                     minlength="3" show-Title="true"
+                                     search-str="searchCourierAgentText"
+                                     input-class="form-control select"
+                                     match-class="highlight"
+                                     input-name="ddlExpressAgent"
+                                     selected-object="selectedExpressAgentObj"
+                                     input-changed="onExpressAgentChange">
+                                </div>
+                                <a class="col-md-1 mt-10">
+                                    <i class="fa fa-search"
+                                       aria-hidden="true"
+                                       title="{{'Click' | translate}}"
+                                       ng-click="openExpressAgentLookup()">
+                                    </i>
+                                </a>
+                                <span class="validation-error-label col-md-12"
+                                      ng-show="invalidExpressCourierAgent">
+                                    {{'InvalidExpressCourierAgentMessage'|translate}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'AirwayBillNo' | translate}}</label>
+                            <div class="col-md-8">
+                                <input type="text"
+                                       class="form-control"
+                                       restrict-Space
+                                       ng-model="searchParams.CourierCode"
+                                       maxlength="30" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'ExpressCourierCenter' | translate}}</label>
+                            <div class="col-md-8">
+                                <div id="ddlExpressCourierCenter"
+                                     ng-keydown="courierCenterKeyDown($event)"
+                                     class="col-md-10"
+                                     angucomplete-alt
+                                     placeholder="{{'Find' | translate}}..."
+                                     ng-model="selectedCourierCenter"
+                                     local-data="courierCenterCodes"
+                                     search-fields="ExpressCenterCode,ExpressCenterEng,ExpressCenterArb"
+                                     title-field="ExpressCenterCode,ExpressCenterEng,ExpressCenterArb"
+                                     minlength="1" show-Title="true"
+                                     search-str="searchCourierCenterText"
+                                     input-class="form-control select"
+                                     match-class="highlight"
+                                     input-name="ddlExpressCourierCenter"
+                                     selected-object="selectedCourierCenterObj"
+                                     input-changed="onCourierCenterChange">
+                                </div>
+                                <a class="col-md-1 mt-10">
+                                    <i class="fa fa-search"
+                                       aria-hidden="true"
+                                       title="{{'Click' | translate}}"
+                                       ng-click="openCourierCenterLookup()">
+                                    </i>
+                                </a>
+                                <span class="validation-error-label col-md-12"
+                                      ng-show="invalidCourierCenter">
+                                    {{'InvalidCourierCenterMessage'|translate}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'ExpressCourierCreatedUser' | translate}}</label>
+                            <div class="col-md-8">
+                                <div id="ddlExpressCourierCreatedUser" style="color: #FFF;"
+                                     ng-keydown="expressCreatedUserKeyDown($event)"
+                                     class="col-md-10"
+                                     angucomplete-alt
+                                     placeholder="{{'Find' | translate}}..."
+                                     ng-model="selectedCourierCreatedUser"
+                                     local-data="expressCreatedUser"
+                                     search-fields="AgCode,AgDescEng,AgDescArb"
+                                     title-field="AgCode,AgDescEng,AgDescArb"
+                                     minlength="1" show-Title="true"
+                                     search-str="searchCourierCreatedUserText"
+                                     input-class="form-control select"
+                                     match-class="highlight"
+                                     input-name="ddlExpressCourierCreatedUser"
+                                     selected-object="selectedCourierCreatedUserObj"
+                                     input-changed="onExpressCreatedUserChange">
+                                </div>
+                                <a class="col-md-1 mt-10">
+                                    <i class="fa fa-search"
+                                       aria-hidden="true"
+                                       title="{{'Click' | translate}}"
+                                       ng-click="openExpressCreatedUserLookup()">
+                                    </i>
+                                </a>
+                                <span class="validation-error-label col-md-12"
+                                      ng-show="invalidCourierCenter">
+                                    {{'InvalidCourierCenterMessage'|translate}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'StartDate' | translate}}</label>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control pickadate"
+                                           placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParams.StartDate">
+                                    <span class="input-group-addon ">
+                                        <i class="icon-calendar22"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="control-label col-md-4">{{'EndDate' | translate}}</label>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control pickadate"
+                                           placeholder="{{'SelectEndDate' | translate}}" ng-model="searchParams.EndDate">
+                                    <span class="input-group-addon ">
+                                        <i class="icon-calendar22"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right">
+                <button type="button"
+                        class="btn btn-default"
+                        ng-click="clearSearchFilters()"
+                        ng-disabled="searchParams.userCode == ''
+                    && searchParams.agentCode == ''
+                    && searchParams.airwayBill == ''
+                    && searchParams.startDate == ''
+                    && searchParams.endDate == ''">
+                    {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-green" ng-click="getSearchResult()">
+                    {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+            <!-- #endregion Search Panel -->
+            <!-- List start -->
+            <div class="col-md-12">
+                <table class="table table-bordered table-mamar table-responsive mt20 mb20">
+                    <thead>
+                        <tr>
+                            <th style="width:20%">{{'ExpressCourierCenter' | translate}}</th>
+                            <th style="width:7%" >{{'ExpressCourierCreatedUser' | translate}}</th>
+                            <th style="width:18%">{{'ExpressCourierCreatedUsername' | translate}}</th>
+                            <th style="width:8%" >{{'ExpressCourierCreatedDate' | translate}}</th>
+                            <th style="width:9%" >{{'ExpressCourierAgent' | translate}}</th>
+                            <th style="width:15%">{{'ExpressCourierUsername' | translate}}</th>
+                            <th style="width:8%" >{{'ExpressCourierHAWBMAWB' | translate}}</th>
+                            <th style="width:8%" >{{'Action' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="item in expressCourierList | itemsPerPage: 10"
+                            total-items="totalCount"
+                            current-page="searchParams.pageNumber"
+                            pagination-id="expCourierListPager">
+                            <td>{{item.CenterCodeDescribtion }}</td>
+                            <td>{{item.CreatedUser}}</td>
+                            <td ng-if="language == 'ae'">{{item.CreatedUserArabic}}</td>
+                            <td ng-if="language == 'en'">{{item.CreatedUserEng}}</td>
+                            <td>{{item.CreatedDate | date : 'dd/MM/yyyy hh:mm:ss'}}</td>
+                            <td>{{item.AgentIMPCode}}</td>
+                            <td ng-if="language == 'en'">{{item.AgentNameEng}}</td>
+                            <td ng-if="language == 'ae'">{{item.AgentNameArabic}}</td>
+                            <td>{{item.ExpressCourierCode}}</td>
+                            <td>
+                                <a title="{{'ExpressCourierDetails' | translate}}" ng-click="goToDetailsPage(item)"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                <a title="{{'Delete' | translate}}" ng-click="DeleteVehicle(item)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                <!--<button type="button"
+                                    class="btn btn-green"
+                                    ng-click="goToDetailsPage(item)">
+                                {{'ExpressCourierDetails' | translate}}
+                            </button>-->
+                            </td>
+                        </tr>
+                        <tr class="no-records"
+                            ng-show="expressCourierList == null || expressCourierList.length == 0">
+                            <td colspan="8">
+                                {{'NoItems' | translate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="expressCourierList == null || expressCourierList.length == 0">
+                    <dir-pagination-controls pagination-id="expCourierListPager"
+                                             direction-links="true"
+                                             boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-show="expressCourierList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                </div>
+            </div>
+            <!-- List end -->
+        </div>
+
+        <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    </div>
+
+
+    <!-- lookup modals start -->
+    <div class="modal" id="expressAgentLookup" role="dialog">
+        <div style="width: 50%" class="modal-dialog">
+            <div style="min-height: 200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            ng-click="closeExpressAgent()">
+                        &times;
+                    </button>
+                    <h5 class="modal-title bold">{{'ExpressCourierAgent' | translate}}</h5>
+                </div>
+                <div style="overflow: auto" class="modal-body">
+                    <input id="searchExpressAgentText"
+                           type="text"
+                           ng-model="searchExpressAgentText"
+                           class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="expressAgents == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: expressAgentItem.AgentCode==expressAgentItemSelected.AgentCode}"
+                                    ng-click="setExpressAgent(expressAgentItem)"
+                                    dir-paginate="expressAgentItem in expressAgents | itemsPerPage: 10"
+                                    current-page="lookUpCurrentPageExpressAgent"
+                                    pagination-id="expressAgentPager">
+                                    <td>
+                                        {{expressAgentItem.AgentCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word; min-width: 160px; max-width: 160px; white-space: normal;">
+                                        {{expressAgentItem.AgentDescEng}} {{expressAgentItem.AgentDescEng}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="expressAgents == null || expressAgents.length == 0">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20"
+                         ng-hide="expressAgents == null">
+                        <dir-pagination-controls pagination-id="expressAgentPager"
+                                                 direction-links="true"
+                                                 boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="courierCenterLookup" role="dialog">
+        <div style="width: 50%" class="modal-dialog">
+            <div style="min-height: 200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeCourierCenter()">&times;</button>
+                    <h5 class="modal-title bold">{{'ExpressCourierCenter' | translate}}</h5>
+                </div>
+                <div style="overflow: auto" class="modal-body">
+                    <input id="searchCourierCenterText"
+                           type="text"
+                           ng-model="searchCourierCenterText"
+                           class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="courierCenterCodes == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: courierCenterItem.ExpressCenterCode==courierCenterItemSelected.ExpressCenterCode}"
+                                    ng-click="setCourierCenter(courierCenterItem)"
+                                    dir-paginate="courierCenterItem in courierCenterCodes | itemsPerPage: 10"
+                                    current-page="lookUpCurrentPageCourierCenter"
+                                    pagination-id="courierCenterPager">
+                                    <td>
+                                        {{courierCenterItem.ExpressCenterCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word; min-width: 160px; max-width: 160px; white-space: normal;">
+                                        {{courierCenterItem.ExpressCenterEng}} {{courierCenterItem.ExpressCenterArb}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="courierCenterCodes == null || courierCenterCodes.length == 0 ">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="courierCenterCodes == null">
+                        <dir-pagination-controls pagination-id="courierCenterPager"
+                                                 direction-links="true"
+                                                 boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="expressCreatedUserLookup" role="dialog">
+        <div style="width: 50%" class="modal-dialog">
+            <div style="min-height: 200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            ng-click="closeExpressAgent()">
+                        &times;
+                    </button>
+                    <h5 class="modal-title bold">{{'ExpressCourierCreatedUser' | translate}}</h5>
+                </div>
+                <div style="overflow: auto" class="modal-body">
+                    <input id="searchExpressCreatedUserText"
+                           type="text"
+                           ng-model="searchExpressCreatedUserText"
+                           class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="expressCreatedUser == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: expressAgentItem.AgCode==expressCreatedUserItemSelected.AgCode}"
+                                    ng-click="setExpressCreatedUser(expressAgentItem)"
+                                    dir-paginate="expressAgentItem in expressCreatedUser | itemsPerPage: 10"
+                                    current-page="lookUpCurrentPageExpressCreatedUser"
+                                    pagination-id="expressCreatedUserPager">
+                                    <td>
+                                        {{expressAgentItem.AgCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word; min-width: 160px; max-width: 160px; white-space: normal;">
+                                        {{expressAgentItem.AgDescEng}} {{expressAgentItem.AgDescEng}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="expressCreatedUser == null || expressCreatedUser.length == 0">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20"
+                         ng-hide="expressCreatedUser == null">
+                        <dir-pagination-controls pagination-id="expressCreatedUserPager"
+                                                 direction-links="true"
+                                                 boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- lookup modals end -->
+</div>
+
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

@@ -1,0 +1,229 @@
+/*Docs*/
+
+.body {
+    position: relative;
+}
+
+.container {
+    width: 100%;
+}
+
+.sub-title {
+    font-size: 30px;
+    margin-top: 50px;
+    margin-bottom: 10px;
+    padding-bottom: 0;
+}
+
+.sub-title a {
+    font-size: 16px;
+}
+
+.section.docs-heading {
+	width:100%;
+    padding:0;
+	border-radius: 6px;
+   	background: #4d4d4f; 
+    margin: 20px 5px;
+	position: relative;
+}
+.section.docs-heading img{ width: 15%; display: inline-block}
+
+.affix {
+    position: static;
+}
+
+
+
+/* all links */
+.docs-sidebar .nav>li>a {
+	line-height: 20px;
+    color: #8c7a54;
+    border-left: 1px solid transparent;
+    padding: 10px 0px;
+    font-size: 16px;
+    font-weight: bold;
+	border-bottom: 1px dotted #CCC;
+/*    text-transform: uppercase;*/
+}
+
+
+/* nested links */
+.docs-sidebar .nav .nav>li>a {
+    padding-left: 40px;
+    font-size: 15px;
+}
+
+/* hover links */ 
+.docs-sidebar .nav>li:not(.active)>a:hover {
+    color: #aa1e2f;
+    text-decoration: none;
+    background-color: transparent;
+/*    border-left-width: 1px;
+    border-left-color: #aa1e2f;*/
+	background: #f7f7f7;
+	/*padding-left: 20px;*/
+}
+/* focus links */
+.docs-sidebar .nav>li>a:focus {
+    text-decoration: none;
+    background-color: transparent;
+}
+/* active links */
+.docs-sidebar .nav>.active>a {
+    color: #aa1e2f;
+    text-decoration: none;
+    border-left-color: #aa1e2f;
+	padding-left: 20px;
+}
+/* all active links */
+.docs-sidebar .nav>.active>a, 
+.docs-sidebar .nav>.active:hover>a,
+.docs-sidebar .nav>.active:focus>a {
+    font-weight: 400;
+}
+/* nested active links */
+.docs-sidebar .nav .nav>.active>a, 
+.docs-sidebar .nav .nav>.active:hover>a,
+.docs-sidebar .nav .nav>.active:focus>a {
+    font-weight: 400;
+}
+
+
+/*Syntax Highlighter : Sublime Theme */
+
+.syntaxhighlighter {
+    background-color: #2b303b !important;
+    padding: 15px 0;
+    margin: 2em 0 1em 0 !important;
+}
+
+.syntaxhighlighter a,
+.syntaxhighlighter div,
+.syntaxhighlighter code,
+.syntaxhighlighter table,
+.syntaxhighlighter table td,
+.syntaxhighlighter table tr,
+.syntaxhighlighter table tbody,
+.syntaxhighlighter table thead,
+.syntaxhighlighter table caption,
+.syntaxhighlighter textarea {
+    line-height: 1.3em !important;
+}
+
+.syntaxhighlighter .line.alt1 {
+    background-color: #2b303b !important;
+}
+
+.syntaxhighlighter .line.alt2 {
+    background-color: #2b303b !important;
+}
+
+.syntaxhighlighter .string,
+.syntaxhighlighter .string a {
+    color: #90be8c !important;
+}
+
+.syntaxhighlighter .color1,
+.syntaxhighlighter .color1 a {
+    color: #d08770 !important;
+}
+
+.syntaxhighlighter .plain,
+.syntaxhighlighter .plain a {
+    color: #c0c5ce !important;
+}
+
+.syntaxhighlighter .keyword {
+    color: #bf616a !important;
+}
+
+.syntaxhighlighter .gutter {
+    color: #757a84 !important;
+}
+
+.syntaxhighlighter .line.highlighted.alt1,
+.syntaxhighlighter .line.highlighted.alt2 {
+    background-color: #333E49 !important;
+}
+
+.syntaxhighlighter .gutter .line.highlighted {
+    background-color: #343d46 !important;
+    color: #757a84 !important;
+}
+
+.syntaxhighlighter .value {
+    color: #96b5b4 !important;
+}
+/*css*/
+/* .syntaxhighlighter .css.plain,
+.syntaxhighlighter .css.plain a {
+    color: #d08770 !important;
+} 
+
+.syntaxhighlighter .css.keyword {
+    color: #c0c5ce !important;
+}*/
+
+.syntaxhighlighter .color3,
+.syntaxhighlighter .color3 a {
+    color: #b48ead !important;
+}
+/*js*/
+
+.syntaxhighlighter .js.keyword {
+    color: #b48ead !important;
+}
+
+@media (min-width: 992px) {
+    .affix,
+    .affix-bottom {
+        width: 213px
+    }
+    .affix {
+        position: fixed;
+        top: 0px
+    }
+    .affix-bottom {
+        position: absolute
+    }
+    .affix .bs-docs-sidenav,
+    .affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+
+@media (min-width: 1200px) {
+    .affix,
+    .affix-bottom {
+        width: 320px
+    }
+}
+
+/* SIDEBAR */
+
+@media (min-width: 768px) {
+    .docs-sidebar {
+	padding: 20px 30px;
+        padding-top: 20px;
+        padding-left: 20px
+    }
+}
+
+@media (min-width: 992px) {
+    .docs-sidebar .nav ul {
+        display: none;
+        padding-bottom: 10px;
+    }
+    .docs-sidebar .nav>.active>ul {
+        display: block
+    }
+}
+
+@media (max-width:568px) {	
+	.img-rounded { width: 100%}
+	.section.docs-heading img {
+		width: 40%;}
+	.docs-sidebar { margin-top: 0}
+}

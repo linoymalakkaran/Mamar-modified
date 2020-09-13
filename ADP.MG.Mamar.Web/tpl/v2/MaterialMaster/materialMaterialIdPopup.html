@@ -1,0 +1,67 @@
+﻿    <div class="modal" id="openMaterialIdLookup" role="dialog">
+        <div class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'openMaterialIdLookup' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input
+                        id="materialIdSearchText"
+                        type="text"
+                        ng-model="searchPopUpModels.materialIdSearchText"
+                        ng-change="filterMaterialIdRecordsClientSide();"
+                        class="form-control disabledInputWithBorder col-md-12"
+                    >
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th>{{'MaterialId'|translate}}</th>
+                                    <th>{{'MaterialName'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    ng-class="{selected: material.ScientificNameEng==RecordToEdit.MaterialDescription}"
+                                    ng-click="setMaterialId(material)"
+                                    dir-paginate="material in materialIdListFiltered | itemsPerPage: 10"
+                                    pagination-id="materialIdTypePager"
+                                >
+                                    <td>
+                                        {{material.SubstanceID}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='en'">
+                                        {{material.ScientificNameEng}}
+                                        <span class="showOnHover pull-right">
+                                            <a>
+                                                {{'ClickToSelect'|translate}}
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='ae'">
+                                        {{material.ScientificNameArb}}
+                                        <span class="showOnHover pull-right">
+                                            <a>
+                                                {{'ClickToSelect'|translate}}
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="materialIdListFiltered == null">
+                                    <td colspan="3">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="materialIdListFiltered == null">
+                        <dir-pagination-controls pagination-id="materialIdTypePager" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

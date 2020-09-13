@@ -1,0 +1,184 @@
+﻿<div ng-controller="chargesController" class="panel bdr bdrt">
+    <div class="panel-heading panel-flat">
+        {{'Charges'|translate}}
+        <div class="pull-right mtm6">
+            <button title="{{ addingNewRow ?('RowAddedAlready'|translate):('AddNew'|translate)}}"
+                    ng-disabled="addingNewRow==true" type="button" class="btn btn-green pull-right" ng-click="addingNew();">
+                {{'AddNew' | translate}}
+            </button>
+        </div>
+    </div>
+
+    <div id="progressCharge" class="progress chprogress m-10" style="display:none;">
+        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="50"
+             aria-valuemin="0" aria-valuemax="100" style="width:60%" id="chBar">{{'ChargeLoadingMessage'|translate}}
+        </div>
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{'Type'|translate}}</th>
+                    <th style="width:47%">{{'Description'|translate}}</th>
+                    <th class="t-right">{{'Amount'|translate}}</th>
+                    <th style="width:18%"> {{'Action'|translate}}</th>
+                </tr>
+            </thead>
+            <tbody ng-show="chargesLoader">
+                <tr style="height:40px">
+                    <td colspan="4">
+                        <div style="margin-top:20px;" class="small-loader"><i class="icon-spinner2 spinner position-center"></i></div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody ng-hide="chargesLoader">
+                <tr style="font-weight:bold;background-color:#b2757f;color:white" ng-show="closingEditRow">
+                    <td colspan="4">
+                        <span>
+                            {{'SaveConfirm'|translate}}<a style="color:white" ng-click="saveCharges(true)">
+                                {{'Yes'|translate}}
+                            </a> | <a style="color:white" ng-click="discardEdited();"> {{'No'|translate}}</a>
+                        </span>
+                    </td>
+                </tr>
+                <tr id="confirmDelete" style="font-weight:bold;background-color:#b2757f;color:white" ng-show="isGoingToDelete">
+                    <td colspan="4">
+                        <span>
+                            {{'DeleteConfirm'|translate}}<a style="color:white" ng-click="deleteConfirmed()">
+                                {{'Yes'|translate}}
+                            </a> | <a style="color:white" ng-click="isGoingToDelete=false;"> {{'No'|translate}}</a>
+                        </span>
+                    </td>
+                </tr>
+                <tr ng-show="savedSuccess" class="alert-success">
+                    <td colspan="4">
+                        <span>{{ Message|translate}}</span>
+                        <a ng-click="savedSuccess=false" class="close" style="font-size:19px">&times;</a>
+                    </td>
+                </tr>
+                <!--<tr ng-show="editDeposit" class="alert-danger">
+                    <td colspan="4">
+                        <span>{{ Message|translate}}</span>
+                    </td>
+                </tr>-->
+                <tr ng-show="addingNewRow">
+                    <td colspan="2">
+                        <div class="col-sm-12">
+                            <div id="ddlChargeType" ng-keydown="chargeKeyDown($event)" class="col-md-11" title="{{selectedChargeTypeModel}}" angucomplete-alt placeholder="{{'ChargesType' | translate}}" ng-model="selectedChargeTypeModel"
+                                 local-data="charges" search-fields="ChargeCode,ChargeEngName,ChargeArbName" title-field="ChargeEngName" minlength="1" search-str="searchChargeText" show-title="true"
+                                 input-class="form-control" match-class="highlight" input-name="ddlChargeType" selected-object="selectedChargeType" input-changed="onChargeChange">
+                            </div>
+                            <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openChargeLookup()"></i></a>
+                        </div>
+                        <span class="validationmsg  col-sm-6" ng-show="InvalidChargeType">{{'InvalidChargeType'|translate}}</span>
+                    </td>
+                    <td>
+                        <input step="0.001" prevent-typing-greater placeholder="{{'Amount'|translate}}" max="9999999999999.994"
+                               style="width:100%" type="number" class="arrowLessNumber" ng-model="RecordToEdit.Amount" />
+                    </td>
+                    <td>
+                        <a ng-show="selectedChargeType" ng-click="saveCharges(false);" title="{{'Save'|translate}}"><i class="fa fa-check"></i></a>
+                        <a ng-click="addingNewRow=false;selectedChargeType=null;selectedChargeTypeModel=null;" title="{{'Close'|translate}}"><i class="fa fa-close"></i></a>
+                    </td>
+                </tr>
+                <tr ng-repeat="chargesModel in custBillData.Charges">
+                    <td>{{chargesModel.Type}}</td>
+                    <td ng-show="languageSelected=='en'">{{chargesModel.DescEng}}</td>
+                    <td ng-show="languageSelected=='ae'">{{chargesModel.DescArb}}</td>
+                    <td class="t-right">
+                        <span ng-hide="RecordToEdit.Type==chargesModel.Type">{{chargesModel.Amount | number : 2}}</span>
+                        <input autofocus step="0.001" placeholder="{{'Amount'|translate}}" max="9999999999999.994"
+                               type="number" class="arrowLessNumber" prevent-typing-greater ng-model="RecordToEdit.Amount" ng-show="RecordToEdit.Type==chargesModel.Type" />
+                    </td>
+                    <td ng-hide="RecordToEdit.Type==chargesModel.Type">
+                        <!--Voucher Number for Deposit : 3, TRN Deposit : 4, LC : 5 and full Deposit:6-->
+                        <a ng-disabled="editingRow || isGoingToDelete" ng-hide="(chargesModel.IsFixedCharges && chargesModel.Type!='INS') || ( chargesModel.Type=='INS' && !(VoucherNumber==3 || VoucherNumber==4 || VoucherNumber==5 || VoucherNumber==6))" title="{{'Edit'|translate}}" ng-click="editRow(chargesModel)">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                        <a ng-disabled="editingRow || isGoingToDelete" ng-hide="chargesModel.IsFixedCharges" title="{{'Delete'|translate}}" ng-click="deleteCharge(chargesModel);">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                        <a title="{{'Edit'|translate}}" ng-show="chargesModel.Type == 'PAS'" ng-click="editRow(chargesModel)">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    <td ng-show="RecordToEdit.Type==chargesModel.Type">
+                        <a ng-click="saveCharges(true);" title="{{'Save'|translate}}"><i class="fa fa-check"></i></a>
+                        <a title="{{'Close'|translate}}" ng-click="Message='';closingEdit()"><i class="fa fa-close"></i></a>
+                    </td>
+                </tr>
+                <tr ng-show="custBillData.Charges == null">
+                    <td colspan="3">
+                        {{'NoItems'|translate}}
+                    </td>
+                </tr>
+                <tr style="font-weight:bold" ng-show="custBillData != null">
+                    <td colspan="2" class="t-right">
+                        {{'Total'|translate}}
+                    </td>
+                    <td class="redbg-light t-right">
+                        {{custBillData.TotalVoucher | number : 2}}
+                    </td>
+                </tr>
+                <tr style="font-weight:bold" ng-show="custBillData != null">
+                    <td colspan="2" class="t-right">
+                        {{'FacilityBalance'|translate}}
+                    </td>
+                    <td class="redbg-light t-right">
+                        {{custBillData.FacilityBalance| number : 2}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal" id="chargeLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeCharge()">&times;</button>
+                    <h5 class="modal-title bold">{{'Charges' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchChargeText" type="text" ng-model="searchChargeText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="charges == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                    <th>{{'Amount'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: chargeItem.ChargeCode==chargeItemSelected.ChargeCode}" ng-click="setCharge(chargeItem)" dir-paginate="chargeItem in charges | itemsPerPage: 10" current-page="lookUpCurrentPageCharge" pagination-id="chargePager">
+                                    <td>
+                                        {{chargeItem.ChargeCode}}
+                                    </td>
+                                    <td>
+                                        {{chargeItem.ChargeEngName}} {{chargeItem.ChargeArbName}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{chargeItem.Amount}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="charges == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="charges == null">
+                        <dir-pagination-controls pagination-id="chargePager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

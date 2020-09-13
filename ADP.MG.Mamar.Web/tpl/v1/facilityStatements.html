@@ -1,0 +1,136 @@
+﻿<div ng-controller="mPaymentController" class="panel drt pb20">
+
+    <div class="col-md-12 form-horizontal">
+        <div class="form-group">
+            <div class="col-md-4">
+                <label class="control-label col-md-3">{{'ImpCode' | translate}}</label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" ng-model="ImporterCode" ng-disabled="true">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-3">{{'StartDate' | translate}}</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control pickadate" placeholder="-- Select Start Date --" ng-model="report.startDate">
+                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label col-md-3">{{'EndDate' | translate}}</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control pickadate" placeholder="-- Select End Date --" ng-model="report.endDate">
+                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="pull-right mt-15">
+                    <button ng-click="downloadReport('GetEClearanceStatementSummaryReport')" type="button" class="btn btn-green">
+                        {{'SummaryStmt'|translate}}
+                    </button>
+                    <button ng-click="downloadReport('GetEClearanceReport')" type="button" class="btn btn-green">
+                        {{'eClearance'|translate}}
+                    </button>
+                    <button ng-click="downloadReport('GetFinancialTransReport')" type="button" class="btn btn-green">
+                        {{'DetailedStatement'|translate}}
+                    </button>
+                    <button ng-disabled="isSuperUser == 'True'" ng-click="PrepareFacilityStatement()" type="button" class="btn btn-green">
+                        {{'PrepareFacilityStatement'|translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>{{'StatementNumber'|translate}}</th>
+                        <th>{{'ImpCode'|translate}}</th>
+                        <th>{{'Date'|translate}}</th>
+                        <th>{{'Status'|translate}}</th>
+                        <th>{{'StatementExp'|translate}}</th>
+                        <th>{{'SettleGRRNum'|translate}}</th>
+                        <th>{{'SettleGRRDate'|translate}}</th>
+                        <th>{{'StatementAmount'|translate}}</th>
+                        <th>{{'FacilityStmt'|translate}}</th>
+                        <th>{{'Charges'|translate}}</th>
+                        <th>{{'DepositStmt'|translate}}</th>
+                        <th>{{'EClearanceStmt'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in facilityStatements | itemsPerPage: mPaymentRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            {{model.StatementNumber}}
+                        </td>
+                        <td>
+                            {{model.ImpCode}}
+                        </td>
+                        <td>
+                            {{model.StatementDate | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{model.PamentStatus}}
+                        </td>
+                        <td>
+                            {{model.StatementExp | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{model.SettleGRRNum}}
+                        </td>
+                        <td>
+                            <span ng-show="parseDate(model.SettleGRRDate) == true">{{model.SettleGRRDate | date: 'dd/MM/yyyy' }}</span>
+                        </td>
+                        <td>
+                            {{model.StatementAmount}}
+                        </td>
+                        <td>
+                            <a title="{{'Facility STMT'|translate}}" ng-click="downloadReport('GetFacilityStatementReport',model.ImpCode,model.StatementNumber,model.StatementDate,model.StatementExp)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                        <td>
+                            <a title="{{'Charges'|translate}}" ng-click="downloadReport('GetFacilityStatementChargesReport',model.ImpCode,model.StatementNumber,model.StatementDate,model.StatementExp)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                        <td>
+                            <a title="{{'Deposit STMT'|translate}}" ng-click="downloadReport('GetFacilityBankStatementReport',null,model.StatementNumber,null,null)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                        <td>
+                            <a title="{{'EClearance STMT'|translate}}" ng-click="downloadReport('GetFacilityEClearanceStatementReport',null,model.StatementNumber,null,null)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="facilityStatements == null || facilityStatements.length == 0">
+                        <td colspan="12">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="facilityStatements == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="facilityStatements.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <!-- <button type="submit" ng-click="PrepareStatement()" title="{{'Preparefacilitystatment'|translate}}" class="btn btn-green pull-right mt-10">{{'Preparefacilitystatment'|translate}}</button> -->
+    <!--<button type="submit" class="btn btn-green">Submit</button>-->
+</div>
+
+<script>
+    $(".pickadate").pickadate({
+        format: 'mm/dd/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

@@ -1,0 +1,87 @@
+﻿<div class="modal" id="maqasaInvoiceDetails" role="dialog">
+    <div style="width:70%" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ng-click="cancelInvoice()">&times;</button>
+                <h4 class="modal-title bold">{{'InvoiceDetail' | translate}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row g-grey-shade">
+                    <div class="col-md-12">
+                        <div class="form-horizontal">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">{{'HSCODE' | translate}}</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" id="txtHSCode" ng-model="searchParameterInvoice.searchString" ng-change="searchImportByDefault('hsCode')" class="form-control" placeholder="">
+                                    </div>
+                                    <button type="button" class="btn btn-green col-lg-3" ng-click="searchInvoice()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mt20 mb20">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="2%">
+                                </th>
+                                <th>{{'Serial'|translate}}</th>
+                                <th>{{'HSCODE'|translate}}</th>
+                                <th>{{'UOM'|translate}}</th>
+                                <th>{{'Weight'|translate}}</th>
+                                <th>{{'Quantity'|translate}}</th>
+                                <th>{{'Amount'|translate}}</th>
+                                <!--<th>{{'DutyPercent'|translate}}</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr dir-paginate="Item in allInvoiceDetailsData | itemsPerPage: searchParameterInvoice.pageSize" pagination-id="detailsPagination" total-items="totalInvCount">
+                                <td>
+                                    <div class="form-group form-checkbox">
+                                        <div class="fleft">
+                                            <label class="control control--checkbox">
+                                                <input ng-model="selectedInvoiceIdsTemp[Item.InvoiceSerialNumber]" ng-change="pushOrPopSelectedItem(Item)"  ng-checked="selectedInvoiceIdsTemp[Item.InvoiceSerialNumber]" type="checkbox" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{Item.InvoiceSerialNumber}}
+                                </td>
+                                <td>
+                                    {{Item.HarmoniseCode}}
+                                </td>
+                                <td>
+                                    {{Item.UnitCode}}
+                                </td>
+                                <td>
+                                    {{Item.Weight | number:3}}
+                                </td>
+                                <td>
+                                    {{Item.Quantity}}
+                                </td>
+                                <td>
+                                    {{Item.Amount | number:2}}
+                                </td>
+                            </tr>
+                            <tr class="no-records" ng-show="allInvoiceDetailsData == null || allInvoiceDetailsData.length == 0"><td colspan="9">{{'NoItems' | translate}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="allInvoiceDetailsData == null || allInvoiceDetailsData.length == 0">
+                    <dir-pagination-controls direction-links="true" pagination-id="detailsPagination" on-page-change="loadMoreInvoiceRecords(newPageNumber)"  boundary-links="true">
+                    </dir-pagination-controls>
+                    <span class="col-md-2 pull-right" ng-show="allInvoiceDetailsData.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalInvCount}}</span></strong></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="saveInvoiceDetails()" title="{{'Save'|translate}}" class="btn btn-green mt20 pull-right">{{'Save'|translate}}</button>
+                <button ng-click="cancelInvoice()" style="margin-right:10px" type="button" title="{{'Close'|translate}}" class="btn btn-default mt20 pull-right">{{'Cancel'|translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

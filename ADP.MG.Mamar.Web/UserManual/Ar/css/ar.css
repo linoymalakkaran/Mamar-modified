@@ -1,0 +1,12 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body{
+	font-family:'Droid-Arabic-Kufi', 'Tahoma', 'ForzaMedium', sans-serif; text-align: right;
+}
+.col-md-3 {
+	float: right;}
+.dark-text{float:right}
+.dark-text hr {
+	margin-right: 0;}
+.lead {font-family:'Droid-Bold','Droid-Arabic-Kufi', 'Tahoma', 'ForzaMedium', sans-serif;}

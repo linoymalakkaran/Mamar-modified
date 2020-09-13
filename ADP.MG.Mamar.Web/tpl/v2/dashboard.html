@@ -1,0 +1,177 @@
+﻿<style>
+ 
+    .alignRight {
+        text-align: right !important;
+    }
+
+    .large {
+        width: 80% !important;
+    }
+
+    .modalAnnounce {
+        background-color: rgb(162,144,97) !important;
+    }
+
+    .underline {
+        text-decoration: underline !important;
+    }
+
+    .a.menu_links {
+        cursor: pointer;
+    }
+
+    .verticalscroll {
+        max-height: 540px;
+        overflow: auto;
+    }
+ 
+</style>
+<!-- Main content -->
+<div class="content-wrapper">
+    <!-- Main -->
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="panel panel-flat bdr bdrt pb-10 mt20">
+
+                <div class="col-md-4">
+                    <div class="chart-container">
+                        <h3>{{'PeriodicCargoVoloume' | translate}}</h3>
+                        <div class="chart has-fixed-height" id="line_zoom"></div>
+                        <div class="small-loader" id="chartCargoVol" style="display:none;"><i class="icon-spinner2 spinner position-center"></i></div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="chart-container" style="padding-left:5px;">
+                        <h3>{{'CustomsDeclarationSummary' | translate}}</h3>
+                        <div class="chart has-fixed-height" id="columns_stacked"></div>
+                        <div class="small-loader" id="chartDecSummary" style="display:none;"><i class="icon-spinner2 spinner position-center"></i></div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="chart-container" style="border-right:0">
+                        <h3>{{'AppointmentsSummary' | translate}}</h3>
+                        <div class="chart has-fixed-height" id="bars_basic"></div>
+                        <div class="small-loader" id="chartTOSummary" style="display:none;"><i class="icon-spinner2 spinner position-center"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /main  -->
+
+    <div class="row d-btns">
+        <div class="col-md-5">
+            <div class="panel panel-flat bdr bdrt pt25 pb25 mt-5">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="col-md-3">
+                                <a class="btn btn-green customs-btn" ng-click="RedirectToTransaction('M')"  ui-sref-opts="{reload: true, notify: true}">{{'SEA' | translate}}</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a class="btn btn-green customs-btn" ng-click="RedirectToTransaction('A')"  ui-sref-opts="{reload: true, notify: true}">{{'AIR' | translate}}</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a class="btn btn-green customs-btn" ng-click="RedirectToTransaction('R')" ui-sref-opts="{reload: true, notify: true}">{{'LAND' | translate}}</a>
+                            </div>
+                            <div class="col-md-3">
+                                <a class="btn btn-green customs-btn" ng-click="RedirectToTransaction('Z')" ui-sref-opts="{reload: true, notify: true}">{{'FREEZONE' | translate}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="panel panel-flat bdr bdrt p25 mt-5">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-grey mg-btn" ng-click="RedirectToOtherService('pcs')">{{'PCS' | translate}}</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-grey mg-btn" ng-click="RedirectToOtherService('transport')">{{'TRANSPORTORDER' | translate}}</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-grey mg-btn" ng-click="RedirectToOtherService('appointment')">{{'APPOINTMENT' | translate}}</button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-grey mg-btn" ng-click="RedirectToOtherService('kizad')">{{'INDUSTRIALSERVICES' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-flat bdr bdrt p25 mt-5">
+                <h3>News & Alerts</h3>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-flat bdr bdrt p25 mt-5">
+                <h3>Contact Us</h3>
+            </div>
+        </div>
+    </div>-->
+
+</div>
+
+<div class="modal" id="announcementModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog large">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header modalAnnounce">
+                <button type="button" class="close" data-dismiss="modal" ng-click="callOnLoadMethod()">&times;</button>
+                <h5 class="modal-title bold">{{'CustomsAnnouncementsE' | translate }} / {{'CustomsAnnouncementsA' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <div class="table-responsive mb20">
+                    <table class="table">
+                        <tbody>
+                            <tr dir-paginate="announcement in announcements | itemsPerPage: announcementParams.pageSize" total-items="annoucementTotalCount" current-page="announcementParams.pageNumber">
+                                <td class="no-border">
+                                    <div class="panel panel-info bdrt alignRight p-10 verticalscroll">
+                                        <div class="panel-body">
+                                            <div class="">
+                                                <div style="text-align: right !important;">
+                                                    {{announcement.messageA}}
+                                                </div>
+                                                <hr>
+                                                <div style="text-align: left !important;">
+                                                    {{announcement.messageE}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-8 pagination pl25 mb20 mr10" ng-hide="announcements == null || announcements.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreAnnouncementRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+                <div class="col-md-2 pl25 mb20 mr10" ng-show="announcements[0].fileName">
+                    <a title="{{'DownloadFileE' | translate}} / {{'DownloadFileA' | translate}}" ng-click="downloadAnnouncementFile(announcements[0].id, announcements[0].fileName)"><i class="fa fa-download"> {{'DownloadFileE' | translate}} / {{'DownloadFileA' | translate}}</i></a>
+                </div>
+                <div class="col-md-2 pl25 mb20 mr10 pull-right">
+                    <span class="label pull-right" ng-show="announcements != null && announcements.length > 0"><font color="black" size="2"><strong>{{announcementParams.pageNumber}} of <span class="num">{{annoucementTotalCount}}</span></strong> {{'announcementsE' | translate}} / {{'announcementsA' | translate}}</font></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /main content -->

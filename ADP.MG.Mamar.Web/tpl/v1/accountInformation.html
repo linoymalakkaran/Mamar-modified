@@ -1,0 +1,58 @@
+﻿<div ng-controller="accountInformationController" class="panel drt pb20">
+
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'CustomerCode'|translate}}</th>
+                        <th>{{'FacilitySequence'|translate}}</th>
+                        <th>{{'StartDate'|translate}}</th>
+                        <th>{{'ExpiryDate'|translate}}</th>
+                        <th>{{'LimitAmt'|translate}}</th>
+                        <th>{{'Balance'|translate}}</th>
+                        <th>{{'StopFlag'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in accountInformation | itemsPerPage: mAccountInformationRequestObject.pageSize" total-items="totalCount">
+                        <td>
+                            {{model.CustomerCode}}
+                        </td>
+                        <td>
+                            {{model.FacilitySequence}}
+                        </td>
+                        <td>
+                            {{model.StartDate | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{model.ExpiryDate | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{model.LimitAmount}}
+                        </td>
+                        <td>
+                            {{model.Balance}}
+                        </td>
+                        <td>
+                            <label class="control control--checkbox">
+                                <input type="checkbox" disabled="disabled" ng-model="model && model.StopFlag == 'Y' ? true : false">
+                                <div class="control__indicator"></div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="accountInformation == null || accountInformation.length == 0">
+                        <td colspan="7">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="accountInformation == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="accountInformation.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+        </div>
+    </div>
+    
+</div>

@@ -1,0 +1,994 @@
+<div>
+  <!--[if IE]>
+    <style>
+      /* Clearable text inputs etc*/
+      .clearable {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+      .clearable input[type="text"] {
+        padding-right: 24px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .clearable__clear {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0 8px;
+        font-style: normal;
+        font-size: 2.2em;
+        user-select: none;
+        cursor: pointer;
+      }
+    </style>
+  <![endif]-->
+  <!--[if !(IE)]><!-->
+  <style>
+    .clearable__clear {
+      display: none;
+    }
+  </style>
+  <!--<![endif]-->
+  <style>
+    /* .min-td-width-material-id {
+      min-width:150px !important;
+    } */
+
+    .td-min-max-width {
+      min-width: 100px;
+      max-width: 170px;
+      overflow: hidden;
+    }
+
+    .max-td-width-goods-class {
+      max-width: 150px !important;
+      overflow: hidden;
+    }
+
+    /* .max-td-width-goods-class::-webkit-scrollbar {
+            width: 7px;
+            height: 5px;
+        }
+
+        .max-td-width-goods-class::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey; 
+            border-radius: 10px;
+        }
+        
+        .max-td-width-goods-class::-webkit-scrollbar-thumb {
+            background: #3c3675; 
+            border-radius: 10px;
+        }
+
+        .max-td-width-goods-class::-webkit-scrollbar-thumb:hover {
+            background: #b30000; 
+        } */
+  </style>
+  <div class="row mt20 mb20">
+    <div class="col-md-12 pull-left" style="margin-bottom: 3px;">
+      <fieldset
+        ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')  || $storage.get('isPcsSuperUser')"
+      >
+        <a
+          style="border-radius: 0%;"
+          class="btn btn-red rounded-0"
+          ng-click="openMaterialMasterForm(null, 'add',null)"
+        >
+          {{'AddNew' | translate}}
+        </a>
+      </fieldset>
+    </div>
+    <div class="col-md-12">
+      <fieldset
+        ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')"
+      >
+        <div style="overflow-x: auto;" class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th width="1%">{{'SNo' | translate}}</th>
+                <th class="td-min-max-width" width="13%">
+                  {{'Harmonized'|translate}}
+                </th>
+                <th class="td-min-max-width" width="10%">
+                  {{'OrginCountry'|translate}}
+                </th>
+                <th class="td-min-max-width" width="3%">
+                  {{'MaterialId'|translate}}
+                </th>
+                <th class="td-min-max-width" width="18%">
+                  {{'MaterialDescription'|translate}}
+                </th>
+                <th class="td-min-max-width" width="7%">
+                  {{'MaterialCategory'|translate}}
+                </th>
+                <th class="td-min-max-width" width="7%">
+                  {{'GoodsClassification'|translate}}
+                </th>
+                <th class="td-min-max-width" width="5%">
+                  {{'PermitNumber'|translate}}
+                </th>
+                <th class="td-min-max-width" width="5%">
+                  {{'Weight'|translate}}
+                </th>
+                <th class="td-min-max-width" width="3%">
+                  {{'GrossWeight'|translate}}
+                </th>
+                <th class="td-min-max-width" width="3%">
+                  {{'Amount'|translate}}
+                </th>
+                <th class="td-min-max-width" width="4%">
+                  {{'CaseNo'|translate}}
+                </th>
+                <th class="td-min-max-width" width="4%">{{'Uno'|translate}}</th>
+                <th class="td-min-max-width" width="2%">
+                  {{'Hazard ClassID'|translate}}
+                </th>
+                <th class="td-min-max-width" width="3%">
+                  {{'Action' | translate}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- #region begin Add New List-->
+              <!-- ----------------------------------------- -->
+              <tr ng-if="isAddNew">
+                <td colspan="2">
+                  <div class="col-md-12">
+                    <input
+                      id="gridHarmCodeObjId"
+                      type="search"
+                      class="col-md-9"
+                      placeholder="{{'Find'| translate}}"
+                      title="{{selectedHarmCodeTitle}}"
+                      ng-model="selectedMaterialMaster.HarmCode"
+                      ng-click="openHarmonizeLookup('add',null)"
+                      ng-keydown="lookupKeyDown($event,'HarmonizedCode','add',null)"
+                    />
+                    <a class="col-md-1 mt-10">
+                      <i
+                        class="fa fa-search"
+                        aria-hidden="true"
+                        title="{{'Click' | translate}}"
+                        ng-click="openHarmonizeLookup('add',null)"
+                      ></i>
+                    </a>
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidHarmonizedCode"
+                  >
+                    {{'InvalidHarmonizedCode'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="HarmonizedCodeRequired"
+                  >
+                    {{'HarmonizedCodeRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <div class="col-md-12">
+                    <input
+                      id="gridOrginCountryId"
+                      type="search"
+                      title="{{selectedSearchOrginCountryCombinedTitle}}"
+                      ng-model="selectedMaterialMaster.Country"
+                      placeholder="{{'Find' | translate}}"
+                      class="col-md-9"
+                      ng-click="openOriginCountryLookup('add',null)"
+                      ng-keydown="lookupKeyDown($event,'OriginCountry','add',null)"
+                    />
+                    <a class="col-md-1 mt-10">
+                      <i
+                        class="fa fa-search"
+                        aria-hidden="true"
+                        title="{{'Click' | translate}}"
+                        ng-click="openOriginCountryLookup('add',null)"
+                        ng-keydown="lookupKeyDown($event,'OriginCountry','add',null)"
+                      ></i>
+                    </a>
+                  </div>
+                  <div class="validationmsg col-md-12" ng-show="InvalidCountry">
+                    {{'InvalidCountry'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="CountryRequired"
+                  >
+                    {{'CountryRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    ng-disabled="true"
+                    class="form-control"
+                    type="search"
+                    title="{{selectedMaterialMaster.MaterialID}}"
+                    ng-model="selectedMaterialMaster.MaterialID"
+                  />
+                </td>
+                <td class="min-td-width-material-id">
+                  <textarea
+                    type="search"
+                    class="col-md-12 form-control"
+                    placeholder="{{'English'| translate}}"
+                    title="{{selectedMaterialMaster.MaterialNameEng}}"
+                    ng-model="selectedMaterialMaster.MaterialNameEng"
+                    maxlength="500"
+                  ></textarea>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialNameEngRequired"
+                  >
+                    {{'MaterialNameEngRequired'|translate}}
+                  </div>
+                  <div class="col-md-12"></div>
+                  <textarea
+                    type="search"
+                    class="col-md-12 form-control"
+                    placeholder="{{'Arabic'| translate}}"
+                    title="{{selectedMaterialMaster.MaterialNameArb}}"
+                    ng-model="selectedMaterialMaster.MaterialNameArb"
+                    maxlength="500"
+                  ></textarea>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialNameArbRequired"
+                  >
+                    {{'MaterialNameArbRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <div class="col-md-12">
+                    <input
+                      type="search"
+                      class="col-md-9"
+                      id="gridMaterialCategoryId"
+                      placeholder="{{'Find'| translate}}"
+                      title="{{selectedMaterialCategoryCombinedTitle}}"
+                      ng-model="selectedMaterialMaster.MaterialCategoryID"
+                      ng-click="openMaterialCategoryLookup('add',null)"
+                      ng-keydown="lookupKeyDown($event,'MaterialCategory','add',null)"
+                    />
+                    <a class="col-md-1 mt-10">
+                      <i
+                        class="fa fa-search"
+                        aria-hidden="true"
+                        title="{{'Click' | translate}}"
+                        ng-click="openMaterialCategoryLookup('add',null)"
+                      ></i>
+                    </a>
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidMaterialCategoryID"
+                  >
+                    {{'InvalidMaterialCategoryID'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialCategoryIDRequired"
+                  >
+                    {{'MaterialCategoryIDRequired'|translate}}
+                  </div>
+                </td>
+                <td class="max-td-width-goods-class">
+                  <textarea
+                    class="col-md-12 form-control"
+                    type="search"
+                    maxlength="500"
+                    title="selectedMaterialMaster.GoodsClassification"
+                    ng-model="selectedMaterialMaster.GoodsClassification"
+                  ></textarea>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidGoodsClassification"
+                  >
+                    {{'InvalidGoodsClassification'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="GoodsClassificationRequired"
+                  >
+                    {{'GoodsClassificationRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    class="col-md-12 form-control"
+                    type="search"
+                    title="{{selectedMaterialMaster.PermitNumber}}"
+                    ng-model="selectedMaterialMaster.PermitNumber"
+                    maxlength="20"
+                  />
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidPermitNumber"
+                  >
+                    {{'InvalidPermitNumber'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="PermitNumberRequired"
+                  >
+                    {{'PermitNumberRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    ng-disabled="true"
+                    class="col-md-12 form-control"
+                    type="search"
+                    valid-number
+                    allow-decimal="true"
+                    allow-negative="false"
+                    title="{{selectedMaterialMaster.MaterialWeight}}"
+                    ng-model="selectedMaterialMaster.MaterialWeight"
+                    maxlength="16"
+                  />
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidMaterialWeight"
+                  >
+                    {{'InvalidMaterialWeight'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialWeightRequired"
+                  >
+                    {{'MaterialWeightRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    ng-disabled="true"
+                    class="col-md-12 form-control"
+                    type="search"
+                    valid-number
+                    allow-decimal="true"
+                    allow-negative="false"
+                    title="{{selectedMaterialMaster.MaterialGrossWeight}}"
+                    ng-model="selectedMaterialMaster.MaterialGrossWeight"
+                    maxlength="16"
+                  />
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidMaterialGrossWeight"
+                  >
+                    {{'InvalidMaterialGrossWeight'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialGrossWeightRequired"
+                  >
+                    {{'MaterialGrossWeightRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    class="col-md-12 form-control"
+                    type="search"
+                    valid-number
+                    allow-decimal="true"
+                    allow-negative="false"
+                    title="{{selectedMaterialMaster.MaterialAmount}}"
+                    ng-model="selectedMaterialMaster.MaterialAmount"
+                    maxlength="16"
+                  />
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidMaterialAmount"
+                  >
+                    {{'InvalidMaterialAmount'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="MaterialAmountRequired"
+                  >
+                    {{'AmountData'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <textarea
+                    class="col-md-12 form-control"
+                    type="search"
+                    title="{{selectedMaterialMaster.CASNO}}"
+                    ng-model="selectedMaterialMaster.CASNO"
+                    maxlength="500"
+                  ></textarea>
+                  <div class="validationmsg col-md-12" ng-show="InvalidCaseNo">
+                    {{'InvalidCaseNo'|translate}}
+                  </div>
+                  <div class="validationmsg col-md-12" ng-show="CaseNoRequired">
+                    {{'CaseNoRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <input
+                    class="col-md-12 form-control"
+                    type="search"
+                    title="{{selectedMaterialMaster.UNNO}}"
+                    ng-model="selectedMaterialMaster.UNNO"
+                    maxlength="50"
+                  />
+                  <div class="validationmsg col-md-12" ng-show="InvalidUno">
+                    {{'InvalidUno'|translate}}
+                  </div>
+                  <div class="validationmsg col-md-12" ng-show="UnoRequired">
+                    {{'UnoRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <textarea
+                    class="col-md-12 form-control"
+                    valid-number
+                    allow-negative="false"
+                    title="{{selectedMaterialMaster.HazardClassID}}"
+                    ng-model="selectedMaterialMaster.HazardClassID"
+                    maxlength="40"
+                  ></textarea>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="InvalidHazardClassID"
+                  >
+                    {{'InvalidHazardClassID'|translate}}
+                  </div>
+                  <div
+                    class="validationmsg col-md-12"
+                    ng-show="HazardClassIDRequired"
+                  >
+                    {{'HazardClassIDRequired'|translate}}
+                  </div>
+                </td>
+                <td>
+                  <a
+                    class="col-md-6"
+                    title="{{'Save' | translate}}"
+                    ng-click="saveMaterialMaster(selectedMaterialMaster,'add',$index)"
+                  >
+                    <i
+                      style="font-size: large;"
+                      class="fa fa-save"
+                      aria-hidden="true"
+                    ></i>
+                  </a>
+                  <a
+                    class="col-md-6"
+                    title="{{'Cancel' | translate}}"
+                    ng-click="resetMaterialMasterAddOrEditedIndex()"
+                  >
+                    <i
+                      style="font-size: large;"
+                      class="fa fa-times-circle"
+                      aria-hidden="true"
+                    ></i>
+                  </a>
+                </td>
+              </tr>
+              <!-- ------------------------------ -->
+              <!-- #endregion end Add New List- -->
+              <!-- #region begin Edit New List-->
+              <!-- ----------------------------------------- -->
+              <tr
+                dir-paginate="item in materialMasterList | itemsPerPage: pageSize"
+                total-items="totalCount"
+                pagination-id="materialMasterListPager"
+                current-page="searchParameters.pageNumber"
+              >
+                <td>
+                  {{(searchParameters.pageNumber * pageSize) - pageSize + $index
+                  + 1}}
+                </td>
+                <td class="td-min-max-width">
+                  <div class="row">
+                    <label
+                      class="col-md-12 overflow-hidden"
+                      title="{{item.HarmCode}}   {{item.HarmEnglish}}   {{item.HarmArabic}}"
+                      ng-if="!editMaterialMaster[item.MaterialID]"
+                    >
+                      {{item.HarmCode}}
+                    </label>
+                    <div ng-if="editMaterialMaster[item.MaterialID]">
+                      <div class="col-md-12">
+                        <input
+                          id="gridHarmCodeObjId"
+                          type="search"
+                          class="col-md-9"
+                          placeholder="{{'Find'| translate}}"
+                          title="{{selectedHarmCodeTitle}}"
+                          ng-model="selectedMaterialMaster.HarmCode"
+                          ng-trim="false"
+                          ng-click="openHarmonizeLookup('edit',item)"
+                          ng-keydown="lookupKeyDown($event,'HarmonizedCode','edit',item)"
+                        />
+                        <a class="col-md-1 mt-10">
+                          <i
+                            class="fa fa-search"
+                            aria-hidden="true"
+                            title="{{'Click' | translate}}"
+                            ng-click="openHarmonizeLookup('edit',item)"
+                          ></i>
+                        </a>
+                      </div>
+                      <div
+                        class="validationmsg col-md-12"
+                        ng-show="InvalidHarmonizedCode"
+                      >
+                        {{'InvalidHarmonizedCode'|translate}}
+                      </div>
+                      <div
+                        class="validationmsg col-md-12"
+                        ng-show="HarmonizedCodeRequired"
+                      >
+                        {{'HarmonizedCodeRequired'|translate}}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <div class="row">
+                    <label
+                      class="col-md-12 overflow-hidden"
+                      title="{{item.Country}} {{item.CountryDescEng}} {{item.CountryDescArb}}"
+                      ng-if="!editMaterialMaster[item.MaterialID]"
+                    >
+                      {{item.Country}}
+                    </label>
+                    <div ng-if="editMaterialMaster[item.MaterialID]">
+                      <div class="col-md-12">
+                        <input
+                          id="gridOrginCountryId"
+                          type="search"
+                          title="{{selectedSearchOrginCountryCombinedTitle}}"
+                          ng-model="selectedMaterialMaster.Country"
+                          placeholder="{{'Find'|translate}}"
+                          class="col-md-9"
+                          ng-click="openOriginCountryLookup('edit',item)"
+                          ng-keydown="lookupKeyDown($event,'OriginCountry','edit',item)"
+                        />
+                        <a class="col-md-1 mt-10">
+                          <i
+                            class="fa fa-search"
+                            aria-hidden="true"
+                            title="{{'Click' | translate}}"
+                            ng-click="openOriginCountryLookup('edit',item)"
+                          ></i>
+                        </a>
+                      </div>
+                      <div
+                        class="validationmsg col-md-12"
+                        ng-show="InvalidCountry"
+                      >
+                        {{'InvalidCountry'|translate}}
+                      </div>
+                      <div
+                        class="validationmsg col-md-12"
+                        ng-show="CountryRequired"
+                      >
+                        {{'CountryRequired'|translate}}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.MaterialID}}   {{item.MaterialNameEng}}   {{item.MaterialNameArb}}"
+                  >
+                    {{item.MaterialID}}
+                  </label>
+                </td>
+                <td
+                  ng-class="{'min-td-width-material-id': editMaterialMaster[item.MaterialID] }"
+                >
+                  <div ng-if="!editMaterialMaster[item.MaterialID]">
+                    <label
+                      class="col-md-12 overflow-hidden"
+                      title="{{item.MaterialNameEng}}   {{item.MaterialNameArb}}"
+                    >
+                      {{item.MaterialNameEng | cut:true:15:' ...'}}
+                    </label>
+                    <div class="col-md-12"></div>
+                    <label
+                      class="col-md-12 overflow-hidden"
+                      title="{{item.MaterialNameEng}}   {{item.MaterialNameArb}}"
+                    >
+                      {{item.MaterialNameArb | cut:true:15:' ...'}}
+                    </label>
+                  </div>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <textarea
+                      class="col-md-12 form-control"
+                      placeholder="{{'English'| translate}}"
+                      title="{{selectedMaterialMaster.MaterialNameEng}}"
+                      ng-model="selectedMaterialMaster.MaterialNameEng"
+                    ></textarea>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialNameEngRequired"
+                    >
+                      {{'MaterialNameEngRequired'|translate}}
+                    </div>
+                    <textarea
+                      class="col-md-12 form-control"
+                      placeholder="{{'Arabic'| translate}}"
+                      title="{{selectedMaterialMaster.MaterialNameArb}}"
+                      ng-model="selectedMaterialMaster.MaterialNameArb"
+                    ></textarea>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialNameArbRequired"
+                    >
+                      {{'MaterialNameArbRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.MaterialCategoryID}}   {{item.MaterialCategoryEng}}   {{item.MaterialCategoryArb}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.MaterialCategoryID}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <div class="col-md-12">
+                      <input
+                        id="gridMaterialCategoryId"
+                        type="search"
+                        class="col-md-9"
+                        placeholder="{{'Find'| translate}}"
+                        title="{{selectedMaterialCategoryCombinedTitle}}"
+                        ng-model="selectedMaterialMaster.MaterialCategoryID"
+                        ng-click="openMaterialCategoryLookup('edit',item)"
+                        ng-keydown="lookupKeyDown($event,'MaterialCategory','edit',item)"
+                      />
+                      <a class="col-md-1 mt-10">
+                        <i
+                          class="fa fa-search"
+                          aria-hidden="true"
+                          title="{{'Click' | translate}}"
+                          ng-click="openMaterialCategoryLookup('edit',item)"
+                        ></i>
+                      </a>
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidMaterialCategoryID"
+                    >
+                      {{'InvalidMaterialCategoryID'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialCategoryIDRequired"
+                    >
+                      {{'MaterialCategoryIDRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="max-td-width-goods-class">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.GoodsClassification}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                    title="{{item.GoodsClassification}}"
+                  >
+                    {{item.GoodsClassification | cut:true:15:' ...'}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <textarea
+                      maxlength="500"
+                      class="col-md-12 form-control"
+                      title="{{selectedMaterialMaster.GoodsClassification}}"
+                      ng-model="selectedMaterialMaster.GoodsClassification"
+                    >
+                    </textarea>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidGoodsClassification"
+                    >
+                      {{'InvalidGoodsClassification'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="GoodsClassificationRequired"
+                    >
+                      {{'GoodsClassificationRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.PermitNumber}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.PermitNumber}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <input
+                      class="col-md-12 form-control"
+                      type="search"
+                      title="{{selectedMaterialMaster.PermitNumber}}"
+                      ng-model="selectedMaterialMaster.PermitNumber"
+                      maxlength="20"
+                    />
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidPermitNumber"
+                    >
+                      {{'InvalidPermitNumber'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="PermitNumberRequired"
+                    >
+                      {{'PermitNumberRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.MaterialWeight}}"
+                  >
+                    {{item.MaterialWeight}}
+                  </label>
+                  <div ng-if="false">
+                    <input
+                      ng-disabled="true"
+                      ng-if="editMaterialMaster[item.MaterialID]"
+                      class="col-md-12 form-control"
+                      type="search"
+                      valid-number
+                      allow-decimal="true"
+                      allow-negative="false"
+                      title="{{selectedMaterialMaster.MaterialWeight}}"
+                      ng-model="selectedMaterialMaster.MaterialWeight"
+                      maxlength="16"
+                    />
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidMaterialWeight"
+                    >
+                      {{'InvalidMaterialWeight'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialWeightRequired"
+                    >
+                      {{'MaterialWeightRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.MaterialGrossWeight}}"
+                  >
+                    {{item.MaterialGrossWeight}}
+                  </label>
+                  <div ng-if="false">
+                    <input
+                      ng-disabled="true"
+                      ng-if="editMaterialMaster[item.MaterialID]"
+                      class="col-md-12 form-control"
+                      type="search"
+                      valid-number
+                      allow-decimal="true"
+                      allow-negative="false"
+                      title="{{selectedMaterialMaster.MaterialGrossWeight}}"
+                      ng-model="selectedMaterialMaster.MaterialGrossWeight"
+                      maxlength="16"
+                    />
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidMaterialGrossWeight"
+                    >
+                      {{'InvalidMaterialGrossWeight'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialGrossWeightRequired"
+                    >
+                      {{'MaterialGrossWeightRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.MaterialAmount}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.MaterialAmount}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <input
+                      class="col-md-12 form-control"
+                      type="search"
+                      valid-number
+                      allow-decimal="true"
+                      allow-negative="false"
+                      title="{{selectedMaterialMaster.MaterialAmount}}"
+                      ng-model="selectedMaterialMaster.MaterialAmount"
+                      maxlength="16"
+                    />
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialAmount"
+                    >
+                      {{'InvalidMaterialAmount'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="MaterialAmountRequired"
+                    >
+                      {{'AmountData'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.CASNO}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.CASNO | cut:true:15:' ...'}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <textarea
+                      class="form-control"
+                      title="{{selectedMaterialMaster.CASNO}}"
+                      ng-model="selectedMaterialMaster.CASNO"
+                      maxlength="500"
+                    ></textarea>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidCaseNo"
+                    >
+                      {{'InvalidCaseNo'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="CaseNoRequired"
+                    >
+                      {{'CaseNoRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.UNNO}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.UNNO}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <input
+                      class="form-control"
+                      type="search"
+                      title="{{selectedMaterialMaster.UNNO}}"
+                      ng-model="selectedMaterialMaster.UNNO"
+                      maxlength="50"
+                    />
+                    <div class="validationmsg col-md-12" ng-show="InvalidUno">
+                      {{'InvalidUno'|translate}}
+                    </div>
+                    <div class="validationmsg col-md-12" ng-show="UnoRequired">
+                      {{'UnoRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <label
+                    class="col-md-12 overflow-hidden"
+                    title="{{item.HazardClassID}}"
+                    ng-if="!editMaterialMaster[item.MaterialID]"
+                  >
+                    {{item.HazardClassID | cut:true:15:' ...'}}
+                  </label>
+                  <div ng-if="editMaterialMaster[item.MaterialID]">
+                    <textarea
+                      class="col-md-12 form-control"
+                      type="search"
+                      valid-number
+                      allow-negative="false"
+                      maxlength="40"
+                      title="{{selectedMaterialMaster.HazardClassID}}"
+                      ng-model="selectedMaterialMaster.HazardClassID"
+                    ></textarea>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="InvalidHazardClassID"
+                    >
+                      {{'InvalidHazardClassID'|translate}}
+                    </div>
+                    <div
+                      class="validationmsg col-md-12"
+                      ng-show="HazardClassIDRequired"
+                    >
+                      {{'HazardClassIDRequired'|translate}}
+                    </div>
+                  </div>
+                </td>
+                <td class="td-min-max-width">
+                  <fieldset
+                    ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag')  || $storage.get('isPcsSuperUser')"
+                  >
+                    <a
+                      class="col-md-6"
+                      title="{{'Edit' | translate}}"
+                      ng-if="!editMaterialMaster[item.MaterialID]"
+                      ng-click="openMaterialMasterForm(item, 'edit',$index)"
+                    >
+                      <i
+                        style="font-size: x-large;"
+                        class="fa fa-edit"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+                    <a
+                      class="col-md-6"
+                      title="{{'Save' | translate}}"
+                      ng-click="saveMaterialMaster(item,'edit',$index)"
+                      ng-if="editMaterialMaster[item.MaterialID]"
+                    >
+                      <i
+                        style="font-size: large;"
+                        class="fa fa-save"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+                    <a
+                      class="col-md-6"
+                      title="{{'Cancel' | translate}}"
+                      ng-if="editMaterialMaster[item.MaterialID]"
+                      ng-click="resetMaterialMasterAddOrEditedIndex($index)"
+                    >
+                      <i
+                        style="font-size: large;"
+                        class="fa fa-times-circle"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+                  </fieldset>
+                </td>
+              </tr>
+              <!-- ----------------------------------------- -->
+              <!-- #region end Edit New List-->
+              <tr class="no-records" ng-show="materialMasterList == null">
+                <td colspan="14">
+                  {{'NoItems' | translate}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <div
+    class="col-md-12 pagination pl25 mb20"
+    ng-hide="materialMasterList == null || materialMasterList.length == 0"
+  >
+    <dir-pagination-controls
+      pagination-id="materialMasterListPager"
+      boundary-links="true"
+      direction-links="true"
+      on-page-change="pageChangeHandler(newPageNumber)"
+    ></dir-pagination-controls>
+    <span class="col-md-2 pull-right">
+      <strong>
+        {{'total' | translate}} :
+        <span class="num">
+          {{totalCount}}
+        </span>
+      </strong>
+    </span>
+  </div>
+</div>

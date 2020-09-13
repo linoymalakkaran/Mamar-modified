@@ -1,0 +1,377 @@
+﻿
+<style>
+    .margin-top-0 {
+        margin-top: 0px;
+    }
+
+    /*#tblMaqasaDeclaration .table > thead > tr > th {
+        padding: 10px;
+        border-bottom: 1px solid #893A53 !important;
+        font-weight: 500;
+        font-size: 14px;
+    }*/
+
+    .disable-input {
+        line-height: 2px;
+        padding-left: 5%;
+        border: none;
+        cursor: not-allowed;
+    }
+
+    #dvMaqasaReeExport .disable-input {
+        background-color: #eee;
+    }
+
+    .no-records {
+        background-color: #eaeeef;
+        color: darkgray;
+    }
+
+    .list-item-link {
+        color: #893a53;
+        text-decoration: underline;
+    }
+
+    .error {
+        display: inline-block;
+        color: red;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="col-md-12 mt-20">
+        <div class="panel panel-flat bdr bdrt pb20">
+            <div class="col-lg-12 no-margin-right no-padding-right">
+                <div class="col-md-4"></div>
+                <div class="col-md-6">
+                    <div class="row importcentrecodedp">
+                        <div class="col-md-6">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                                ng-options="transMode.key as transMode.value for transMode in transModes"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                                ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                                ng-change="onCenterCodeChanged()"></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-10 col-md-2 no-margin-right no-padding-right">
+                    <a class="btn btn-dark-grey btn-block" ui-sref="transactions" ui-sref-opts="{reload: true, notify: true}">{{'GoToTransactions' | translate}}</a>
+                </div>
+            </div>
+            <div class="panel-default-red mt20">
+                <div class="panel-heading pl30">{{'MaqasaReExportBill' | translate}}</div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12 grey-shade pt-20 form-horizontal" id="dvMaqasaReeExport">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">{{'EntryCenter' | translate}}</label>
+                                <div class="col-md-3">
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" id="EntryCenter" placeholder="{{'Find'  | translate}}" title={{selectedEntryCenterObj.originalObject.Code}} ng-model="selectedEntryCenterObj.originalObject.Code" ng-trim="false" maxlength="3" ng-blur="AddEntryCenter(selectedEntryCenterObj.originalObject.Code)" ng-keydown="lookupKeyDown($event,'EntryCenter')">
+                                    </div>
+                                    <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('EntryCenter')"></i></a>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="{{'English'  | translate}}" ng-model="selectedEntryCenterObj.originalObject.EnglishName" ng-disabled="true" />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="{{'Arabic'  | translate}}" ng-model="selectedEntryCenterObj.originalObject.ArabicName" ng-disabled="true" />
+                                </div>
+                                <span class="col-md-3"></span>
+                                <span class="col-md-9 error" ng-show="!isValidEntryCenter">{{'ErrEntryCenter' | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-1"></div>
+                                <label class="control-label col-md-4">{{'ImportJobDuty' | translate}}</label>
+                                <div class="col-md-6">
+                                    <label class="form-control disable-input noinput" ng-bind="maqasaReExportEntity.ImportJobDuty | number : 2"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">{{'Year' | translate}}</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" ng-model="Year" only-digits maxlength="4" ng-change="onYearChange()" />
+                                    <span class="error" ng-show="!isValidYear">{{'ErrYear' | translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-1"></div>
+                                <label class="control-label col-md-4">{{'SettlementAmnt' | translate}}</label>
+                                <div class="col-md-6">
+                                    <label class="form-control disable-input noinput" ng-bind="maqasaReExportEntity.SettlementAmount | number : 2"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">{{'ImportBillNo' | translate}}</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" only-numbers ng-model="ImportBillNo" ng-change="onImportBillChange()" maxlength="20" />
+                                    <span class="error" ng-show="!isValidImportBillNo">{{'ErrImportBillNo' | translate}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-1"></div>
+                                <label class="control-label col-md-4">{{'TotalClearanceAmnt' | translate}}</label>
+                                <div class="col-md-6">
+                                    <label class="form-control disable-input noinput" ng-bind="maqasaReExportEntity.TotalClearanceAmount | number : 2"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">{{'ShipmentDest' | translate}}</label>
+                                <div class="col-md-3">
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" id="shipmentDestination" placeholder="{{'Find'  | translate}}" title={{selectedGCCObj.originalObject.GccCountCode}} ng-model="selectedGCCObj.originalObject.GccCountCode" ng-trim="false" maxlength="3" ng-blur="AddShipmentDestination(selectedGCCObj.originalObject.GccCountCode)" ng-keydown="shipmentDestinationKeyDown($event)">
+                                    </div>
+                                    <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openShipmentDestinationLookup()"></i></a>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="{{'English'  | translate}}"  class="form-control" ng-model="selectedGCCObj.originalObject.GccCountEngName" ng-disabled="true" />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="{{'Arabic'  | translate}}" class="form-control" ng-model="selectedGCCObj.originalObject.GccCountArbName" ng-disabled="true" />
+                                </div>
+                                <span class="col-md-3"></span>
+                                <span class="col-md-9 error" ng-show="!isValidDestinationGCC">{{'ErrShipmentGCC' | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-md-1"></div>
+                                <label class="control-label col-md-4">{{'TotalCollectedAmnt' | translate}}</label>
+                                <div class="col-md-6">
+                                    <label class="form-control disable-input noinput" ng-bind="maqasaReExportEntity.TotalAmountCollected | number : 2"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">{{'ExitCenter' | translate}}</label>
+                                <div class="col-md-3">
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" id="exitCenter" placeholder="{{'Find'  | translate}}" title={{selectedExitCenterObj.originalObject.Code}} ng-model="selectedExitCenterObj.originalObject.Code" ng-trim="false" maxlength="3" ng-blur="AddExitCenter(selectedExitCenterObj.originalObject.Code)" ng-keydown="exitCenterKeyDown($event)">
+                                    </div>
+                                    <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openExitCenterLookup()"></i></a>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="{{'English'  | translate}}"  class="form-control" ng-model="selectedExitCenterObj.originalObject.PortNameEnglish" ng-disabled="true" />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="{{'Arabic'  | translate}}" class="form-control" ng-model="selectedExitCenterObj.originalObject.PortNameArabic" ng-disabled="true" />
+                                </div>
+                                <span class="col-md-3"></span>
+                                <span class="col-md-9 error" ng-show="!isValidExitCenter">{{'ErrExitCenter' | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="pull-right mt-15">
+                                    <button type="button" class="btn btn-red" ng-click="createMaqasaDeclaration()"
+                                            ng-disabled="maqasaReExportEntity.ImportJobNumber == null || isSuperUser == 'True'">
+                                        {{'CreateDeclaration' | translate}}
+                                    </button>
+                                    <button type="button" class="btn btn-red" ng-click="checkData()">{{'CheckData' | translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 mt-20">
+                    <div class="panel bdr bdrt pb20">
+                        <div class="panel-heading panel-flat">
+                            {{'ReExportDecl' | translate}}
+                        </div>
+
+                        <div class="table-responsive mb20" id="tblMaqasaDeclaration">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'JobNo' | translate}}</th>
+                                        <th>{{'EntryCode' | translate}}</th>
+                                        <th>{{'ExitCode' | translate}}</th>
+                                        <th>{{'Year' | translate}}</th>
+                                        <th class="t-right">{{'MaqasaAmnt' | translate}}</th>
+                                        <th>{{'Audited' | translate}}</th>
+                                        <th>{{'Cashier' | translate}}</th>
+                                        <th>{{'Paid' | translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in maqasaReExportEntity.Bills">
+                                        <td><a class="list-item-link" ng-click="getMaqasaDetails(item)">{{item.JobNumber}}</a></td>
+                                        <td>{{item.Entry}}</td>
+                                        <td>{{item.Exit}}</td>
+                                        <td>{{item.Year}}</td>
+                                        <td class="t-right">{{item.Amount | number : 2}}</td>
+                                        <td width="6%">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckAudited" id="chckAudited" ng-checked="item.Audited == 'Y'" ng-disabled="true" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td width="6%">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckCashier" id="chckCashier" ng-checked="item.Cashier == 'Y'" ng-disabled="true" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td width="6%">
+                                            <label class="control control--checkbox">
+                                                <input type="checkbox" name="chckPaid" id="chckPaid" ng-checked="item.Paid == 'Y'" ng-disabled="true" />
+                                                <span class="control__indicator"></span>
+                                            </label>
+                                        </td>
+                                        <td width="8%">
+
+                                            <!--<a title="{{'Edit' | translate}}"><i class="fa fa-edit" aria-hidden="true"></i></a>-->
+                                            <fieldset ng-disabled="isSuperUser == 'True'">
+                                                <a title="{{'Delete' | translate}}" ng-click="deleteConfirm($index)"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="maqasaReExportEntity.Bills == null || maqasaReExportEntity.Bills.length == 0">
+                                        <td colspan="9">
+                                            {{'NoItems' | translate}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" id="exitCenterLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeExitCenter()">&times;</button>
+                    <h5 class="modal-title bold">{{'ExitCenter' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchExitCenterText" type="text" ng-model="searchExitCenterText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'PortNameEnglish'|translate}}</th>
+                                    <th>{{'PortNameArabic'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: exitCenterItem.Code==exitCenterItemSelected.Code}" ng-click="setExitCenter(exitCenterItem)" dir-paginate="exitCenterItem in exitCenters | itemsPerPage: 10" current-page="lookUpCurrentPageExitCenter" pagination-id="exitCenterPager">
+                                    <td>
+                                        {{exitCenterItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{exitCenterItem.PortNameEnglish}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{exitCenterItem.PortNameArabic}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="exitCenters == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="exitCenters == null">
+                        <dir-pagination-controls pagination-id="exitCenterPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="shipmentDestinationLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closeShipmentDestinations()">&times;</button>
+                    <h5 class="modal-title bold">{{'ShipmentDest' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchShipmentDestinationText" type="text" ng-model="searchShipmentDestinationText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: shipmentDestinationItem.GccCountCode==shipmentDestinationItemSelected.GccCountCode}" ng-click="setShipmentDestination(shipmentDestinationItem)" dir-paginate="shipmentDestinationItem in shipmentDestinations | itemsPerPage: 10" current-page="lookUpCurrentPageShipmentDestination" pagination-id="shipmentDestinationPager">
+                                    <td>
+                                        {{shipmentDestinationItem.GccCountCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{shipmentDestinationItem.GccCountEngName}}  {{shipmentDestinationItem.GccCountArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="shipmentDestinations == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="shipmentDestinations == null">
+                        <dir-pagination-controls pagination-id="shipmentDestinationPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+
+</div>

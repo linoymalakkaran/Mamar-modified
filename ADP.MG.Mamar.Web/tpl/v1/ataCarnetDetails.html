@@ -1,0 +1,114 @@
+﻿<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal();" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'ATACarnetDetails'|translate}}</h5>
+</div>
+
+<div class="modal-body">
+    <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+        <div class="alert alert-success" ng-show="Message && Message!=''&& isValid">
+            {{ Message|translate}}
+        </div>
+        <div class="alert alert-danger" ng-show="Message && Message!='' && !isValid">
+            {{ Message|translate}}
+        </div>
+
+        <div class="col-md-12 form-horizontal">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'JobNumber'|translate}}</label>
+                    <div class="col-sm-6">
+                        <input disabled ng-model="ATACarnetRequestObject.jobNumber" type="text" placeholder="{{'JobNumber'|translate}}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'HolderAndAddress'|translate}}</label>
+                    <div class="col-sm-6">
+                        <textarea rows="5" maxlength="500" ng-model="CarnetDetails.ATAHolderAddress" cols="5" class="form-control" placeholder="{{'HolderAndAddress'|translate}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'Country'|translate}}</label>
+                    <div class="col-sm-6">
+                        <div title="{{selectedCountryModel}}" angucomplete-alt placeholder="{{'Country' | translate}}" ng-model="selectedCountryModel"
+                             local-data="country" search-fields="Code,EnglishName,ArabicName" title-field="EnglishName" minlength="1"
+                             input-class="form-control" match-class="highlight" input-name="ddlCountry" selected-object="selectedCountry">
+                        </div>
+                    </div>
+                    <span class="control-label  col-sm-4"></span>
+                    <span class="validation-error-label  col-sm-6" ng-show="InvalidCountry">{{'InvalidCountry'|translate}}</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'IntendedUseOfGoods'|translate}}</label>
+                    <div class="col-sm-6">
+                        <div title="{{selectedIndendedModel}}" angucomplete-alt placeholder="{{'IntendedUseOfGoods' | translate}}" ng-model="selectedIndendedModel"
+                             local-data="indended" search-fields="CODE,EngName,ArbName" title-field="EngName" minlength="1"
+                             input-class="form-control" match-class="highlight" input-name="ddlIndended" selected-object="selectedIndended">
+                        </div>
+                    </div>
+                    <span class="control-label  col-sm-4"></span>
+                    <span class="validation-error-label  col-sm-6" ng-show="InvalidIndended">{{'InvalidIndended'|translate}}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'ATANO'|translate}}<span>*</span></label>
+                    <div class="col-sm-6">
+                        <input type="text" maxlength="100" ng-disabled="carnetNumberExisting" ng-model="CarnetDetails.ATACarnetNumber" placeholder="{{'ATANO'|translate}}" class="form-control">
+                    </div>
+                    <span class="validation-error-label col-sm-6" ng-show="requiredATACarnetNumber">{{'RequiredATA'|translate}}</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'RepresentedBy'|translate}}</label>
+                    <div class="col-sm-6">
+                        <textarea rows="3" cols="5" maxlength="500" ng-model="CarnetDetails.RepresentedBy" placeholder="{{'RepresentedBy'|translate}}" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'IssuedBy'|translate}}</label>
+                    <div class="col-sm-6">
+                        <textarea rows="3" cols="5" maxlength="500" ng-model="CarnetDetails.IssuedBy" placeholder="{{'IssuedBy'|translate}}" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'IssueDate'|translate}}<span>*</span></label>
+                    <div class="col-sm-6 input-group">
+                        <input type="text" class="form-control pickadate" ng-model="CarnetDetails.IssuedDate">
+                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                    </div>
+                    <span class="validation-error-label col-sm-6" ng-show="requiredIssueDate">{{'RequiredIssueDate'|translate}}</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label  col-sm-4">{{'ValidUntil'|translate}}<span>*</span></label>
+                    <div class="col-sm-6 input-group">
+                        <input type="text" class="form-control pickValiditydate" ng-model="CarnetDetails.ValidUntilDate">
+                        <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                    </div>
+                    <span class="validation-error-label  col-sm-6" ng-show="requiredValidateDate">{{'RequiredValidityDate'|translate}}</span>
+                    <span class="validation-error-label  col-sm-6" ng-show="ValidityInvalid">{{'InvalidValidity'|translate}}</span>
+                    <span class="validation-error-label  col-sm-6" ng-show="ValidityLessThanIssue">{{'ValidityLessThanIssueDate'|translate}}</span>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer modal-title mt20 ">
+            <a title="{{'Close'|translate}}" class="btn btn-default mt20 pull-right alwaysEnabled" ng-click="closeModal();">{{'Close'|translate}}</a>
+            <a ng-disabled="$storage.get('globalDisableFlag') && $storage.get('voucherFlag')  && $storage.get('isPcsSuperUser')" ng-click="!$storage.get('globalDisableFlag') && !$storage.get('voucherFlag')  && !$storage.get('isPcsSuperUser') && saveATACarnet();" title="{{'Save'|translate}}" class="btn btn-green mt20 pull-right">{{'Save'|translate}}</a>
+        </div>
+    </fieldset>
+</div>
+<script>
+    var tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+    $(".pickValiditydate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true,
+        disable: [{ from: [0, 0, 0], to: tomorrow }]
+    });
+</script>
+
+

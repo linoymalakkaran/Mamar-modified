@@ -1,0 +1,275 @@
+﻿<style>
+    .tdbreak {
+        word-break: break-all
+    }
+
+    .redcolor {
+        color: red;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">
+                {{'ksaCreateBill' | translate}}
+            </div>
+            <div class="col-md-4">
+               
+            </div>
+            <div class="col-md-6">
+
+                <div class="row importcentrecodedp">
+                    <div class="col-md-7">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                                <div class="col-md-8">
+                                    <select id="ddlModeTransport" ng-disabled="true" class="form-control select" ng-model="selectedTransMode"
+                                            ng-options="transMode.key as transMode.value for transMode in transModes"
+                                            ng-change="onModeChanged()"></select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-5">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                                <div class="col-md-8">
+                                    <select name="dplCentreCode" ng-disabled="true" ng-model="selCenterCode" class="form-control select2" ng-change="centerCodeChanged()">
+                                        <option ng:repeat="x in centerCodes" value="{{x.Code}}">{{x.Code}} {{x.EnglishName}} {{x.ArabicName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- Main -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-flat bdr bdrt pb-10 mt-15">
+                    <div class="panel-body">
+                        <!-- #region Search Panel-->
+                        <div class="row g-grey-shade pb-20">
+                            <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <input ng-model="searchParameter.JobNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.JobNumber" only-numbers>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'declarationType' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <input ng-model="searchParameter.DeclarationType" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.DeclarationType" only-numbers>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'declarationNbr' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <input ng-model="searchParameter.DeclarationNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.DeclarationNumber" only-numbers>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'AgentCode' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <input ng-model="searchParameter.AgentCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.AgentCode">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'ImporterCode' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <input ng-model="searchParameter.ImporterCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.ImporterCode" only-numbers>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'PeriodStart' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParameter.DateFrom">
+                                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="control-label col-md-4">{{'PeriodEnd' | translate}}</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control pickadate" placeholder="{{'SelectEndDate' | translate}}" ng-model="searchParameter.DateTo">
+                                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-grey-shade col-md-12" ng-hide="true">
+                            <div class="col-md-12 sub-title">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <h6>
+                                            {{'SearchBy' | translate }}
+                                        </h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-2">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-6">{{'JobNumber' | translate}}</label>
+                                            <div class="col-lg-6">
+                                                <input ng-model="searchParameter.JobNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.JobNumber" only-numbers>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-lg-3">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'declarationType' | translate}}</label>
+                                            <div class="col-lg-6">
+                                                <input ng-model="searchParameter.DeclarationCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.DeclarationCode" only-numbers>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-3">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'declarationNbr' | translate}}</label>
+                                            <div class="col-lg-6">
+                                                <input ng-model="searchParameter.DeclarationNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.DeclarationNumber" only-numbers>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--<div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{'StartDate' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParameter.PeriodStart">
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>-->
+                                <!--<div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'EndDate' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.exportToName" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.exportToName">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>-->
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-lg-2">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-6">{{'StartDate' | translate}}</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control pickadate" placeholder="{{'SelectStartDate' | translate}}" ng-model="searchParameter.DateFrom">
+                                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-3">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-4">{{'PeriodEnd' | translate}}</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control pickadate" placeholder="{{'SelectEndDate' | translate}}" ng-model="searchParameter.DateTo">
+                                                <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <div class="note mt-10" ng-show="showWarning">
+                                <form class="form-horizontal">
+                                    <span>*</span>{{'importexportWarningMsg' | translate}}
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                                {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                            </button>
+                            <button type="submit" class="btn btn-green" ng-click="searchResults()">
+                                {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive mt20 mb20">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:7%;">{{'JobNumber' | translate}}</th>
+                                            <th style="width:7%;">{{'declarationType' | translate}}</th>
+                                            <th style="width:7%;">{{'declarationNbr' | translate}}</th>
+                                            <th style="width:6%;">{{'declarationDate' | translate}}</th>
+                                            <th style="width:8%;">{{'Exporter' | translate}}</th>
+                                            <th style="width:8%;">{{'finalCountryName' | translate}}</th>
+                                            <th style="width:8%;">{{'exportToName' | translate}}</th>
+                                            <th style="width:7%;">{{'uaeImpCode' | translate}}</th>
+                                            <th style="width:8%;">{{'uaeAgentCode'| translate}}</th>
+                                            <th style="width:8%;">{{'manufacturerName'| translate}}</th>
+                                            <th style="width:3%;">{{'Action' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tr dir-paginate="gridItem in ksaCreateBillData | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                        <td class="tdbreak">{{gridItem.JobNumber}}</td>
+                                        <td class="tdbreak">{{gridItem.DeclarationCode}}</td>
+                                        <td class="tdbreak">{{gridItem.DeclarationNumber}}</td>
+                                        <td class="tdbreak">{{gridItem.DeclarationDate | date:'dd/MM/yyyy'}}</td>
+                                        <td class="tdbreak">{{gridItem.ExporterName}}</td>
+                                        <td class="tdbreak">{{gridItem.FinalCountryName}}</td>
+                                        <td class="tdbreak">{{gridItem.ExportToName}}</td>
+                                        <td class="tdbreak">{{gridItem.UAEImpCode}}</td>
+                                        <td class="tdbreak">{{gridItem.UAEAgentCode}}</td>
+                                        <td class="tdbreak">{{gridItem.ManufacturerName}}</td>
+                                        <td class="tdbreak">
+                                            <div>
+                                                <a title="{{'Show'|translate}}" ng-click="KSANavigation(gridItem)"><i class="fa fa-eye"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="ksaCreateBillData == null || ksaCreateBillData.length == 0"><td colspan="17">{{'NoItems' | translate}}</td></tr>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12 pagination pl25 mb20 mr10" ng-hide="ksaCreateBillData == null">
+                            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                                     on-page-change="loadMoreRecords(newPageNumber)">
+                            </dir-pagination-controls>
+                            <span class="col-md-2 pull-right" ng-show="ksaCreateBillData.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    </div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

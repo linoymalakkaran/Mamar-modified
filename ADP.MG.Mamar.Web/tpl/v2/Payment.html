@@ -1,0 +1,150 @@
+﻿<div class="col-md-6">
+    <div class="row importcentrecodedp">
+        <div class="col-md-6">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                    <div class="col-md-8">
+                        <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                ng-options="transMode.key as transMode.value for transMode in transModes"></select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                    <div class="col-md-8">
+                        <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                ng-change="onCenterCodeChanged()"></select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('Statement')">{{'Statement'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12 mt-20">
+        <div ng-if="selectedTabValue== 'Statement'" ng-include="'../tpl/facilityStatements.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('Settlement')">{{'Settlement'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'Settlement'" ng-include="'../tpl/settlement.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('Deposit')">{{'Deposit'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'Deposit'" ng-include="'../tpl/deposit.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('Facility')">{{'Facility'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'Facility'" ng-include="'../tpl/facility.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('DepositSlip')">{{'DepositSlip'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'DepositSlip'" ng-include="'../tpl/depositSlip.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('FacilityBalance')">{{'FacilityBalance'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'FacilityBalance'" ng-include="'../tpl/accountInformation.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('prepaid')">{{'ADCBMT942Prepaid'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'prepaid'" ng-include="'../tpl/ADCBMT942Automatic.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+<div class="panel panel-white panel-collapsed bdr bdrt mt-15">
+    <div class="panel-heading">
+        <h6 class="panel-title  icons-list">
+            <a href="#" data-action="collapse" class="" ng-click="SelectedTab('postpaid')">{{'ADCBMT942Postpaid'| translate}}</a>
+        </h6>
+    </div>
+    <div class="col-md-12">
+        <div ng-if="selectedTabValue== 'postpaid'" ng-include="'../tpl/ADCBMT942PostPaidAutomatic.html'" class="tab-pane active" id="solid-justified-tab1">
+        </div>
+    </div>
+</div>
+
+<div ng-show="loadingParent">
+    <div class="overlay">
+        <div class="loading-img"></div>
+    </div>
+</div>
+<script>
+    //$(document).ready(function () {
+    //    debugger;
+    //    $('.panel [data-action=collapse]').trigger('click');
+    //});
+    $("[data-toggle=tooltip]").tooltip();
+    $('.panel-collapsed').children('.panel-heading').nextAll().hide();
+    $('.panel-collapsed').find('[data-action=collapse]').addClass('rotate-180');
+    $('.panel [data-action=collapse]').click(function (e) {
+        e.preventDefault();
+        $('.panel-white').children('.panel-heading').nextAll().hide();
+        $('.panel-title').find('[data-action=collapse]').addClass('rotate-180');
+        var $panelCollapse = $(this).closest('.panel-heading').nextAll();
+        $(this).closest('.panel').toggleClass('panel-collapsed');
+        $(this).toggleClass('rotate-180');
+        $panelCollapse.slideToggle(150);
+    });
+</script>
+
+
+
+
+
+

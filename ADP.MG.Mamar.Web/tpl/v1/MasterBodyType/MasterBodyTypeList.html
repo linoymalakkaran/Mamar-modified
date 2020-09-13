@@ -1,0 +1,388 @@
+﻿<style>
+  .white {
+    color: white !important;
+  }
+
+  .pullrightExport {
+    float: right !important;
+  }
+
+  .pullleftExport {
+    float: left !important;
+  }
+
+    .selectedRow {
+        background-color: #f5f5f5 !important;
+        color: #333333;
+        font-weight: bold;
+    }
+
+    .table-striped > tbody > tr {
+        background-color: white !important;
+    }
+        .table-striped > tbody > tr.selectedRow {
+            background-color: #f5f5f5 !important;
+            color: #333333;
+            font-weight: bold;
+        }
+
+
+</style>
+<div class="content-wrapper">
+  <!-- Main -->
+  <section class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="trans-list-head">{{'MasterBodyType' | translate}}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="row importcentrecodedp">
+            <div class="col-md-7">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-md-4"
+                    >{{'TransportMode' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <select
+                      id="ddlModeTransport"
+                      class="form-control select"
+                      ng-model="selectedTransMode"
+                      ng-options="transMode.key as transMode.value for transMode in transModes"
+                      ng-change="onModeChanged()"
+                    ></select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-5">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-md-4"
+                    >{{'CenterCode' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <select
+                      id="ddlCenterCode"
+                      class="form-control select"
+                      ng-model="selectedCenterCode"
+                      ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                      ng-change="onCenterCodeChanged()"
+                    ></select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-flat bdr pb20 mt-15">
+        <div class="panel-body">
+          <!-- #region Search Panel-->
+          <div class="row g-grey-shade pb-20">
+            <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+            <div class="col-md-12 form-horizontal">
+              <div class="form-group">
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'Code' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      class="form-control"
+                      valid-number
+                      allow-decimal="false"
+                      allow-negative="false"
+                      maxlength="10"
+                      placeholder="{{'Code' | translate}}"
+                      ng-model="searchParameter.code"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'DescriptionInEnglish' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      class="form-control"
+                      maxlength="30"
+                      placeholder="{{'English' | translate}}"
+                      ng-model="searchParameter.descEng"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'DescriptionInArabic' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      class="form-control"
+                      maxlength="30"
+                      placeholder="{{'Arabic' | translate}}"
+                      ng-model="searchParameter.descArb"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'AgentCode' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      placeholder="{{'AgentCode' | translate}}"
+                      class="form-control"
+                      maxlength="10"
+                      ng-model="searchParameter.agentCode"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pull-right">
+            <button
+              type="button"
+              class="btn btn-default"
+              ng-click="clearSearchFilters()"
+            >
+              {{'Clear' | translate}}<i
+                class="fal fa-times-square"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-green"
+              ng-click="searchParameter.pageNumber = 1;getBodyTypeListBySearch();"
+            >
+              {{'Find' | translate}}<i
+                class="fa fa-search"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+          <!-- #endregion Search Panel -->
+          <div class="col-md-12">
+            <div class="table-responsive mt20 mb20">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>{{'Code' | translate}}</th>
+                    <th>{{'DescriptionInEnglish' | translate}}</th>
+                    <th>{{'DescriptionInArabic' | translate}}</th>
+                    <th>{{'AgentCode' | translate}}</th>
+                    <th>{{'DisplayAgent' | translate}}</th>
+                  </tr>
+                </thead>
+                <tr
+                  dir-paginate="bt in bodyTypeList | itemsPerPage: searchParameter.pageSize"
+                  total-items="totalCount"
+                  current-page="searchParameter.pageNumber"
+                  pagination-id="bodyTypePager"
+                  ng-class="{'selectedRow':$index == selectedRowIndex}"
+                  ng-click="BodyTypeSelected($index,bt)"
+                  style="cursor: pointer;"
+                  ng-init="groupIndex=$index"
+                >
+                  <td>{{bt.Code}}</td>
+                  <td>{{bt.DescEng}}</td>
+                  <td class="text-right-md">{{bt.DescArb}}</td>
+                  <td>{{bt.AgentCode}}</td>
+                  <td>{{bt.DISPLAYAGENT}}</td>
+                </tr>
+                <tr
+                  class="no-records"
+                  ng-show="bodyTypeList == null || bodyTypeList.length == 0"
+                >
+                  <td colspan="5">{{'NoItems' | translate}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div
+            class="col-md-12 pagination pl25 mb20"
+            ng-hide="bodyTypeList == null || bodyTypeList.length == 0"
+          >
+            <dir-pagination-controls
+              pagination-id="bodyTypePager"
+              direction-links="true"
+              boundary-links="true"
+              on-page-change="loadMoreRecords(newPageNumber)"
+            >
+            </dir-pagination-controls>
+            <span
+              class="col-md-2 pull-right"
+              ng-if="bodyTypeList == null || bodyTypeList.length > 0"
+              ><strong
+                >{{'total' | translate}} :
+                <span class="num">{{totalCount}}</span></strong
+              ></span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- #region start sub body type section -->
+  <section class="row" ng-if="selectedRow && selectedRow.Code">
+    <div class="col-md-12">
+      <div class="panel panel-flat bdr pb20 mt-15">
+        <div class="panel-body">
+          <!-- #region sub body type Search Panel-->
+          <div class="row g-grey-shade pb-20">
+            <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+            <div class="col-md-12 form-horizontal">
+              <div class="form-group">
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'SubCode' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      valid-number
+                      allow-decimal="false"
+                      allow-negative="false"
+                      placeholder="{{'SubCode' | translate}}"
+                      class="form-control"
+                      ng-model="searchSubParameter.subCode"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="control-label col-md-4">
+                    {{'DescriptionInEnglish' | translate}}
+                  </label>
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      placeholder="{{'English' | translate}}"
+                      maxlength="30"
+                      class="form-control"
+                      ng-model="searchSubParameter.descEng"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'DescriptionInArabic' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      placeholder="{{'Arabic' | translate}}"
+                      maxlength="30"
+                      class="form-control"
+                      ng-model="searchSubParameter.descArb"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="control-label col-md-4"
+                    >{{'CategoryCode' | translate}}</label
+                  >
+                  <div class="col-md-8">
+                    <input
+                      type="search"
+                      placeholder="{{'CategoryCode' | translate}}"
+                      class="form-control"
+                      ng-model="searchSubParameter.categoryCode"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pull-right">
+            <button
+              type="button"
+              class="btn btn-default"
+              ng-click="clearSubBodyTypeSearchFilters()"
+            >
+              {{'Clear' | translate}}<i
+                class="fal fa-times-square"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-green"
+              ng-click="searchSubParameter.pageNumber =1;getBodySubTypeListBySearch();"
+            >
+              {{'Find' | translate}}<i
+                class="fa fa-search"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+          <!-- #endregion Search Panel -->
+          <div class="col-md-12">
+            <div class="table-responsive mt20 mb20">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>{{'Code' | translate}}</th>
+                    <th>{{'DescriptionInEnglish' | translate}}</th>
+                    <th>{{'DescriptionInArabic' | translate}}</th>
+                    <th>{{'CategoryCode' | translate}}</th>
+                    <th>{{'CategoryDescriptionInEnglish' | translate}}</th>
+                    <th>{{'CategoryDescriptionInArabic' | translate}}</th>
+                  </tr>
+                </thead>
+                <tr
+                  dir-paginate="sbt in subBodyTypeList | itemsPerPage: searchSubParameter.pageSize"
+                  total-items="totalSubBodyTypeCount"
+                  current-page="searchSubParameter.pageNumber"
+                  pagination-id="subBodyTypePager"
+                >
+                  <td>{{sbt.Code}}</td>
+                  <td>{{sbt.DescEng}}</td>
+                  <td class="text-right-md">{{sbt.DescArb}}</td>
+                  <td>{{sbt.VST_VCT_CODE}}</td>
+                  <td>{{sbt.CategEng}}</td>
+                  <td class="text-right-md">{{sbt.CategArb}}</td>
+                </tr>
+                <tr
+                  class="no-records"
+                  ng-show="subBodyTypeList == null || subBodyTypeList.length == 0"
+                >
+                  <td colspan="6">{{'NoItems' | translate}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div
+          class="col-md-12 pagination pl25 mb20"
+          ng-hide="subBodyTypeList == null || subBodyTypeList.length == 0"
+        >
+          <dir-pagination-controls
+            pagination-id="subBodyTypePager"
+            direction-links="true"
+            boundary-links="true"
+            on-page-change="loadMoreSubBodyTypeRecords(newPageNumber)"
+          >
+          </dir-pagination-controls>
+          <span class="col-md-2 pull-right">
+            <strong>
+              {{'total' | translate}} :
+              <span class="num">
+                {{totalSubBodyTypeCount}}
+              </span>
+            </strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- #endregion start sub body type section -->
+</div>

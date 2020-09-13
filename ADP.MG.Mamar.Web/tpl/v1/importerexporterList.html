@@ -1,0 +1,308 @@
+﻿<style>
+    .tdbreak {
+        word-break: break-all
+    }
+    .redcolor {
+    color:red;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="trans-list-head">{{'importerexporter' | translate}} </div>
+                </div>
+                <div class="col-md-4">
+                    <div>
+                         <fieldset ng-disabled="isSuperUser == 'True'"> 
+                            <button class="btn btn-new mt-15 ml-40" ui-sref="importerexportersRegistration({'centerCode':centerCode})">{{'AddNew' | translate}}</button>
+                         </fieldset> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="trans-list-head"></div>
+                </div>
+                <div class="col-md-4">
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row importcentrecodedp">
+                <div class="col-md-7">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                        ng-options="transMode.key as transMode.value for transMode in transModes"
+                                        ng-change="onModeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-5">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                        ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                        ng-change="onCenterCodeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-flat bdr bdrt pb-10 mt-15">
+                <div class="panel-body">
+                    <div class="row g-grey-shade col-md-12">
+                        <div class="col-md-12 sub-title">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <h6>
+                                        {{'SearchBy' | translate }}
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'TelNumber' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.telephone" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.telephone" only-numbers>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'MobileNumber' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.mobile" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.mobile" only-numbers>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Fax' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.fax" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.fax">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{'POBox' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.poBox" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.poBox" only-numbers>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'FileNumber' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.fileNumber" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.fileNumber">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-lg-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'CityCode' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.cityCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.cityCode">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'AdccCode' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.addcCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.addcCode">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'MunicipalityCode' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.municipCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.municipCode">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{'Email' | translate}}</label>
+                                        <div class="col-lg-7">
+                                            <input ng-model="searchParameter.email" type="text" class="form-control" placeholder="" ng-trim="true">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'ImporterCode' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.importerCode" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.importerCode" only-numbers>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-lg-2">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'Name' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.importername" type="text" class="form-control" placeholder="" ng-trim="false">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Category' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <select id="selectCategory" name="selectCategory" ng-model="searchParameter.categoryCode" class="form-control select"
+                                                    ng-options="item.CategoryCode as (item.CategoryCode + ' - ' + item.CategoryEngName + ' ' + item.CategoryArbName) for item in categoryCodes"></select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'VATTransaction' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input ng-model="searchParameter.vatTrn" type="text" class="form-control" placeholder="" ng-trim="false" restrict-Space="searchParameter.vatTrn" only-numbers>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{'UAEID' | translate}}</label>
+                                        <div class="col-lg-7">
+                                            <input name="uaeId" type="text" class="form-control" ng-model="searchParameter.uaeId" restrict-space only-Digits maxlength="15">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="note mt-10" ng-show="showWarning">
+                            <form class="form-horizontal">
+                                <span>*</span>{{'importexportWarningMsg' | translate}}
+                            </form>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="submit" class="btn btn-green" ng-click="searchResults()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width:7%;">{{'Imp' | translate}}</th>
+                                        <th style="width:10%;">{{'English' | translate}}</th>
+                                        <th style="width:10%;">{{'Arabic' | translate}}</th>
+                                        <th style="width:6%;">{{'POBox' | translate}}</th>
+                                        <th style="width:8%;">{{'Tel' | translate}}</th>
+                                        <th style="width:8%;">{{'Mob' | translate}}</th>
+                                        <th style="width:8%;">{{'Email' | translate}}</th>
+                                        <th style="width:5%;">{{'ADCC' | translate}}</th>
+                                        <th style="width:8%;">{{'Munc'| translate}}</th>
+                                        <th style="width:2%;">{{'Category' | translate}}</th>
+                                        <th style="width:5%;">{{'VATTransaction' | translate}}</th>
+                                        <th style="width:5%;">{{'UAEID' | translate}}</th>
+                                        <th style="width:2%;">{{'LocalCompany' | translate}}</th>
+                                        <th style="width:2%;">{{'Facility' | translate}}</th>
+                                        <th style="width:2%;">{{'DutyShortage' | translate}}</th>
+                                        <th style="width:2%;">{{'StoppedBy' | translate}}</th>
+                                        <th style="width:2%;">{{'Active' | translate}}</th>
+                                        <th style="width:3%;">{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr dir-paginate="gridItem in importerExporterData | itemsPerPage: searchParameter.pageSize" total-items="totalCount" current-page="searchParameter.pageNumber" pagination-id="importerExporterListPagination" ng-class="{ redcolor:((gridItem.ActiveFlag==null || gridItem.ActiveFlag=='0') && gridItem.DutyShortage=='Y') }">
+                                    <td class="tdbreak">{{gridItem.ImporterCode}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterDescEng}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterDescArb}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterPOBox}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterTelPhoneNo}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterMobileNo}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterEmail}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterADCCCode}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterMuncipalityCode}}</td>
+                                    <td class="tdbreak">{{gridItem.ImporterCategoryCode}}</td>
+                                    <td class="tdbreak">{{gridItem.VATTransaction}}</td>
+                                    <td class="tdbreak">{{gridItem.UAEID}}</td>
+                                    <td class="tdbreak"><input disabled="disabled" type="checkbox" ng-checked="gridItem.LocalCompany=='Y'" /></td>
+                                    <td class="tdbreak"><input disabled="disabled" type="checkbox" ng-checked="gridItem.Facility=='Y'" /></td>
+                                    <td class="tdbreak"><input disabled="disabled" type="checkbox" ng-checked="gridItem.DutyShortage=='Y'" /></td>
+                                    <td class="tdbreak">{{gridItem.ImporterStoppedBy}}</td>
+                                    <td class="tdbreak"><input disabled="disabled" type="checkbox" ng-checked="gridItem.ActiveFlag=='1'" /></td>
+                                    <td class="tdbreak">
+                                        <div>
+                                            <a title="{{'Show'|translate}}" ui-sref="importerexportersRegistration({'centerCode':centerCode,'importerCode':gridItem.ImporterCode})"><i class="fa fa-eye"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="importerExporterData == null || importerExporterData.length == 0"><td colspan="18">{{'NoItems' | translate}}</td></tr>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20 mr10" ng-hide="importerExporterData == null || importerExporterData.length == 0">
+                        <dir-pagination-controls pagination-id="importerExporterListPagination" direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="importerExporterData.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+</div>

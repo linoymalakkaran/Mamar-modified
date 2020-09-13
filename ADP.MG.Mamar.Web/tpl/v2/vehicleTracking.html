@@ -1,0 +1,392 @@
+﻿<style>
+    .search {
+        color: #e0c8a1;
+    }
+    .white
+    {
+        color:white !important;
+    }
+</style>
+<link href="../assets/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+<script src="../assets/js/bootstrap-datetimepicker.js"></script>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="trans-list-head">{{'VehicleTracking' | translate}} </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-6">
+            <div class="row importcentrecodedp">
+                <div class="col-md-7">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'TransportMode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlModeTransport" class="form-control select" ng-model="selectedTransMode"
+                                        ng-options="transMode.key as transMode.value for transMode in transModes"
+                                        ng-change="onModeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-5">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{'CenterCode' | translate}}</label>
+                            <div class="col-md-8">
+                                <select id="ddlCenterCode" class="form-control select" ng-model="selectedCenterCode"
+                                        ng-options="centerCode.Code as (centerCode.Code + '  ' + centerCode.EnglishName + '   ' + centerCode.ArabicName) for centerCode in centerCodes"
+                                        ng-change="onCenterCodeChanged()"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-flat bdr pb20">
+                <div class="panel-body">
+                    <!-- #region Search Panel-->
+                    <div class="row g-grey-shade pb-20">
+                        <div class="sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'CenterOpen' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.CenterOpen" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'CenterClose' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.CenterClose" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'ReferenceNo' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.PermitNumber" maxlength="21" />
+                                        <span class="validation-error-label search col-md-12" ng-show="invalidMandatoryFields">{{'RequiredFieldsForPrint'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'PlateNumber' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.PlateNumber" maxlength="30" />
+                                        <span class="validation-error-label search col-md-12" ng-show="invalidMandatoryFields">{{'RequiredFieldsForPrint'|translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'PlateColor' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div id="ddlPlateColor" ng-keydown="plateColorKeyDown($event)" class="col-md-10" angucomplete-alt placeholder="{{'Find' | translate}}..." ng-model="selectedPlateColor"
+                                             local-data="plateColors" search-fields="Code,EngName,ArbName" title-field="Code,EngName,ArbName" minlength="1" show-Title="true" search-str="searchPlateColorText"
+                                             input-class="form-control white" match-class="highlight" input-name="ddlPlateColor" selected-object="selectedPlateColorObj" input-changed="onPlateColorChange">
+                                        </div>
+                                        <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateColorLookup()"></i></a>
+                                        <span class="validation-error-label  col-md-12" ng-show="invalidPlateColor">{{'InvalidPlateColorMessage'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'PlateCategory' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div id="ddlPlateCategory" ng-keydown="plateCategoryKeyDown($event)" class="col-md-10" angucomplete-alt placeholder="{{'Find' | translate}}..." ng-model="selectedPlateCategory" show-title="true"
+                                             local-data="plateCategorys" search-fields="CategoryCode,CategoryEngName,CategoryArbName" title-field="CategoryCode,CategoryEngName,CategoryArbName" minlength="1" search-str="searchPlateCategoryText"
+                                             input-class="form-control white" match-class="highlight" input-name="ddlPlateCategory" selected-object="selectedPlateCategoryObj" input-changed="onPlateCatChange">
+                                        </div>
+                                        <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateCategoryLookup()"></i></a>
+                                        <span class="validation-error-label  col-md-12" ng-show="invalidPlateCategory">{{'InvalidPlateCategoryMessage'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'PlateOrigin' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <div id="ddlPlateOrigin" ng-keydown="plateOriginKeyDown($event)" class="col-md-10" angucomplete-alt placeholder="{{'Find' | translate}}..." ng-model="selectedPlateOrigin" show-title="true"
+                                             local-data="plateOrigins" search-fields="Code,CountryEngName,CountryArbName" title-field="Code,CountryEngName,CountryArbName" minlength="1" search-str="searchPlateOriginText"
+                                             input-class="form-control white" match-class="highlight" input-name="ddlPlateOrigin" selected-object="selectedPlateOriginObj" input-changed="onPlateOriginChange">
+                                        </div>
+                                        <a class="col-md-1 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openPlateOriginLookup()"></i></a>
+                                        <span class="validation-error-label  col-md-12" ng-show="invalidPlateOrigin">{{'InvalidPlateOriginMessage'|translate}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label col-md-4">{{'OwnerName' | translate}}</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" ng-model="searchParameter.ownerName" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-2">{{'DateOpen' | translate}}</label>
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input name="dateOpen" type="text" class="form-control pickadate" placeholder="{{'dd/MM/yyyy' | translate}}" ng-model="searchParameter.dateOpen" />
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label col-md-2">{{'DateClose' | translate}}</label>
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <input name="dateOpen" type="text" class="form-control pickadate" placeholder="{{'dd/MM/yyyy' | translate}}" ng-model="searchParameter.dateClose" />
+                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-clear" ng-click="clearSearchFilters()">
+                            {{'Clear' | translate}}<i class="fal fa-times-square" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn btn-find" ng-click="onSearchButtonClick()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <!-- #endregion Search Panel -->
+                    <!--#endregion-->
+                    <!-- #region Vehicle Tracking-->
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'CenterOpen' | translate}}</th>
+                                        <th>{{'CenterClose' | translate}}</th>
+                                        <th>{{'ReferenceNo' | translate}}</th>
+                                        <th>{{'PlateNumber' | translate}}</th>
+                                        <th>{{'PlateColor' | translate}}</th>
+                                        <th>{{'PlateCategory' | translate}}</th>
+                                        <th>{{'PlateOrigin' | translate}}</th>
+                                        <th>{{'DateOpen' | translate}}</th>
+                                        <th>{{'DateClose' | translate}}</th>
+                                        <th>{{'OwnerName' | translate}}</th>
+                                        <th>{{'KSA' | translate}}</th>
+                                        <th>{{'ADP' | translate}}</th>
+                                        <th style="width:8%;">{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr pagination-id="vehicleTracklistPagination" dir-paginate="item in vehicleTrackingList | itemsPerPage: 10" total-items="totalCount" current-page="searchParameter.pageNumber">
+                                        <td>{{item.CenterOpen}}</td>
+                                        <td>{{item.CenterClose}}</td>
+                                        <td>{{item.PlateReferenceNumber}}</td>
+                                        <td>{{item.PlateNo}}</td>
+                                        <td>{{item.PlateColor}} {{item.PlateColorEng}} {{item.PlateColorArb}}</td>
+                                        <td>{{item.PlateCategory}} {{item.PlateCategoryEng}} {{item.PlateCategoryArb}}</td>
+                                        <td>{{item.PlateOrigin}} {{item.PlateOriginEng}} {{item.PlateOriginArb}}</td>
+                                        <td>{{item.DateOpen  | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{item.DateClose | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{item.OwnerName}}</td>
+                                        <td>
+                                            <span class="form-group form-checkbox">
+                                                <span class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="item.KSARefNo" ng-checked="item.KSARefNo == 'Y'" disabled>
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="form-group form-checkbox">
+                                                <span class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="item.PoliceHit" ng-checked="item.PoliceHit == 'Y'" disabled>
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <fieldset ng-disabled="isSuperUser == 'True'">
+                                                <a title="{{'PrintPermitNo' | translate}}" ng-click="downloadPermitNumber(item.PlateReferenceNumber)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                                                <a title="{{'Show' | translate}}" ng-click="showRegistrationDetails(item)" class="alwaysEnabled"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    <tr class="no-records" ng-show="vehicleTrackingList == null || vehicleTrackingList.length == 0">
+                                        <td colspan="13">
+                                            {{'NoItems' | translate}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 pagination pl25 mb20">
+                        <dir-pagination-controls pagination-id="vehicleTracklistPagination" ng-if="vehicleTrackingList != null && vehicleTrackingList.length != 0"
+                                                 direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-show="vehicleTrackingList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                    <!--</div>-->
+                    <!-- #endregion Vehicle Tracking List-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--LOOKUP MODALS-->
+    <div class="modal" id="plateColorLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateColor()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateColor' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateColorText" type="text" ng-model="searchPlateColorText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateColorItem.Code==plateColorItemSelected.Code}" ng-click="setPlateColor(plateColorItem)" dir-paginate="plateColorItem in plateColors | itemsPerPage: 10" current-page="lookUpCurrentPagePlateColor" pagination-id="plateColorPager">
+                                    <td>
+                                        {{plateColorItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateColorItem.EngName}} {{plateColorItem.ArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateColors == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateColors == null">
+                        <dir-pagination-controls pagination-id="plateColorPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateOriginLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateOrigin()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateOrigin' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateOriginText" type="text" ng-model="searchPlateOriginText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateOriginItem.Code==plateOriginItemSelected.Code}" ng-click="setPlateOrigin(plateOriginItem)" dir-paginate="plateOriginItem in plateOrigins | itemsPerPage: 10" current-page="lookUpCurrentPagePlateOrigin" pagination-id="plateOriginPager">
+                                    <td>
+                                        {{plateOriginItem.Code}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateOriginItem.CountryEngName}} {{plateOriginItem.CountryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateOrigins == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateOrigins == null">
+                        <dir-pagination-controls pagination-id="plateOriginPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="plateCategoryLookup" role="dialog">
+        <div style="width:50%" class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="closePlateCategory()">&times;</button>
+                    <h5 class="modal-title bold">{{'PlateCategory' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input id="searchPlateCategoryText" type="text" ng-model="searchPlateCategoryText" class="form-control disabledInputWithBorder col-md-12" />
+                    <div class="table-responsive mb20">
+                        <div class="small-loader" ng-show="plateCategorys == null && !stoppedSearch"><i class="icon-spinner2 spinner position-center"></i></div>
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th width="10%">{{'Code'|translate}}</th>
+                                    <th>{{'Description'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-class="{selected: plateCategoryItem.CategoryCode==plateCategoryItemSelected.CategoryCode}" ng-click="setPlateCategory(plateCategoryItem)" dir-paginate="plateCategoryItem in plateCategorys | itemsPerPage: 10" current-page="lookUpCurrentPagePlateCategory" pagination-id="plateCategoryPager">
+                                    <td>
+                                        {{plateCategoryItem.CategoryCode}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                        {{plateCategoryItem.CategoryEngName}} {{plateCategoryItem.CategoryArbName}}
+                                    </td>
+                                </tr>
+                                <tr ng-show="plateCategorys == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="plateCategorys == null">
+                        <dir-pagination-controls pagination-id="plateCategoryPager" direction-links="true" boundary-links="true">
+                        </dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--LOOKUP MODALS-->
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+
+</div>
+<script>
+    var date = new Date();
+    date.setDate(date.getDate() - 1);
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: 100,
+        selectMonths: true
+    });
+</script>

@@ -1,0 +1,76 @@
+﻿<div ng-controller="settlementController" class="panel drt pb20">
+    <!--<div class="centrecodedp mt-10">
+        <form class="form-horizontal ng-pristine ng-valid">
+            <div class="form-group">
+                <label class="control-label col-lg-4 ng-binding">{{'CentreCode' | translate}}</label>
+                <div class="col-lg-8">
+                    <select name="dplCentreCode" ng-model="selCenterCode" class="form-control select2" ng-change="centerCodeChanged()">
+                        <option ng:repeat="x in centerCodes" value="{{x.Code}}">{{x.Code}} {{x.EnglishName}} {{x.ArabicName}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>-->
+
+    <div class="col-md-12 mt-20">
+        <div class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'Centre'|translate}}</th>
+                        <th>{{'ImpCode'|translate}}</th>
+                        <th>{{'DepositStmt'|translate}}</th>
+                        <th>{{'FacilityStmt'|translate}}</th>
+                        <th>{{'Deposit'|translate}}</th>
+                        <th>{{'StatementAmount'|translate}}</th>
+                        <th>{{'SettleVoucher'|translate}}</th>
+                        <th>{{'SettleDate'|translate}}</th>
+                        <th>{{'Print'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr dir-paginate="model in settlements | itemsPerPage: mPaymentSettlementRequestObject.pageSize" total-items="totalSettlementCount">
+                        <td>
+                            {{model.CenterCode}}
+                        </td>
+                        <td>
+                            {{model.ImpCode}}
+                        </td>
+                        <td>
+                            {{model.VBSNumber}}
+                        </td>
+                        <td>
+                            {{model.BatchNumber}}
+                        </td>
+                        <td>
+                            {{model.RVHNumber}}
+                        </td>
+                        <td>
+                            {{model.Amount}}
+                        </td>
+                        <td>
+                            {{model.SettleVoucher}}
+                        </td>
+                        <td>
+                            {{model.SettleDate | date:'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            <a title="{{'Print'|translate}}" ng-click="downloadReport('GetSettlementReport',model.VBSNumber)"><i class="fa fa-print" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                    <tr class="no-records" ng-show="settlements == null || settlements.length == 0">
+                        <td colspan="9">{{'NoItems' | translate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination" ng-hide="settlements == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreSettlemetsRecords(newPageNumber)">
+            </dir-pagination-controls>
+            <span class="col-md-2 pull-right" ng-show="settlements.length > 0"><strong>{{'total' | translate}} : {{totalSettlementCount}}</strong></span>
+        </div>
+    </div>
+    
+
+</div>

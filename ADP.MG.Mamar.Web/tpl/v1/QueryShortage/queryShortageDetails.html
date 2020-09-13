@@ -1,0 +1,227 @@
+﻿<style>
+    .noscroll {
+        overflow: hidden !important;
+    }
+</style>
+<div class="page-content">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-8 mt-10">
+                <div class="trans-list-head">{{'QueryShortageDetails' | translate}} </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pull-right mt-20">
+                    <a class="btn btn-dark-grey btn-block" ui-sref-opts="{reload: true, notify: true}" ui-sref="queryShortageList">{{'Back' | translate}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-flat bdr bdrt mt-20">
+                    <fieldset ng-disabled="true">
+                        <form name="queryShortageForm" novalidate class="form-horizontal">
+                            <div class="panel-body">
+                                <div class="col-md-12 g-grey-shade">
+                                    <div class="form-horizontal">
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-4">{{'CenterCode' | translate}}: </label>
+                                                <label class="control-label col-lg-8">{{$storage.get('qsCenterCode')}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <div class="pull-right">
+                                                <a class="btn btn-green mtb5 mr-10 alwaysEnabled" ng-click="payDutyShortage()">{{'PayDutyShortage' | translate}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-5">
+                                    <div class="col-md-6 form-horizontal row">
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'SerialNumber' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.SerialNumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'IssueDate' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control pickadate" placeholder="{{'Select' | translate}}" ng-model="qsIssueDate">
+                                                            <span class="input-group-addon "><i class="icon-calendar22"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'JobNumber' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.JobNumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'BillNumber' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.BillNumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'BillType' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <select  class="form-control select" ng-show="language == 'en'"
+                                                                ng-options="billType.Code as billType.NameEnglish for billType in lookupBillTpResult"
+                                                                ng-model="qsDetails.BillType"></select>
+                                                        <select class="form-control select" ng-show="language == 'ae'"
+                                                                ng-options="billType.Code as billType.NameArabic for billType in lookupBillTpResult"
+                                                                ng-model="qsDetails.BillType"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'Year' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.CurrentYear" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">{{'Importer' | translate}}</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.ImporterCode" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.ImporterDesc" />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.MLC_LC_NUMBER" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-12">{{'Remarks' | translate}}</label>
+                                                    <div class="col-md-12">
+                                                        <textarea id="GoodsDescription" rows="2" cols="5" class="form-control noscroll" ng-model="qsDetails.Remarks" maxlength="500"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="f-bdr-box grey-shade pb-10 pl-10 pr-10 mt-20">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">{{'CollectedDuty' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="qsDetails.CollectedDuty" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">{{'CorrectDuty' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="qsDetails.CorrectedDuty" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">{{'StorageDuty' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="qsDetails.StorageDuty" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">{{'ServiceCharge' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="qsDetails.ServicesCharges" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-4">{{'Amount' | translate}}</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control" ng-model="qsDetails.OPAmount" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-5 pb-20">
+                                    <h6>{{'PaymentDetails' | translate}}</h6>
+                                    <div class="f-bdr-box grey-shade">
+                                        <div class="form-horizontal">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'VoucherType' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <select class="form-control select" ng-show="language == 'en'"
+                                                                ng-options="voucherType.Code as voucherType.EnglisName for voucherType in lookupVoucherTpResult"
+                                                                ng-model="vhType"></select>
+                                                        <select class="form-control select" ng-show="language == 'ae'"
+                                                                ng-options="voucherType.Code as voucherType.ArabicName for voucherType in lookupVoucherTpResult"
+                                                                ng-model="vhType"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'VoucherCenter' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.VHCenter" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'VoucherIssueDate' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="vhIssueDate" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-horizontal">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'VoucherNumber' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.VHNumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-4">{{'VoucherAmount' | translate}}</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" ng-model="qsDetails.VHAmount" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>

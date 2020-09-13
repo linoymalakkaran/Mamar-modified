@@ -1,0 +1,233 @@
+﻿<style>
+    .label-style {
+        width: 100%;
+    }
+</style>
+<div class="modal-header">
+    <h5 class="modal-title">Details</h5>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12 form-horizontal">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Dhabi Seq Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="DhabiSeqNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942DhabiSeqNum" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Cust Account Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CustAmountNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942CustAccNum" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Amount</label>
+                </div>
+                <div class="col-md-2">
+                    <input name="Amount" type="number" ng-disabled="true" ng-model="documentInformationDetails.AM942AMOUNT" class="form-control">
+                </div>
+                <div class="col-md-1">
+                    <label class="control-label col-lg-4 label-style">DC Mark</label>
+                </div>
+                <div class="col-md-1">
+                    <input name="MArk" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942DcMark" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Cust Ref Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CustRefNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942CustRefNum" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Value Date</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ValueDate" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942ValueDate" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Trns Ref Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="TmsRefNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942TransRefNum" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Reference Type</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ReferenceType" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942RefType" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Reference No</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ReferenceNo" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942RefNo" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Flag</label>
+                </div>
+                <div class="col-md-2">
+                    <input name="Flag" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942Flag" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Notes</label>
+                </div>
+                <div class="col-md-6">
+                    <input name="Notes" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942Notes" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Trans Type</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="TransType" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942TransType" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Cheque Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ChequeNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942ChqNo" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Seq Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="SeqNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942DhabiSeqNum" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Cur Debt</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CurDebt" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942CurDebit" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Cur Crdt</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CurCrdt" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942CurCredit" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Date Time</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="DateTime" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942Date" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Entry Date</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="EntryDate" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942EntryDate" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Ref Account Owner</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="RefAccountOwner" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942RefAccountOwner" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Remitter Info</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="RemitterInfo" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942RemitterInfo" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Adcb Int Ref Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="AdcbIntRefNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942ADCBIntRefNum" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Benef Name</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="BenefName" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942BenefName" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Bank Code</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="BankCode" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942BankCode" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Benef Account Num</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="BenefAccountNum" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942BenefAccountNum" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Benef Adrs</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="BenefAdrs" type="text" ng-disabled="true" ng-model="documentInformationDetails.AM942BenefAdrs" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Created User</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CreatedUser" type="text" ng-disabled="true" ng-model="documentInformationDetails.CreatedUser" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Created Date</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="CreatedDate" type="text" ng-disabled="true" ng-model="documentInformationDetails.CreatedDate" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Modified User</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ModifiedUser" type="text" ng-disabled="true" ng-model="documentInformationDetails.ModifiedUser" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label col-lg-4 label-style">Modified Date</label>
+                </div>
+                <div class="col-md-4">
+                    <input name="ModifiedDate" type="text" ng-disabled="true" ng-model="documentInformationDetails.ModifiedDate" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-right mr-10 mt-20">
+                <button type="button" class="btn btn-default" ng-click="closeModal()">{{'Close'|translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".pickadate").pickadate({
+        format: 'dd/mm/yyyy',
+        selectYears: true,
+        selectMonths: true
+    });
+</script>

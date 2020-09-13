@@ -1,0 +1,155 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maqta Gateway | Mamar</title>
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    @Styles.Render("~/bundle/theme/css")
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+    
+    @*<link href="@Url.Content("~/global_assets/css/icons/icomoon/styles.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/core.min.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/components.min.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/colors.min.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/bootstrap-select.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/bootstrap-datetimepicker.min.css")" rel="stylesheet"/>
+        <link href="@Url.Content("~/global_assets/css/icons/fontawesome/styles.min.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/global_assets/css/icons/fontawesome/css/all.css")" rel="stylesheet" type="text/css" />
+        <link href="@Url.Content("~/assets/css/my-style.css")" rel="stylesheet" type="text/css" />*@
+
+    <script>
+        Url =
+            function () { }
+        Url.prototype = {
+            _relativeRoot: '@Url.Content("~")',
+            // create an extension method called "resolve"
+            resolve: function (relative) {
+                var resolved = relative;
+                if (relative.charAt(0) == '~')
+                    resolved = this._relativeRoot + relative.substring(2);
+                return resolved;
+            }
+        }
+        $Url = new Url();
+    </script>
+</head>
+<body class="login-container login-bg" ng-app="mamarApp">
+    <div class="login-top-bar"></div>
+    <!-- Page container -->
+    <div class="page-container" ng-controller="LoginController">
+        <div ng-show="loading">
+            <div class="overlay">
+                <div class="loading-img"></div>
+            </div>
+        </div>
+        <!-- Page content -->
+        <div class="page-content" id="loginPageContent">
+            <!-- Main content -->
+            <div class="content-wrapper">
+                <!-- Advanced login -->
+                <form class="login-form" name="mamarLoginForm" enctype="multipart/form-data">
+                    <div class="text-left login-logo">
+                        <span><img src="~/assets/img/logo-login.png" height="350" alt=""></span>
+                    </div>
+
+                    <div class="form-group has-feedback has-feedback-left" ng-show="!isValidUser">
+                        <label class="validation-error-label" ng-bind="authError"></label>
+                    </div>
+
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="text" class="form-control" placeholder="Username" ng-model="user.UserName" ng-change="resetErrors()">
+                        <div class="form-control-feedback">
+                            <i class="icon-user text-muted"></i>
+                        </div>
+                        <label class="validation-error-label" ng-show="!isValidUserName" ng-bind="errRequiredUsername"></label>
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input type="hidden" id="apiurl" value="@TempData.Peek("ApiURL")" />
+                        <input type="hidden" id="mgSurveyApiurl" value="@TempData.Peek("MGSurveyApiURL")" />
+                        <input type="hidden" id="mgSurveyAppName" value="@TempData.Peek("MGSurveyAppName")" />
+                        <input type="hidden" id="mgSurveyAppKey" value="@TempData.Peek("MGSurveyAppKey")" />
+                        <input type="hidden" id="subscriptionEnabled" value="@ViewBag.EnableSubscriptionFee" />
+                        <input type="password" class="form-control" placeholder="Password" ng-model="user.Password" ng-change="resetErrors()">
+                        <div class="form-control-feedback">
+                            <i class="icon-lock2 text-muted"></i>
+                        </div>
+                        <label class="validation-error-label" ng-show="!isValidPassword" ng-bind="errRequiredPassword"></label>
+                    </div>
+                    <div class="form-group mt-20">
+                        <button type="submit" class="btn btn-login" ng-click="login()">Login </button>
+                        <a  href="@ViewBag.UnifiedRegistrationUrl" class="btn btn-login">Register </a>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="form-group login-options mt-20">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" ng-model="user.RememberMe">
+                                    Remember
+                                </label>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <a href="@ViewBag.ForgotPasswordLink">Forgot password?</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <!-- /advanced login -->
+            </div>
+            <!-- /main content -->
+        </div>
+        <!-- /page content -->
+        <div class="powered">
+            <p>Powered By</p>
+            <img src="~/assets/img/maqta-logo-blue.png" height="25" alt="">
+        </div> 
+        <input type="hidden" value="@User.Identity.Name" id="username" />
+    </div>
+    <!-- /page container -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/angular")
+    @Scripts.Render("~/bundles/bootstrap/tpls")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/app")
+    <script src="~/Scripts/AngularScripts/controllers/loginController.js"></script>
+    <div class="modal" id="successModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p class="alert alert-success">{{'DoneSuccessfully' | translate}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default text-center alwaysEnabled" id="CloseModal" data-dismiss="modal">{{'Close' | translate}}</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @{
+        var message = TempData.Peek("Message")!=null?TempData.Peek("Message").ToString():"";
+        if ( !string.IsNullOrEmpty(message))
+        {
+            <script>
+                $(document).ready(function () {
+                   $('#successModal p.alert-success').html('@message');
+                   $('#successModal').modal('show');
+                });
+            </script>
+        }
+    }
+</body>
+</html>

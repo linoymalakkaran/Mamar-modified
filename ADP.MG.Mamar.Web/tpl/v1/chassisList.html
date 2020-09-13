@@ -1,0 +1,649 @@
+﻿<style>
+    .lbl {
+        font-weight: bold;
+        padding-top: 13px;
+        font-family: 'Roboto';
+    }
+
+    .gridLnk {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: red !important;
+    }
+
+    .selectNw {
+        /*height: 30px !important;*/
+    }
+   
+</style>
+<style>
+    .clsUpload {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+        cursor: pointer;
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div class="content-wrapper">
+    <!-- Main -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'ChassisDetails' | translate}}</div>
+            <div class="pull-right mt-20 mb-10">
+                <div id="Attach" class="btn btn-green" ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                    <label for="upfiles" class="fa fa-paperclip"></label>
+                    {{'Upload' | translate }}
+                    <input id="upfiles" type="file" upload-Files name="attachment" value="" class="clsUpload" accept={{ acceptFiles }} ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                </div>
+                <a class="btn btn-green" href="../Content/Template/ChassisInvoiceTempl.xltx">{{'Download' | translate }}</a>
+            </div>
+            <div class="panel panel-flat bdr pb20 mt-15">
+                <div class="panel-body">
+                    <div class="row g-grey-shade">
+                        <div class="col-md-12 sub-title"><h6>{{'SearchBy' | translate}}</h6></div>
+                        <div class="col-md-12">
+                            <div class="col-md-9 form-horizontal">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-5">{{'JobNumber' | translate}} : </label>
+                                        <label class="control-label col-lg-7 num" ng-bind="jobNoShipment"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">{{'ChassisNo' | translate}}</label>
+                                        <div class="col-lg-7">
+                                            <input type="text" ng-change="chassisNoChanged()" ng-model="parameters.searchString" class="form-control" placeholder="">
+                                        </div>
+                                        <button type="submit" class="btn btn-green col-lg-3" ng-click="GetSearchResult()">{{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3 ">
+                                <div class="pull-right">
+                                    <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+                                        <a class="btn btn-red" ng-click="openChassisDetails('-1', 'New')">{{'New' | translate}}</a>
+                                        <a class="btn btn-red alwaysEnabled" ng-click="ExportToExcel()" ng-disabled="chassisList.length == 0">{{'Export' | translate}}</a>
+                                    </fieldset>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="notificationMsg" class="notificationMsg">
+                        <div class="alert alert-success fade in" ng-show="deleteSuccess">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Success' | translate}}!</strong>{{'deleteChassisSuccessMsg' | translate}}.
+                        </div>
+                        <div class="alert alert-danger fade in" ng-show="deleteFailed">
+                            <a class="close" data-dismiss="alert">&times;</a>
+                            <strong>{{'Error' | translate}}!</strong>  {{errReturned}}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>{{'ChassisNumber' | translate}}</th>
+                                        <th>{{'EngineNumber' | translate}}</th>
+                                        <th>{{'MadeIn' | translate}}</th>
+                                        <th>{{'Model' | translate}}</th>
+                                        <th>{{'Color' | translate}}</th>
+                                        <th>{{'PoliceColor' | translate}}</th>
+                                        <th>{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr dir-paginate="chassis in chassisList | itemsPerPage: parameters.pageSize" total-items="totalCount" current-page="parameters.pageNumber">
+                                    <td><a class="gridLnk" ng-click="openChassisDetails(chassis.ChassisNumber, 'View')">{{chassis.ChassisNumber}}</a></td>
+                                    <td>{{chassis.EngineNumber}}</td>
+                                    <td>{{chassis.CountryCode}}{{chassis.CountryEngName}}{{chassis.CountryArbName}}</td>
+                                    <td>{{chassis.ModelYear}}</td>
+                                    <td><span ng-show="chassis.ColorCode != '0'">{{chassis.ColorCode}}</span> {{chassis.ColorEngName}} {{chassis.ColorArbName}}</td>
+                                    <td><span ng-show="chassis.PoliceColorCode != '0'">{{chassis.PoliceColorCode}}</span>{{chassis.PoliceColorEngName}}{{chassis.PoliceColorArbName}}</td>
+                                    <td>
+                                        <fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+
+                                            <a><i class="fa fa-edit" aria-hidden="true" title="{{'Edit' | translate}}" ng-click="openChassisDetails(chassis.ChassisNumber, 'Edit')"></i></a>
+                                            <a><i class="fa fa-trash" aria-hidden="true" title="{{'Delete' | translate}}" ng-click="deleteConfirm($index)"></i></a>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-show="chassisList == null || chassisList.length == 0"><td colspan="7">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12 ">
+                        <span class="col-md-4 pl-15" ng-show="chassisList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                        <div class="pull-right mr-10">
+                            <a class="btn btn-green" ui-sref="shipmentAndInvoice({'centerCode':centerCodeShipment, 'jobNumber': jobNoShipment,'tab':'shipmentdetails'})">{{'Back' | translate}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="chassisList == null || chassisList.length == 0">
+                    <dir-pagination-controls direction-links="true" boundary-links="true"
+                                             on-page-change="loadMoreRecords(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Chassis Details Section-->
+    <!-- Horizontal form modal -->
+    <div id="chassisModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">{{'ChasisDetails' | translate}}</h5>
+                </div>
+                <form id="frmchassisDetails" name="frmchassisDetails" action="#" class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'ChassisNo' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="chassisNo" type="text" restrict-space restrict-special-chars-exclude ng-model="chassisDetails.ChassisNumber" class="form-control" maxlength="30" ng-change="ValidateChassis()" tabindex="1" required ng-disabled="mode=='View'">
+                                            <div class="error-message" ng-show="!validChassis">{{'ChassisNoRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'MadeIn' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="lookupKeyDown($event,'MadeIn')" angucomplete-alt placeholder="{{'Countryph' | translate}}" class="col-md-10" ng-model="selectedMadeInModel"
+                                                 local-data="madeIn" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1"
+                                                 input-class="form-control" match-class="highlight" input-name="ddlMadeIn" id="MadeIn" selected-object="selectedMadeIn" disable-input="mode=='View'" tabindex="2" show-Title="true">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('MadeIn')"></i></a>
+                                            <span class="col-md-12 error-message" ng-show="!countryValid">{{'CountryRequired' | translate}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="col-lg-4"></div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group form-checkbox mt-10" ng-hide="true">
+                                                <div class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="chassisDetails.ChassisIssueFlag" ng-checked="chassisDetails.ChassisIssueFlag == 'Y'" ng-disabled="mode=='View'" tabindex="3">
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </div>
+                                                <label class="control-label col-lg-9">{{'ChassisIssueFlag' | translate}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'EngineNo' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="EngineNum" restrict-space restrict-special-chars-exclude type="text" ng-model="chassisDetails.EngineNumber" class="form-control" maxlength="30" ng-change="ValidateEngineNo()" ng-disabled="mode=='View'" tabindex="4">
+                                            <div class="error-message" ng-show="!validEngineNo">{{'EngineNoRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'ModelYear' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="modelYr" type="text" class="form-control" restrict-space only-digits ng-model="chassisDetails.ModelYear" maxlength="4" ng-change="ValidateModelYear()" ng-disabled="mode=='View'" tabindex="5">
+                                            <div class="error-message" ng-show="!validModelYr">{{'ModelYearInvalidMsg' | translate}}</div>
+                                            <div class="error-message" ng-show="!validModelYearAvail">{{'ModelYearRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <div class="col-lg-4">
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group form-checkbox mt-10">
+                                                <div class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="chassisDetails.VehicleSpecification" ng-checked="chassisDetails.VehicleSpecification == 'GCC'" ng-disabled="mode=='View'" tabindex="6">
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </div>
+                                                <label class="control-label col-lg-9">{{'GCCCompliant' | translate}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Color' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="lookupKeyDown($event,'Color')" id="Color" angucomplete-alt placeholder="{{'ColorNameph' | translate}}" field-required="true" class="col-md-10"
+                                                 local-data="color" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" ng-model="selectedColorCode"
+                                                 input-class="form-control" match-class="highlight" input-name="Color" selected-object="selectedColor" disable-input="mode=='View'" tabindex="7" show-Title="true">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Color')"></i></a>
+                                            <div class="col-md-12 error-message" ng-show="!colorValid">{{'ValidColor' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'PoliceColor' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="lookupKeyDown($event,'PoliceColor')" angucomplete-alt id="PoliceColorCode" placeholder="{{'PoliceColorNameph' | translate}}" ng-model="selectedPColor" class="col-md-10" search-str="selectedPColor" disable-input="mode=='View'"
+                                                 local-data="policeColor" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="1" input-class="form-control" match-class="highlight"
+                                                 input-name="PoliceColorCode" selected-object="selectedPoliceColor" tabindex="8" show-Title="true">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('PoliceColor')"></i></a>
+                                            <div class="col-md-12 error-message" ng-show="!validPoliceColor">{{'ValidPoliceColor' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="col-lg-4"></div>
+                                        <div class="col-lg-8">
+                                            <div class="form-group form-checkbox mt-10">
+                                                <div class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="chassisDetails.ReExportFlag" ng-checked="chassisDetails.ReExportFlag == 'Y'" ng-disabled="true" tabindex="9">
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </div>
+                                                <label class="control-label col-lg-9">{{'ReExport' | translate}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'BodyType' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="bodyLookupKeyDown($event)" class="col-md-10" angucomplete-alt id="BodyType" placeholder="{{'BodyType' | translate}}" ng-model="selectedBodyTypeModel" search-str="searchBodyTypeText" disable-input="mode=='View'"
+                                                 local-data="bodyTypes" search-fields="BodyCode,BodyEngName,BodyArbName" title-field="BodyCode,BodyEngName,BodyArbName" minlength="1"
+                                                 input-class="form-control" match-class="highlight" input-name="BodyType" selected-object="selectedBodyType" tabindex="10">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openBodyTypeLookup()"></i></a>
+                                            <div class="col-md-12 error-message" ng-show="!validBodyType">{{'InvalidSubTypeMsg' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'SubType' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="subTypeLookupKeyDown($event)" class="col-md-10" angucomplete-alt id="SubBodyType" placeholder="{{'SubTypeph' | translate}}" ng-model="selectedSubTypeModel" search-str="searchSubTypeText" disable-input="mode=='View'"
+                                                 local-data="subTypes" search-fields="SubTypeCode,SubTypeEngName,SubTypeArbName,BodyTypeCode,BodyTypeEngName,BodyTypeArbName,CategoryEngName,CategoryArbName" title-field="SubTypeCode,SubTypeEngName,SubTypeArbName,BodyTypeCode,BodyTypeEngName,BodyTypeArbName,CategoryEngName,CategoryArbName" minlength="1"
+                                                 input-class="form-control" match-class="highlight" input-name="SubBodyType" selected-object="selectedSubType" tabindex="10">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openSubTypeLookup()"></i></a>
+                                            <div class="col-md-12 error-message" ng-show="!validSubType">{{'InvalidSubTypeMsg' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'UAEID' | translate}}<span ng-show="UAEIDRequired">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="uaeId" type="text" class="form-control" ng-model="chassisDetails.UAEID" restrict-space only-Digits maxlength="15" ng-change="ValidateUAENo()" ng-disabled="mode=='View'" tabindex="11">
+                                            <div class="error-message" ng-show="!validUAENo">{{'UAENoRequired' | translate}}</div>
+                                            <div class="error-message" ng-show="!validEmiratesID">{{'ValidUAENoRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Cylinders' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlCylinder" ng-model="chassisDetails.Cylinders" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="12">
+                                                <option ng-selected="chassisDetails.Cylinders == x.Code" ng:repeat="x in cylinders" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.Cylinders == x.Code" ng:repeat="x in cylinders" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validCylinders">{{'CylinderRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Fuel' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <!--<select name="ddlGateSelection" class="form-control select" ng-model="chassisDetails.PatrolType"
+                                            ng-options="fuelType.Code as (fuelType.Code + '  ' + fuelType.EnglishName + '   ' + fuelType.ArabicName) for fuelType in fuel" ng-disabled="mode=='View'" tabindex="13"></select>-->
+                                            <select name="ddlFuel" ng-model="chassisDetails.PatrolType" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="13">
+                                                <option ng-selected="chassisDetails.PatrolType == x.Code" ng:repeat="x in fuel" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.PatrolType == x.Code" ng:repeat="x in fuel" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validFuel">{{'FuelRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'TrafficNo' | translate}}<span ng-show="trafficNoRequired">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="trafficNo" type="text" class="form-control" ng-model="chassisDetails.TrafficNumber" restrict-space only-digits maxlength="10" ng-change="ValidateTrafficNo()" ng-disabled="mode=='View'" tabindex="14">
+                                            <div class="error-message" ng-show="!validTrafficNo">{{'TrafficNoRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Payload' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="payload" type="text" restrict-space only-digits ng-model="chassisDetails.PayLoad" class="form-control" maxlength="6" ng-change="ValidatePayLoad()" ng-disabled="mode=='View'" tabindex="15">
+                                            <div class="error-message" ng-show="!validPayload">{{'PayLoadRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Doors' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlDoors" ng-model="chassisDetails.NumberOfDoors" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="16">
+
+                                                <!--<option value="">--{{'SelectType' | translate}}--</option>-->
+                                                <option ng-selected="chassisDetails.NumberOfDoors == x.Code" ng:repeat="x in doors" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.NumberOfDoors == x.Code" ng:repeat="x in doors" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validDoors">{{'DoorsRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4">{{'Wheels' | translate}}<span>*</span></label>
+                                        <div class="col-md-8">
+                                            <input name="wheels" type="text" class="form-control" ng-model="chassisDetails.NumberOfWheels" restrict-space only-digits maxlength="3" ng-change="ValidateWheels()" ng-disabled="mode=='View'" tabindex="17">
+                                            <div class="error-message" ng-show="!validWheels">{{'WheelsRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Weight' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="weight" type="text" ng-model="chassisDetails.Weight" class="form-control" restrict-space only-digits maxlength="6" ng-change="ValidateWeight()" ng-disabled="mode=='View'" tabindex="18">
+                                            <div class="error-message" ng-show="!validWeight">{{'WeightRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Axils' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlAxils" ng-model="chassisDetails.NumberOfAxils" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="19">
+
+                                                <!--<option value="">--{{'SelectType' | translate}}--</option>-->
+                                                <option ng-selected="chassisDetails.NumberOfAxils == x.Code" ng:repeat="x in axils" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.NumberOfAxils == x.Code" ng:repeat="x in axils" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validAxils">{{'AxilsRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'EnginePower' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlEngine" ng-model="chassisDetails.EnginePower" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="20">
+
+                                                <!--<option value="">--{{'SelectType' | translate}}--</option>-->
+                                                <option ng-selected="chassisDetails.EnginePower == x.Code" ng:repeat="x in engine" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.EnginePower == x.Code" ng:repeat="x in engine" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validEnginePower">{{'EnginePowerRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Passengers' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="passengers" type="text" ng-model="chassisDetails.NumberOfChairs" class="form-control" restrict-space only-digits maxlength="3" ng-change="ValidatePassengers()" ng-disabled="mode=='View'" tabindex="21">
+                                            <div class="error-message" ng-show="!validPassengers">{{'PassengersCount' | translate}}</div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Transmission' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlTransmission" ng-model="chassisDetails.TransmissionType" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="22">
+                                                <option ng-selected="chassisDetails.TransmissionType == x.Code" ng:repeat="x in transmission" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.TransmissionType == x.Code" ng:repeat="x in transmission" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validTransmission">{{'TransmissionRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Steering' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <select name="ddlSteering" ng-model="chassisDetails.SteeringType" class="form-control select selectNw" ng-disabled="mode=='View'" tabindex="23">
+
+                                                <!--<option value="">--{{'SelectType' | translate}}--</option>-->
+
+                                                <option ng-selected="chassisDetails.SteeringType == x.Code" ng:repeat="x in steering" ng-if="selectedLanguage == 'en'" value="{{x.Code}}">{{x.EnglishName}}</option>
+                                                <option ng-selected="chassisDetails.SteeringType == x.Code" ng:repeat="x in steering" ng-if="selectedLanguage == 'ae'" value="{{x.Code}}">{{x.ArabicName}}</option>
+                                            </select>
+                                            <div class="error-message" ng-show="!validSteering">{{'SteeringRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-8">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">{{'AgentRemark' | translate}}</label>
+                                        <div class="col-lg-10" ng-disabled="mode=='View'">
+                                            <div ng-show="selectedLanguage == 'en'" angucomplete-alt placeholder="{{'Remarkph' | translate}}" ng-model="selectedAgentRemarkModel" disable-input="mode=='View'"
+                                                 local-data="agentRemark" search-fields="EnglishName,ArabicName" title-field="EnglishName" minlength="1" maxlength="50"
+                                                 input-class="form-control" match-class="highlight" selected-object="selectedAgentRemark" show-title="true" tabindex="24">
+                                            </div>
+                                            <div ng-show="selectedLanguage == 'ae'" angucomplete-alt placeholder="{{'Remarkph' | translate}}" ng-model="selectedAgentRemarkModel" disable-input="mode=='View'"
+                                                 local-data="agentRemark" search-fields="EnglishName,ArabicName" title-field="ArabicName" minlength="1" maxlength="50"
+                                                 input-class="form-control" match-class="highlight" selected-object="selectedAgentRemark" show-title="true" tabindex="25">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Currency' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <div ng-keydown="lookupKeyDown($event,'Currency')" angucomplete-alt placeholder="{{'Currencyph' | translate}}" class="col-md-10" ng-model="selectedCurrencyModel" field-required="true"
+                                                 local-data="currency" search-fields="Code,NameEnglish,NameArabic" title-field="Code,NameEnglish,NameArabic" minlength="1" show-Title="true"
+                                                 input-class="form-control" match-class="highlight" input-name="ddlCurrency" id="Currency" selected-object="selectedCurrency" disable-input="mode=='View'" tabindex="26">
+                                            </div>
+                                            <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openLookup('Currency')"></i></a>
+                                            <span class="col-md-12 error-message" ng-show="!validCurrency">{{'ValidCurrency' | translate}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12 form-horizontal">
+                                <div class="col-md-8">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">{{'VehicleRemark' | translate}}</label>
+                                        <div class="col-lg-10">
+                                            <div ng-show="selectedLanguage == 'en'" angucomplete-alt placeholder="{{'Remarkph' | translate}}" ng-model="selectedVehicleRemarksModel" disable-input="mode=='View'"
+                                                 local-data="vehicleRemark" search-fields="Code,EnglishName,ArabicName" title-field="EnglishName" minlength="1" maxlength="100"
+                                                 input-class="form-control" match-class="highlight" selected-object="selectedVehicleSpecification" show-title="true" tabindex="27">
+                                            </div>
+                                            <div ng-show="selectedLanguage == 'ae'" angucomplete-alt placeholder="{{'Remarkph' | translate}}" ng-model="selectedVehicleRemarksModel" disable-input="mode=='View'"
+                                                 local-data="vehicleRemark" search-fields="Code,EnglishName,ArabicName" title-field="ArabicName" minlength="1" maxlength="100"
+                                                 input-class="form-control" match-class="highlight" selected-object="selectedVehicleSpecification" show-title="true" tabindex="27">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'PriceCIF' | translate}}<span>*</span></label>
+                                        <div class="col-lg-8">
+                                            <input name="priceCIF" placeholder="999,999,999,999.999" type="text" class="form-control" ng-model="chassisDetails.PriceCIF" ng-change="ValidatePriceCIF()"
+                                                   valid-number allow-decimal="true" allow-negative="false" pre-decimal-upto="12" decimal-upto="3" maxlength="19" ng-disabled="mode=='View'" tabindex="28">
+                                            <div class="error-message" ng-show="!validPriceCIF">{{'PriceCIFRequired' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-12 ">
+                                <div class="pull-right mr-10 mt-20">
+                                    <button type="button" class="btn btn-default" ng-click="closeModalPopUp()" tabindex="30">{{'Cancel' | translate}}</button>
+                                    <button type="button" class="btn btn-green" ng-click="SaveChassis()" ng-hide="mode=='View'" tabindex="29">{{'Save' | translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal" id="bodyTypeLookup" role="dialog">
+                    <div style="width:50%" class="modal-dialog">
+                        <div style="min-height:200px" class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" ng-click="closeBodyTypeLookup()">&times;</button>
+                                <h5 class="modal-title bold">{{'BodyType' | translate}}</h5>
+                            </div>
+                            <div style="overflow:auto" class="modal-body">
+                                <input id="searchBodyTypeText" type="text" ng-model="searchBodyTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                                <div class="table-responsive mb20">
+                                    <table class="table table-bordered lookupTable">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">{{'Code'|translate}}</th>
+                                                <th>{{'Description'|translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                            <tr ng-click="setBodyType(bodyTypeItem)" dir-paginate="bodyTypeItem in bodyTypes | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="bodyTypePager">
+                                                <td>
+                                                    {{bodyTypeItem.BodyCode}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="language=='en'">
+                                                    {{bodyTypeItem.BodyEngName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="language=='ae'">
+                                                    {{bodyTypeItem.BodyArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="bodyTypes == null">
+                                                <td colspan="10">
+                                                    {{'NoItems'|translate}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="bodyTypes == null">
+                                    <dir-pagination-controls pagination-id="bodyTypePager" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal" id="subTypeLookup" role="dialog">
+                    <div style="width:50%" class="modal-dialog">
+                        <div style="min-height:200px" class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" ng-click="closeSubTypeLookup()">&times;</button>
+                                <h5 class="modal-title bold">{{'SubType' | translate}}</h5>
+                            </div>
+                            <div style="overflow:auto" class="modal-body">
+                                <input id="searchSubTypeText" type="text" ng-model="searchSubTypeText" class="form-control disabledInputWithBorder col-md-12" />
+                                <div class="table-responsive mb20">
+                                    <table class="table table-bordered lookupTable">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">{{'Code'|translate}}</th>
+                                                <th>{{'Description'|translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!--ShortHarmCode,HarmonizeEngName,HarmonizeArbName-->
+                                            <tr ng-click="setSubType(subTypeItem)" dir-paginate="subTypeItem in subTypes | itemsPerPage: 10" current-page="lookUpCurrentPage" pagination-id="subTypePager">
+                                                <td>
+                                                    {{subTypeItem.SubTypeCode}}
+                                                </td>
+                                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">
+                                                    {{subTypeItem.SubTypeEngName + " " + subTypeItem.SubTypeArbName}}<span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="subTypes == null">
+                                                <td colspan="10">
+                                                    {{'NoItems'|translate}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 pagination pl25 mb20" ng-hide="subTypes == null">
+                                    <dir-pagination-controls pagination-id="subTypePager" direction-links="true" boundary-links="true">
+                                    </dir-pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /horizontal form modal -->
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+</div>

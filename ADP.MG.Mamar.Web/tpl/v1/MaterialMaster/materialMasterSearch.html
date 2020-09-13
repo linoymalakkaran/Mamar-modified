@@ -1,0 +1,266 @@
+﻿<div class="col-md-12">
+    <style>
+        /* clearable_diff text inputs etc*/
+        .clearable_diff{
+          position: relative;
+          /* display: inline-block; */
+          /* width: 100%; */
+        }
+        .clearable_diff input[type=text]{
+          padding-right: 24px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .clearable_diff__clear{
+          position: absolute;
+          right:3px; 
+          top:0;
+          padding: 0 8px;
+          font-style: normal;
+          font-size: 2.2em;
+          user-select: none;
+          cursor: pointer;
+        }
+    </style>
+    <div class="row g-grey-shade">
+        <div class="col-md-12 sub-title">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <h6>
+                        {{'Find' | translate }}
+                    </h6>
+                    <i
+                        style="margin-left: 3px;"
+                        class="fa fa-info-circle"
+                        data-toggle="tooltip"
+                        ng-show="language == 'en'"
+                        data-placement="right"
+                        title=""
+                        data-original-title="{{'SearchWithBelowDetails' | translate}}"
+                    ></i>
+                    <i
+                        class="fa fa-info-circle"
+                        data-toggle="tooltip"
+                        ng-show="language == 'ae'"
+                        data-placement="left"
+                        title=""
+                        data-original-title="{{'SearchWithBelowDetails' | translate}}"
+                    ></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 form-horizontal">
+            <div class="form-group">
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'HarmonizedCode'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <div class="col-md-10 clearable_diff" ng-mouseover="searchHarmCodeObjMouseOver = true" ng-mouseleave="searchHarmCodeObjMouseOver = false">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="searchHarmCodeObjId"
+                                placeholder="{{'Find'| translate}}"
+                                title="{{selectedHarmCodeSearchTitle}}"
+                                ng-model="materialSearchModel.selectedHarmCodeObj.HarmonizedCode"
+                                ng-trim="false"
+                                maxlength="3"
+                                ng-click="openHarmonizeLookup('search',null)"
+                                ng-keydown="lookupKeyDown($event,'HarmonizedCode','search',null)"
+                            >
+                            <i ng-show="searchHarmCodeObjMouseOver" ng-click="materialSearchModel.selectedHarmCodeObj  = {};selectedHarmCodeSearchTitle = '';" class="clearable_diff__clear">&times;</i>
+                        </div>
+                        <a class="col-md-1 mt-10">
+                            <i
+                                class="fa fa-search"
+                                aria-hidden="true"
+                                title="{{'Click' | translate}}"
+                                ng-click="openHarmonizeLookup('search',null)"
+                            ></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'JobNumber'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <input
+                            ng-disabled="true"
+                            type="search"
+                            id="JobNumberText"
+                            value="{{materialSearchModel.JobNumber}}"
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            {{'MaterialCategory'|translate}}
+                        </label>
+                        <div class="col-md-8">
+                            <div class="col-md-10 clearable_diff" ng-mouseover="searchMaterialCategoryMouseOver = true" ng-mouseleave="searchMaterialCategoryMouseOver = false">
+                                <input
+                                    id="searchMaterialCategoryId"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="{{'Find'| translate}}"
+                                    title="{{selectedMaterialCategoryCombinedSearchTitle}}"
+                                    ng-model="materialSearchModel.selectedMaterialCategoryObj.CategoryID"
+                                    ng-trim="false"
+                                    maxlength="3"
+                                    ng-click="openMaterialCategoryLookup('search',null)"
+                                    ng-keydown="lookupKeyDown($event,'MaterialCategory','search',null)"
+                                >
+                                <i ng-show="searchMaterialCategoryMouseOver" ng-click="materialSearchModel.selectedMaterialCategoryObj  = {};selectedMaterialCategoryCombinedSearchTitle ='';" class="clearable_diff__clear">
+                                    &times;
+                                </i>
+                            </div>
+                            <a class="col-md-1 mt-10">
+                                <i
+                                    class="fa fa-search"
+                                    aria-hidden="true"
+                                    title="{{'Click' | translate}}"
+                                    ng-click="openMaterialCategoryLookup('search',null)"
+                                ></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'OrginCountry'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <div class="col-md-10 clearable_diff" ng-mouseover="searchCountryMouseOver = true" ng-mouseleave="searchCountryMouseOver = false">
+                            <input
+                                id="searchOrginCountryId"
+                                type="text"
+                                ng-model="materialSearchModel.selectedSearchOrginCountry.Code"
+                                title="{{selectedOrginCountryCombinedSearchTitle}}"
+                                placeholder="{{'Find'|translate}}"
+                                class="form-control"
+                                ng-click="openOriginCountryLookup('search',null)"
+                                ng-keydown="lookupKeyDown($event,'OriginCountry','search',null)"
+                            >
+                            <i ng-show="searchCountryMouseOver" ng-click="materialSearchModel.selectedSearchOrginCountry  = {};selectedOrginCountryCombinedSearchTitle = '';" class="clearable_diff__clear">
+                                &times;
+                            </i>
+                        </div>
+                        <a class="col-md-1 mt-10">
+                            <i
+                                class="fa fa-search"
+                                aria-hidden="true"
+                                title="{{'Click' | translate}}"
+                                ng-click="openOriginCountryLookup('search',null)"
+                                ng-keydown="lookupKeyDown($event,'OriginCountry','search',null)"
+                            ></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12  form-horizontal">
+            <div class="form-group">
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'MaterialId'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <input
+                            ng-model="materialSearchModel.MaterialID"
+                            type="search"
+                            placeholder="{{'MaterialId'|translate}}"
+                            class="form-control"
+                            maxlength="3"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'CaseNo'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <input
+                            ng-model="materialSearchModel.CaseNo"
+                            type="search"
+                            placeholder="{{'CaseNo'|translate}}"
+                            class="form-control"
+                            maxlength="500"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">
+                        {{'Uno'|translate}}
+                    </label>
+                    <div class="col-md-8">
+                        <input
+                            ng-model="materialSearchModel.Uno"
+                            maxlength="50"
+                            type="search"
+                            placeholder="{{'Uno'|translate}}"
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label col-md-4">{{'PermitNumber'|translate}}</label>
+                    <div class="col-md-8">
+                        <input
+                            ng-model="materialSearchModel.permitNumber"
+                            maxlength="20"
+                            maxlength="20"
+                            type="search"
+                            placeholder="{{'PermitNumber'|translate}}"
+                            class="form-control"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pull-right">
+        <button
+            style="border-right-color: white;"
+            type="button"
+            class="btn btn-clear"
+            ng-click="gotoHazardousMaterialDetails()"
+        >
+            {{'Back' | translate}}
+        </button>
+        <button
+            style="border-right-color: white;"
+            type="button"
+            class="btn btn-clear"
+            ng-click="resetSearchForm()"
+        >
+            {{'Clear' | translate}}
+            <i class="fal fa-times-square" aria-hidden="true"></i>
+        </button>
+        <button
+            type="button"
+            tabindex="1"
+            class="btn btn-find"
+            ng-click="searchMaterialMaster()"
+        >
+            {{'Find' | translate}}
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="col-md-12"></div>
+    <script>
+        $( document ).ready(function() {
+            $("[data-toggle=tooltip]").tooltip();
+            $("#alpaca-select2").alpaca({
+                "postRender": function (control) {
+                    $('.select2').select2({
+                        minimumResultsForSearch: Infinity
+                    });
+                }
+            });
+        });
+    </script>
+</div>

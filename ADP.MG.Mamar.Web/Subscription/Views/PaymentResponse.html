@@ -1,0 +1,28 @@
+﻿<div ng-app="mamarApp" ng-controller="subscriptionPayController">
+    <div class="container">
+        <div class="row">
+            <div class="card-title" ng-show="status == 'SUCCESS'">
+                <div class="col-md-12" >
+                    <h1>Payment Successful</h1>
+                </div>
+                <div style="font-size: 14px;font-weight: 500;line-height: 22px;">
+                    <div class="col-md-12" style="line-height: 3;">
+                        Thank you for subscribing to Maqta services
+                    </div>
+                    <div class="col-md-12" style="line-height: 3;">
+                         Payment reference number is :<b>{{onlineRefNo}}</b>
+                    </div>
+                    <div class="col-md-12" style="line-height: 3;">
+                        <a ng-click="downloadReport()">Click to download receipt</a>
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-12 card-title" ng-show="status != 'SUCCESS'">
+                    <h1> Payment Failed</h1>
+                    <h4><a ng-click="redirectToSubscription()">Kindly click here to resubscribe.</a> </h4>
+                </div>
+            </div>
+    </div>
+</div>
+
+<link href="../../Subscription/css/subscription.css" rel="stylesheet" />

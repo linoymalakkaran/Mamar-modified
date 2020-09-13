@@ -1,0 +1,140 @@
+﻿<div class="modal-header">
+    <button title="{{'Close'|translate}}" ng-click="closeModal()" type="button" class="close">&times;</button>
+    <h5 class="modal-title">{{'Seals'|translate}}</h5>
+</div>
+<!--<form action="#" class="form-horizontal">-->
+<fieldset ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser')">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <button ng-click="AddNewClick();" title="{{ closedNew ? ('AddNew'|translate) : ('RowAddedAlready'|translate)}}"
+                        ng-disabled="addingNew==true" type="button" class="btn btn-green pull-right">
+                    {{'AddNew'|translate}}
+                </button>
+            </div>
+        </div>
+        <div style="padding-top:10px" class="row mt10">
+            <div class="col-md-12">
+                <div ng-show="closingEdit && RecordToEdit.SealNumber!=sealModel.SealNumber" class="alert alert-warning fade in">
+                    {{'DiscardConfirm'|translate}}<a style="font-weight:bold" ng-click="discardEdit()">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="closingEdit=false;"> {{'No'|translate}}</a>
+                </div>
+                <div ng-show="closingNew && RecordToSave.SealNumber" class="alert alert-warning fade in">
+                    {{'SaveConfirm'|translate}}<a style="font-weight:bold" ng-click="Message='';closedNew=true;saveSeal();addingNew=false;closingNew=false;RecordToSave.SealNumber=''">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="Message='';RecordToSave.OldSealNumber='';dataEnteredForNew=false;closedNew=true;addingNew=false;closingNew=false;"> {{'No'|translate}} </a>
+                </div>
+                <div ng-show="isGoingToDelete==true" class="alert alert-warning fade in">
+                    {{'DeleteConfirm'|translate}}<a style="font-weight:bold" ng-click="deleteConfirmed();">
+                        {{'Yes'|translate}}
+                    </a> | <a style="font-weight:bold" ng-click="Message='';isGoingToDelete=false;"> {{'No'|translate}} </a>
+                </div>
+                <div ng-class="Response.IsValid?'alert alert-success':'alert alert-danger'" class="alert alert-success" ng-show="Response.Messages">
+                   {{Response.Messages}}
+                </div>
+            </div>
+        </div>
+        <div  style="overflow-x: visible;" class="table-responsive mb20">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{'Seals'|translate}}</th>
+                        <th style="width:20%"> {{'Action'|translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-show="addingNew && !(closingNew && !RecordToEdit.OldSealNumber)">
+                        <td>
+                            <div class="col-sm-12">
+                                <div id="seal" ng-keydown="sealKeyDown($event)" class="col-md-10" title="{{selectedSealModel}}" angucomplete-alt placeholder="{{'EnterNewSeal' | translate}}" ng-model="selectedSealModel"
+                                     local-data="seals" search-fields="SealNumber" title-field="SealNumber" minlength="1" search-str="searchSealText" show-title="true"
+                                     input-class="form-control" match-class="highlight" input-name="ddlSeals" selected-object="selectedSeal" input-changed="onSealNumberChange">
+                                </div> 
+                                <a class="col-md-2 mt-10"><i class="fa fa-search" aria-hidden="true" title="{{'Click' | translate}}" ng-click="openSealLookup()"></i></a>
+                            </div>
+                            <span class="validationmsg  col-sm-6" ng-show="invalidSeal">{{'InvalidSeal'|translate}}</span>
+                            <span class="validationmsg  col-sm-6" ng-show="InvalidChargeType">{{'InvalidChargeType'|translate}}</span>
+                            <!--<input class="arrowLessNumber"  placeholder="{{'EnterNewSeal'|translate}}" ng-change="dataEnteredForNew=true;closingNew=false;" focus-on-condition="addingNew"
+                                   ng-model="RecordToEdit.SealNumber;" maxlength="70" style="width:100%" type="number" />-->
+                        </td>
+                        <td>
+                            <a ng-show="selectedSeal" ng-click="saveSeal();closedNew=true" title="{{'SaveSeal'|translate}}"><i class="fa fa-check"></i></a>
+                            <a title="{{'Close'|translate}}" ng-click="closingNew=true;addingNew=false;closedNew=false;"><i class="fa fa-close"></i></a>
+                        </td>
+                    </tr>
+                    <tr dir-paginate="sealModel in SealInfo | itemsPerPage: 10" total-items="totalCount">
+                        <td>
+                            <span ng-hide="EditingRecord[sealModel.SealNumber]==true">{{sealModel.SealNumber}}</span>
+                            <input class="arrowLessNumber" placeholder="{{'EnterNewSeal'|translate}}" focus-on-condition="RecordToEdit.OldSealNumber==sealModel.SerialNumber" maxlength="70"
+                                   style="width:100%" type="number" ng-model="RecordToEdit.SealNumber" ng-show="EditingRecord[sealModel.SealNumber]==true" />
+                        </td>
+                        <td ng-hide="RecordToEdit.OldSealNumber==sealModel.SealNumber">
+                            <!--<a title="{{'EditSeal'|translate}}" ng-click="editClick(sealModel)">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </a>-->
+                            <a ng-disabled="isGoingToDelete" title="{{'DeleteSeal'|translate}}" ng-click="deletingDataModel=sealModel;deleting=true;deleteSeal(deletingDataModel);">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td ng-show="RecordToEdit.OldSealNumber==sealModel.SealNumber">
+                            <a ng-show="sealModel.SealNumber" ng-click="saveSeal(sealModel,true);RecordToEdit.OldSerialNumber=null;Message='';" title="{{'SaveSeal'|translate}}"><i class="fa fa-check"></i></a>
+                            <a title="{{'Close'|translate}}" ng-click="Message='';closingEditMode()"><i class="fa fa-close"></i></a>
+                        </td>
+                    </tr>
+                    <tr ng-show="SealInfo == null && !addingNew">
+                        <td colspan="2">
+                            {{'NoItems'|translate}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12 pagination pl25 mb20" ng-hide="existingSeals == null">
+            <dir-pagination-controls direction-links="true" boundary-links="true"
+                                     on-page-change="loadMoreRecords(newPageNumber)">
+            </dir-pagination-controls>
+        </div>
+    </div>
+</fieldset>
+<div class="modal-footer">
+    <button type="button" ng-click="closeModal()" title="{{'Close'|translate}}" class="btn btn-green pull-right">{{'Close'|translate}}</button>
+    <!--<button type="submit" class="btn btn-green">Submit</button>-->
+</div>
+<div class="modal" id="sealLookup" role="dialog">
+    <div style="width:30%" class="modal-dialog">
+        <div style="min-height:200px" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h5 class="modal-title bold">{{'Seal' | translate}}</h5>
+            </div>
+            <div style="overflow:auto" class="modal-body">
+                <input id="searchSealText" type="text" ng-model="searchSealText" class="form-control disabledInputWithBorder col-md-12" />
+                <div class="table-responsive mb20">
+                    <table class="table table-bordered lookupTable">
+                        <thead>
+                            <tr>
+                                <th>{{'SealNumber'|translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-class="{selected: item.SealNumber==sealItemSelected.SealNumber}"  ng-click="setSeal(item)"  dir-paginate="item in seals | itemsPerPage: 10" current-page="sealCurrentPage" pagination-id="sealPager">
+                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;">{{item.SealNumber}} <span class="showOnHover pull-right"><a>{{'ClickToSelect'|translate}}<i class="fas fa-check"></i></a></span></td>
+                            </tr>
+                            <tr ng-show="seals == null">
+                                <td colspan="10">
+                                    {{'NoItems'|translate}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 pagination pl25 mb20" ng-hide="seals == null">
+                    <dir-pagination-controls pagination-id="sealPager" direction-links="true" boundary-links="true">
+                    </dir-pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--</form>-->

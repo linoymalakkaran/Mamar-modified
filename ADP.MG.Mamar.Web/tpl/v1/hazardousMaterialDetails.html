@@ -1,0 +1,338 @@
+﻿<style>
+    #frmAddEditContainer .control-label {
+        font-size: 14px !important;
+    }
+
+    .clear {
+        padding-top: 4%;
+    }
+
+    #modalContainer {
+        padding-top: 6%;
+    }
+    .no-records {
+        background-color: #eaeeef;
+        color: darkgray;
+    }
+
+    .modal-header {
+        padding: 12px;
+    }
+
+    .error {
+        display: inline-block;
+        color: red;
+    }
+    .customdisabled{
+        cursor: not-allowed;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="trans-list-head">{{'MaterialDetails' | translate}}</div>
+            <div class="panel panel-flat bdr bdrt pb20 mt-15">
+                <div class="panel-body">
+                    <div class="col-md-12  mt20" ng-disabled="$storage.get('globalDisableFlag') || $storage.get('voucherFlag') || $storage.get('isPcsSuperUser') ">
+                        <div class="alert alert-success" ng-show="savedSuccess && !$scope.isEditing">
+                            <span>{{ Message|translate}}</span>
+                            <a ng-click="savedSuccess=false" class="close alwaysEnabled" style="font-size:19px">&times;</a>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'HarmonizedCode'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            disabled
+                                            ng-show="isEditing"
+                                            value="{{ConcatenatedHarmonized}}"
+                                            type="text"
+                                            placeholder="{{'Weight'|translate}}"
+                                            class="col-md-11"
+                                        >
+                                        <div
+                                            ng-keydown="lookupKeyDown($event,'HarmonizedCode')"
+                                            ng-show="!isEditing"
+                                            angucomplete-alt
+                                            id="harmonizedLookup"
+                                            placeholder="{{'HarmonizedLookupNameph' | translate}}"
+                                            ng-model="selectedHarmCode"
+                                            class="col-md-10"
+                                            search-str="harmCodeSearch"
+                                            local-data="harmonizedCodes"
+                                            search-fields="HarmonizeCodeShort,HarmonizeEngName,HarmonizeArbName"
+                                            show-title="true"
+                                            minlength="1"
+                                            title-field="HarmonizeCodeShort,HarmonizeEngName,HarmonizeArbName"
+                                            input-class="form-control"
+                                            match-class="highlight"
+                                            input-name="harmonizedLookup"
+                                            selected-object="selectedHarmCodeObj"
+                                            input-changed="harmonizedCodeChanged"
+                                        ></div>
+                                        <a class="col-md-1 mt-10">
+                                            <i
+                                                class="fa fa-search"
+                                                aria-hidden="true"
+                                                title="{{'Click' | translate}}"
+                                                ng-click="openLookup('HarmonizedCode')"
+                                            ></i>
+                                        </a>
+                                    </div>
+                                    <span class="control-label  col-lg-3"></span>
+                                    <span class="validationmsg  col-lg-9" ng-show="InvalidHarmonizedCode">{{'InvalidHarmonizedCode'|translate}}</span>
+                                    <span class="validationmsg  col-sm-6" ng-show="HarmonizedCodeRequired">{{'HarmonizedCodeRequired'|translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'Weight'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            disabled
+                                            ng-model="RecordToEdit.Weight"
+                                            type="text"
+                                            placeholder="{{'Weight'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-4">
+                                        {{'GrossWeight'|translate}}
+                                    </label>
+                                    <div class="col-lg-8">
+                                        <input
+                                            disabled
+                                            ng-model="RecordToEdit.Gross"
+                                            type="text"
+                                            placeholder="{{'GrossWeight'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12  form-horizontal">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">
+                                        {{'MaterialId'|translate}}
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <div class="col-md-10">
+                                            <input
+                                                readonly
+                                                type="text"
+                                                ng-disabled="!getDisableStatus()"
+                                                id="materialText"
+                                                value="{{ConcatenatedMaterial}}"
+                                                ng-focus="openMaterialLookup();"
+                                                class="form-control"
+                                            >
+                                        </div>
+                                        <a
+                                            title="{{'AddNewMaterialMaster' | translate}}"
+                                            ng-click="GoToMaterialMaster()"
+                                            ng-class="{customdisabled: !getDisableStatus()}"
+                                            class="col-md-1 mt-10"
+                                        >
+                                            <i ng-class="{'fa-plus-circle-disable': !getDisableStatus() }" class="fa fa-plus-circle" aria-hidden="true"></i>
+                                        </a>
+                                        <!-- <a
+                                            ng-if="getDisableStatus()"
+                                            ui-sref="materialsMaster(stateParams)"
+                                            target="_blank"
+                                            class="col-md-1 mt-10"
+                                        >
+                                            <i class="fa fa-plus-circle" aria-hidden="true" title="{{'AddNew' | translate}}"></i>
+                                        </a> -->
+                                        <!-- <a ng-if="getDisableStatus()" ng-click="GoToMaterialMaster()" class="col-md-1 mt-10">
+                                            <i class="fa fa-plus-circle" aria-hidden="true" title="{{'AddNewMaterialMaster' | translate}}"></i>
+                                        </a> -->
+                                    </div>
+                                    <span class="control-label  col-lg-3"></span>
+                                    <span class="validationmsg col-lg-9" ng-show="InvalidMaterialType">{{'InvalidMaterialType'|translate}}</span>
+                                    <span class="validationmsg  col-sm-6" ng-show="MaterialRequired">{{'MaterialRequired'|translate}}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'Amount'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            disabled
+                                            ng-model="RecordToEdit.Amount"
+                                            type="text"
+                                            placeholder="{{'Amount'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-4">{{'OrginCountry'|translate}}</label>
+                                    <div class="col-lg-8">
+                                        <input
+                                            disabled
+                                            ng-model="RecordToEdit.CountryCode"
+                                            type="text"
+                                            placeholder="{{'OrginCountry'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'CommId'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            disabled
+                                            ng-model="RecordToEdit.ComID"
+                                            type="text"
+                                            placeholder="{{'CommId'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'PermitNumber'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            ng-model="RecordToEdit.PermitNumber"
+                                            maxlength="20"
+                                            type="text"
+                                            placeholder="{{'PermitNumber'|translate}}"
+                                            class="form-control"
+                                        >
+                                        <span class="validationmsg  col-sm-6" ng-show="PermitNumberRequired">{{'PermitNumberRequired'|translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'GoodsClassification'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            ng-model="RecordToEdit.GoodsClasssification"
+                                            maxlength="500"
+                                            type="text"
+                                            placeholder="{{'GoodsClassification'|translate}}"
+                                            class="form-control"
+                                        >
+                                        <span class="validationmsg  col-sm-6" ng-show="GoodsClassificationRequired">{{'GoodsClassificationRequired'|translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label style="font-weight:bold" class="control-label col-lg-3">{{'Description'|translate}}</label>
+                                    <div class="col-lg-9">
+                                        <input
+                                            ng-model="RecordToEdit.MaterialDescription"
+                                            maxlength="500"
+                                            type="text"
+                                            placeholder="{{'Description'|translate}}"
+                                            class="form-control"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pull-right mr-10">
+                            <a class="btn btn-green alwaysEnabled" ng-click="saveHazardousMaterial()">
+                                <span ng-if="!isEditing">{{'Save' | translate}}</span>
+                                <span ng-if="isEditing">{{'Update' | translate}}</span>
+                            </a>
+                        </div>
+                        <div class="pull-right mr-10">
+                            <a class="btn btn-green alwaysEnabled" ng-click="GoToHazardousMaterial()">{{'Back' | translate}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="materialLookup" role="dialog">
+        <div class="modal-dialog">
+            <div style="min-height:200px" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title bold">{{'MaterialLookup' | translate}}</h5>
+                </div>
+                <div style="overflow:auto" class="modal-body">
+                    <input
+                        id="searchText"
+                        type="text"
+                        ng-model="searchText"
+                        ng-change="filterMaterialRecordsClientSide();"
+                        class="form-control disabledInputWithBorder col-md-12"
+                    >
+                    <div class="table-responsive mb20">
+                        <table class="table table-bordered lookupTable">
+                            <thead>
+                                <tr>
+                                    <th>{{'MaterialId'|translate}}</th>
+                                    <th>{{'MaterialName'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    ng-class="{selected: material.ScientificNameEng==RecordToEdit.MaterialDescription}"
+                                    ng-click="setMaterialType(material)"
+                                    dir-paginate="material in materialTypeFiltered | itemsPerPage: 10"
+                                    pagination-id="materialTypePager"
+                                >
+                                    <td>
+                                        {{material.SubstanceID}}
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='en'">
+                                        {{material.ScientificNameEng}}
+                                        <span class="showOnHover pull-right">
+                                            <a>
+                                                {{'ClickToSelect'|translate}}
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                    <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;white-space:normal;" ng-show="languageSelected=='ae'">
+                                        {{material.ScientificNameArb}}
+                                        <span class="showOnHover pull-right">
+                                            <a>
+                                                {{'ClickToSelect'|translate}}
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="materialTypeFiltered == null">
+                                    <td colspan="10">
+                                        {{'NoItems'|translate}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20" ng-hide="materialTypeFiltered == null">
+                        <dir-pagination-controls pagination-id="materialTypePager" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+    <div ng-include="'../tpl/LookUpTemplate.html'"></div>
+</div>

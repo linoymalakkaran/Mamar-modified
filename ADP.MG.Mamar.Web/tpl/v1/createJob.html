@@ -1,0 +1,763 @@
+﻿<style>
+    .selectNw {
+        width: 99% !important;
+    }
+
+    .sweet-alert button.cancel {
+        background: #BAA983 !important;
+        color: #fff;
+    }
+
+    .sweet-alert button.confirm {
+        color: #fff;
+    }
+
+    .white {
+        color: white !important;
+        /*border-bottom: 1px solid #BBB;*/
+    }
+
+    .fa-file-pdf-o {
+        color: orangered;
+    }
+</style>
+<div id="createJobDiv" tabindex="0" style="outline: none" class="content-wrapper">
+    <div class="trans-list-head" ng-if="selectedTab == 'M'">{{'SeaCargo' | translate}} - {{'TransactionList' | translate}}</div>
+    <div class="trans-list-head" ng-if="selectedTab == 'A'">{{'AirCargo' | translate}} - {{'TransactionList' | translate}}</div>
+    <div class="trans-list-head" ng-if="selectedTab == 'R'">{{'LandCargo' | translate}} - {{'TransactionList' | translate}}</div>
+    <div class="trans-list-head" ng-if="selectedTab == 'Z'">{{'FreeZone' | translate}} - {{'TransactionList' | translate}}</div>
+    <div ng-hide="selectedTab == 'M'">
+        <button ng-disabled="$storage.get('isPcsSuperUser')" ui-sref="shipmentAndInvoice({'centerCode':selCenterCode, 'jobNumber': '','tab':'shipmentdetails'})" class="btn btn-new mt-15 ml-40">{{'CREATENEW' | translate}}</button>
+    </div>
+    <div class="centrecodedp mt-10">
+        <form class="form-horizontal ng-pristine ng-valid">
+            <div class="form-group">
+                <label class="control-label col-lg-4 ng-binding">{{'CentreCode' | translate}}</label>
+                <div class="col-lg-8">
+                    <select name="dplCentreCode" ng-model="selCenterCode" class="form-control select2" ng-change="centerCodeChanged()">
+                        <option ng:repeat="x in centerCodes" value="{{x.Code}}">{{x.Code}} {{x.EnglishName}} {{x.ArabicName}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Main -->
+    <div class="row" id="jobListDiv">
+        <div class="col-md-12">
+            <div class="panel panel-flat bdr bdrt pb-10 mt-15">
+                <div class="panel-body">
+                    <div class="row g-grey-shade col-md-12">
+                        <div class="col-md-12 sub-title" ng-show="selectedTab == 'M'">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <h6>
+                                        {{'SearchBy' | translate }}
+                                    </h6>
+                                    <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'en'" data-placement="right" title="" data-original-title="{{'SearchWithComboMsg' | translate}}"></i>
+                                    <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'ae'" data-placement="left" title="" data-original-title="{{'SearchWithComboMsg' | translate}}"></i>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="col-md-2" ng-show="selectedTab == 'M'">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-6">{{'AgentCode' | translate}}</label>
+                                        <div class="col-lg-6">
+                                            <input tabindex="2" restrict-Special-Chars capitalize ng-model="searchParameter.agentCode" type="text" class="form-control" placeholder="" ng-change="agentCodeChange()" maxlength="10" ng-trim="false" restrict-Space="searchParameter.agentCode">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-4">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-lg-4">
+                                            <select tabindex="3" id="dplBLDO" class="form-control select" ng-show="language == 'en'"
+                                                    ng-options="blDO.id as blDO.name for blDO in BLDOList"
+                                                    ng-model="selectedBLDO" ng-disabled="isBLDODisabled" ng-change="blDdlChanged()"></select>
+                                            <select tabindex="3" id="dplBLDO" class="form-control select" ng-show="language == 'ae'"
+                                                    ng-options="blDO.id as blDO.arabic for blDO in BLDOList"
+                                                    ng-model="selectedBLDO" ng-disabled="isBLDODisabled" ng-change="blDdlChanged()"></select>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input tabindex="4" restrict-Special-Chars ng-model="blDO" type="text" class="form-control" placeholder="" ng-show="ddlSelValue" ng-disabled="ddlSelValue" restrict-Space>
+                                            <input tabindex="4"  ng-model="searchParameter.houseBLNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelBookingNo" maxlength="30" restrict-Space>
+                                            <input tabindex="4" restrict-Special-Chars only-Digits ng-model="searchParameter.doNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelDoNum" maxlength="15" restrict-Space>
+                                            <input tabindex="4" restrict-Special-Chars only-Digits ng-model="searchParameter.jobNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelJobNum" maxlength="11" restrict-Space>
+                                            <input tabindex="4" restrict-Special-Chars only-Digits ng-model="searchParameter.custBillNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelCustBillNo" restrict-Space>
+                                            <input tabindex="4" restrict-space restrict-special-chars   ng-model="searchParameter.containerNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelCntNo" maxlength="11" restrict-Space>
+                                            <input tabindex="4" restrict-space restrict-special-chars-exclude ng-model="searchParameter.chassisNumber" type="text" class="form-control" placeholder="" ng-show="ddlSelChsNo" maxlength="30" restrict-Space>
+                                            <span ng-show="invalidDo" class="validation-error-label">{{'DoNoReqd' | translate }}</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{ 'BillType' | translate }}</label>
+                                        <div class="col-lg-8">
+                                            <select tabindex="5" id="dplBillType" class="form-control select" ng-show="language == 'en'"
+                                                    ng-options="billType.Code as billType.NameEnglish for billType in lookupBillTpResult"
+                                                    ng-model="searchParameter.billType" ng-disabled="isBLDODisabled"></select>
+                                            <select tabindex="5" id="dplBillType" class="form-control select" ng-show="language == 'ae'"
+                                                    ng-options="billType.Code as billType.NameArabic for billType in lookupBillTpResult"
+                                                    ng-model="searchParameter.billType" ng-disabled="isBLDODisabled"></select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{ 'CargoType' | translate }}</label>
+                                        <div class="col-lg-8">
+
+                                            <select tabindex="6" id="dplCargoType" class="form-control select" ng-show="language == 'en'"
+                                                    ng-options="cargoType.Code as cargoType.EnglishName for cargoType in lookupCargoTpResult"
+                                                    ng-model="searchParameter.cargoType" ng-disabled="isBLDODisabled"></select>
+                                            <select tabindex="6" id="dplCargoType" class="form-control select selectNw" ng-show="language == 'ae'"
+                                                    ng-options="cargoType.Code as cargoType.ArabicName for cargoType in lookupCargoTpResult"
+                                                    ng-model="searchParameter.cargoType" ng-disabled="isBLDODisabled"></select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="note mt-10" ng-show="showWarning">
+                            <form class="form-horizontal">
+                                <span>*</span>{{'AgCodeDOWarningMsg' | translate}}
+                            </form>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-6" ng-show="selectedTab == 'M'">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-2">{{'Importer/Exporter' | translate}}</label>
+                                        <div class="col-lg-10">
+                                            <div tabindex="7" angucomplete-alt id="ImporterExporter" pause="50" placeholder="{{'ImporterXporterph' | translate}}" ng-model="Importer" search-str="searchImporterExporterText" show-title="true"
+                                                 local-data="importersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control white" match-class="highlight"
+                                                 input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                            </div>
+                                            <span class="validation-error-label" ng-show="invalidImporter">{{'InvalidImporterExporter'|translate}}</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-4" ng-hide="selectedTab == 'M'">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{'Importer/Exporter' | translate}}</label>
+                                        <div class="col-lg-8">
+                                            <div tabindex="7" angucomplete-alt id="ImporterExporter" pause="50" placeholder="{{'ImporterXporterph' | translate}}" ng-model="Importer" search-str="searchImporterExporterText" show-title="true"
+                                                 local-data="importersExporters" input-changed="ImporterExporterChanged" search-fields="Code,EnglishName,ArabicName" title-field="Code,EnglishName,ArabicName" minlength="3" input-class="form-control white" match-class="highlight"
+                                                 input-name="ImporterExporter" selected-object="selectedImporterExporterCode">
+                                            </div>
+                                            <span class="validation-error-label" ng-show="invalidImporter">{{'InvalidImporterExporter'|translate}}</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4" ng-if="selectedTab != 'A'">{{ 'MasterBL' | translate }}</label>
+                                        <label class="control-label col-lg-4" ng-if="selectedTab == 'A'">{{ 'MasterAirwayBillNo' | translate }}</label>
+                                        <div class="col-lg-8">
+                                            <input tabindex="8"  ng-model="searchParameter.masterBL" type="text" class="form-control" placeholder="" maxlength="30" ng-trim="false" restrict-Space="searchParameter.masterBL">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-4">{{ 'VoucherNumber' | translate }}</label>
+                                        <div class="col-lg-8">
+                                            <input tabindex="9" id="voucherNo" type="text" ng-model="searchParameter.voucherNo" valid-number
+                                                   allow-decimal="false" allow-negative="false" maxlength="10" class="form-control" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" tabindex="1" class="btn btn-find" ng-click="searchResults()">
+                            {{'Find' | translate}}<i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="table-responsive mt20 mb20">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width:9%;">{{'JobNumber' | translate}}</th>
+                                        <th style="width:10%;">{{'JobDate' | translate}}</th>
+                                        <th style="width:9%;" ng-if="selectedTab != 'A'">{{'HBLNumber' | translate}}</th>
+                                        <th style="width:9%;" ng-if="selectedTab == 'A'">{{'HAWB' | translate}}</th>
+                                        <th style="width:9%;">{{'DoNumber' | translate}}</th>
+                                        <th style="width:5%;">{{'BillType' | translate}}</th>
+                                        <th style="width:8%;">{{'CustomBillNo' | translate}}</th>
+                                        <th style="width:10%;">{{'CustomBillDate' | translate}}</th>
+                                        <th style="width:2%;">{{'Channel' | translate}}</th>
+                                        <th style="width:8%;">{{'Status'| translate}}</th>
+                                        <th style="width:2%;">{{'MAQASA' | translate}}</th>
+                                        <th style="width:2%;" ng-if="!searchParameter.agentCode">{{'OGAStats' | translate}}</th>
+                                        <th style="width:12%;">{{'Action' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tr pagination-id="joblistPagination" dir-paginate="gridItem in jobsAndDoData | itemsPerPage: searchParameter.pageSize" total-items="totalCount" ng-class="{selected: gridItem.JobNumber === selectedDORecord.JobNumber}" current-page="searchParameter.pageNumber" ng-click="setClickedRow(gridItem)">
+                                    <td ng-hide="true">{{::gridItem.Rownum}}</td>
+                                    <td ng-hide="true">{{::gridItem.VesselCode}}</td>
+                                    <td ng-hide="true">{{::gridItem.VoyageNumber}}</td>
+                                    <td ng-hide="true">{{::gridItem.ArrivalDate}}</td>
+                                    <td ng-hide="true">{{::gridItem.IsBil}}</td>
+                                    <td ng-hide="true">{{::gridItem.AgentCode}}</td>
+                                    <td><a title="{{'Show'|translate}}" style="text-decoration: underline;color:#35769e" ui-sref="shipmentAndInvoice({'centerCode':selCenterCode, 'jobNumber': gridItem.JobNumber,'tab':'shipmentdetails'})">{{gridItem.JobNumber}}</a></td>
+                                    <td>{{::gridItem.JobCreatedDate |  date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                    <td>{{::gridItem.HouseBLNumber}}</td>
+                                    <td>{{::gridItem.DONumber}}</td>
+                                    <td ng-if="language == 'en'">{{gridItem.CustBillTypeEng}}</td>
+                                    <td ng-if="language == 'ae'">{{gridItem.CustBillTypeArb}}</td>
+                                    <td>{{::gridItem.CustomerBillNumber}}</td>
+                                    <td>{{:: gridItem.CustomerBillDate | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                                    <td class="v-center">
+                                        <i ng-if="gridItem.Channel == 'GREEN'" class="fas fa-circle t-green"></i>
+                                        <i ng-if="gridItem.Channel == 'YELLOW'" class="fas fa-circle t-yellow"></i>
+                                        <i ng-if="gridItem.Channel == 'RED'" class="fas fa-circle t-red"></i>
+                                    </td>
+                                    <td>
+                                        <label ng-if="!gridItem.JobNumber">
+                                            <span class="form-group form-checkbox">
+                                                <span class="fleft">
+                                                    <label class="control control--checkbox">
+                                                        <input type="checkbox" ng-model="gridItem.ATACarnet" ng-disabled="$storage.get('isPcsSuperUser')">
+                                                        <span class="control__indicator"></span>
+                                                    </label>
+                                                </span>
+                                            </span>
+                                            {{'ATACarnet' | translate}}
+                                        </label>
+                                        <label ng-if="gridItem.JobNumber && gridItem.PreClear == 'N' ">{{'Created' | translate}}</label>
+                                        <label ng-if="gridItem.JobNumber && gridItem.PreClear == 'Y' ">{{'PreClear' | translate}}</label>
+                                    </td>
+                                    <td>
+                                        <div class="form-group form-checkbox">
+                                            <div class="fleft">
+                                                <label class="control control--checkbox">
+                                                    <input type="checkbox" ng-model="gridItem.MAQASA" ng-checked="gridItem.MAQASA == 'Y'" disabled="disabled">
+                                                    <span class="control__indicator"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td ng-click="$event.stopPropagation()" ng-if="!searchParameter.agentCode">
+                                        <a ng-click="showOGGStatus(gridItem.JobNumber)"><i class="fa fa-info-circle" style="padding:0px;margin:0px"></i></a>
+                                    </td>
+                                    <td ng-class="{selected: gridItem.DONumber === selectedDO}" ng-click="$event.stopPropagation()">
+                                        <div>
+                                            <a title="{{'CreateJob'|translate}}" ng-if="!gridItem.JobNumber" ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && CreateNewJob(gridItem)"><i class="fa fa-plus-circle"></i></a>
+                                            <a title="{{'Show'|translate}}" ng-if="!gridItem.JobNumber && selectedTab == 'M'" ng-click="showShipmentInDraftMode(gridItem)"><i class="fa fa-eye"></i></a>
+                                            <!--<a title="{{'Show'|translate}}" ng-show="gridItem.JobNumber" ui-sref="shipmentAndInvoice({'centerCode':selCenterCode, 'jobNumber': gridItem.JobNumber,'tab':'shipmentdetails','Status':'{{gridItem.PreClear}}'})"><i class="fa fa-eye"></i></a>-->
+                                            <a title="{{'Show'|translate}}" ng-if="gridItem.JobNumber" ng-click="showShipmentDetails(gridItem)"><i class="fa fa-eye"></i></a>
+                                            <a title="{{'PrintPreclearance'|translate}}" ng-if="gridItem.JobNumber && gridItem.PreClear == 'Y'" ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && PrintPreClearanceCertificates(gridItem.JobNumber, false)"><i class="fa fa-download"></i></a>
+                                            <a title="{{'PrintEntryExitCertificate'|translate}}" ng-if="gridItem.JobNumber && gridItem.PreClear == 'Y'" ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && ShowEntryExitCertificateModal(gridItem)"><i class="fa fa-print"></i></a><!--&& (!gridItem.GRRNumber) //GRR Number restriction has been removed.-->
+                                            <a title="{{'DuplicateJob'|translate}}" ng-if="gridItem.JobNumber" ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && CreateDuplicateJob(gridItem.JobNumber, gridItem.BillType, gridItem.CustomerBillNumber,gridItem.BillType)"><i class="far fa-clone"></i></a>
+                                            <a title="{{'DownloadGatePass'|translate}}" ng-if="gridItem.PreClear == 'Y'" ng-disabled="$storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && DownloadGatePass(gridItem.JobNumber)"><img src="../assets/img/gate-pass.png" style="width:13%; height:13%; margin-bottom:4%;" /></a>
+                                            <a title="{{'Pay'|translate}}" ng-if="gridItem.ShowPayBtn == 'Y'" ng-disabled="gridItem.ISPaid == '1' || $storage.get('isPcsSuperUser')" ng-click="!$storage.get('isPcsSuperUser') && gridItem.ISPaid != '1' && gotoPaymentGateway(gridItem.JobNumber)"><i class="fa fa-credit-card"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="no-records" ng-if="jobsAndDoData == null || jobsAndDoData.length == 0"><td colspan="12">{{'NoItems' | translate}}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pagination pl25 mb20 mr10">
+                        <dir-pagination-controls pagination-id="joblistPagination" ng-if="jobsAndDoData != null && jobsAndDoData.length != 0" direction-links="true" boundary-links="true"
+                                                 on-page-change="loadMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-2 pull-right" ng-if="jobsAndDoData.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalCount}}</span></strong></span>
+                    </div>
+                    <div id="MTransDetails">
+                        <div ng-if="TransactionDetailsRequestObject.jobNumber" class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <div class="panel-default-red mt20">
+                                        <div class="panel-heading">{{'DeclarationDetails' | translate}}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-3">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label style="font-weight:bold" class="control-label col-lg-4">{{'BlNumber'|translate}}</label>
+                                                        <div class="col-lg-8">
+                                                            <input disabled readonly ng-model="selectedDORecord.MasterBLNumber" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label style="font-weight:bold" class="control-label col-lg-2">{{'Consignee' | translate}}</label>
+                                                        <div class="col-lg-3">
+                                                            <input readonly ng-if="selectedDORecord.BillType == 'R' || selectedDORecord.BillType == 'E'" style="background-color:#FAFAFA !important;" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                            <input readonly ng-if="!(selectedDORecord.BillType == 'R' || selectedDORecord.BillType == 'E')" ng-model="selectedDORecord.ConsgineeCode" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            <input readonly style="background-color:#FAFAFA !important;" ng-if="selectedDORecord.BillType == 'R' || selectedDORecord.BillType == 'E'" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                            <input readonly ng-if="language == 'ae' && !(selectedDORecord.BillType == 'R' || selectedDORecord.BillType == 'E')" ng-model="selectedDORecord.ConsgineeArbName" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                            <input readonly ng-if="language == 'en' && !(selectedDORecord.BillType == 'R' || selectedDORecord.BillType == 'E')" ng-model="selectedDORecord.ConsgineeEngName" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label style="font-weight:bold" class="control-label col-lg-3">{{ 'Shipper' | translate }}</label>
+                                                        <div class="col-lg-8">
+                                                            <input readonly ng-model="selectedDORecord.Shipper" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mt20">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label style="font-weight:bold" class="control-label"> {{ 'GoodsDescription' | translate }}</label>
+                                                        <textarea readonly rows="3" cols="5" class="form-control" placeholder="Comment">{{selectedDORecord.GoodDesc}}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label style="font-weight:bold" class="control-label">{{ 'MarksNo' | translate }}</label>
+                                                        <textarea readonly rows="3" cols="5" class="form-control" placeholder="Comment">{{selectedDORecord.Marks}}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mt30">
+                                                <div>
+                                                    <form action="#">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group form-checkbox">
+                                                                <div class="fleft">
+                                                                    <label class="control control--checkbox">
+                                                                        <input disabled readonly ng-checked="selectedDORecord.JobAccepted== 'Y'" type="checkbox" />
+                                                                        <div class="control__indicator"></div>
+                                                                    </label>
+                                                                </div>
+                                                                <label class="control-label col-lg-9">{{ 'JobAccepted' | translate }}</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <div class="form-group form-checkbox">
+                                                                <div class="fleft">
+                                                                    <label class="control control--checkbox">
+                                                                        <input disabled readonly ng-checked="selectedDORecord.Cashier== 'Y'" type="checkbox" />
+                                                                        <div class="control__indicator"></div>
+                                                                    </label>
+                                                                </div>
+                                                                <label class="control-label col-lg-6">{{ 'Cashier' | translate }}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group form-checkbox">
+                                                                <div class="fleft">
+                                                                    <label class="control control--checkbox">
+                                                                        <input disabled readonly type="checkbox" ng-checked="selectedDORecord.Voucher== 'Y'" />
+                                                                        <div class="control__indicator"></div>
+                                                                    </label>
+                                                                </div>
+                                                                <label class="control-label col-lg-6">{{ 'Voucher' | translate }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mt20">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label style="font-weight:bold" class="control-label">{{ 'Container' | translate }}</label>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{'ContainerNumber' | translate}}</th>
+                                                                        <th>{{'SealNumber' | translate}}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr dir-paginate="ContainerDetailsModel in ContainerDetails | itemsPerPage:detailsPageSize" pagination-id="ContainerPagination">
+                                                                        <td>{{ContainerDetailsModel.ContainerNumber}}</td>
+                                                                        <td>{{ContainerDetailsModel.SealNumber}}</td>
+                                                                    </tr>
+                                                                    <tr ng-if="ContainerDetails == null">
+                                                                        <td colspan="7">
+                                                                            {{'NoItems'|translate}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-12 pagination pl25 mt20" ng-hide="ContainerDetails == null">
+                                                            <dir-pagination-controls pagination-id="ContainerPagination" direction-links="true" boundary-links="true">
+                                                            </dir-pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label style="font-weight:bold" class="control-label">{{ 'Chasis' | translate }}</label>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{'ChassisNumber' | translate}}</th>
+                                                                        <th>{{'CertNumber' | translate}}</th>
+                                                                        <th>{{'CertDate' | translate}}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr dir-paginate="ChasisModel in ChasisDetails | itemsPerPage:detailsPageSize" pagination-id="Chasis">
+                                                                        <td>{{ChasisModel.ChassisNumber}}</td>
+                                                                        <td>{{ChasisModel.CertNumber}}</td>
+                                                                        <td>{{ChasisModel.CertDate|date:'dd/MM/yyyy'}}</td>
+                                                                    </tr>
+                                                                    <tr ng-if="ChasisDetails == null">
+                                                                        <td colspan="7">
+                                                                            {{'NoItems'|translate}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-12 pagination pl25 mt20" ng-hide="ChasisDetails == null">
+                                                            <dir-pagination-controls pagination-id="Chasis" direction-links="true" boundary-links="true">
+                                                            </dir-pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mt20">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label style="font-weight:bold" class="control-label">{{ 'Reference' | translate }}</label>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{'Reference' | translate}}</th>
+                                                                        <th>{{'TransportNumber' | translate}}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr dir-paginate="ReferenceModel in ReferenceDetails | itemsPerPage:detailsPageSize" pagination-id="Reference">
+                                                                        <td>{{ReferenceModel.ReferenceNumber}}</td>
+                                                                        <td>{{ReferenceModel.TransportNumber}}</td>
+                                                                    </tr>
+                                                                    <tr ng-if="ReferenceDetails == null">
+                                                                        <td colspan="7">
+                                                                            {{'NoItems'|translate}}
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-12 pagination pl25 mt20" ng-hide="ReferenceDetails == null">
+                                                            <dir-pagination-controls pagination-id="Reference" direction-links="true" boundary-links="true">
+                                                            </dir-pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <label style="font-weight:bold" class="control-label">{{ 'Voucher' | translate }}</label>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>{{'Number' | translate}}</th>
+                                                                    <th>{{'Type' | translate}}</th>
+                                                                    <th>{{'Amount' | translate}}</th>
+                                                                    <th>{{'Date' | translate}}</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr dir-paginate="voucherModel in VoucherDetails | itemsPerPage:detailsPageSize" pagination-id="voucherPage">
+                                                                    <td>{{voucherModel.VoucherName}}</td>
+                                                                    <td>{{voucherModel.VoucherType}}</td>
+                                                                    <td>{{voucherModel.VoucherAmount}}</td>
+                                                                    <td>{{voucherModel.VoucherDate|date:'dd/MM/yyyy'}}</td>
+                                                                </tr>
+                                                                <tr ng-if="VoucherDetails == null">
+                                                                    <td colspan="7">
+                                                                        {{'NoItems'|translate}}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-md-12 pagination pl25 mt20" ng-hide="VoucherDetails == null">
+                                                        <dir-pagination-controls pagination-id="voucherPage" direction-links="true" boundary-links="true">
+                                                        </dir-pagination-controls>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mt20">
+                                            <div class="col-md-6">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label style="font-weight:bold" class="control-label col-lg-3">{{'ApprovalAuthority'|translate}}</label>
+                                                        <div class="col-lg-6">
+                                                            <input readonly ng-model="ApprovalAuthority" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label style="font-weight:bold" class="control-label col-lg-2">{{'CreatedBy' | translate}}</label>
+                                                        <div class="col-lg-2">
+                                                            <input readonly ng-model="selectedDORecord.JobCreatedBy" type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <input readonly type="text" class="form-control disabledInputWithBorder" placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="printEntryExitModal" class="modal fade" role="dialog">
+        <div id="printEntryExitModalDialog" class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">{{'EntryExitCertificate' | translate}}</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 form-horizontal">
+                        <div class="col-md-12 mt-5">
+                            <div class="alert alert-danger fade in" ng-if="sealValidationError">
+                                <strong>{{'Error' | translate}}!</strong>  {{sealValidationErrorMessage}}
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">
+                                    {{'SealNumber' | translate}}<span>*</span>
+                                    <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'en'" data-placement="right" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                    <i class="fa fa-info-circle" data-toggle="tooltip" ng-show="language == 'ae'" data-placement="left" title="" data-original-title="{{'SealInfo' | translate}}"></i>
+                                </label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" maxlength="70" ng-model="sealsInput" />
+                                    <label class="validation-error-label" ng-if="sealNoMandatory">{{'Required' | translate}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-lg-4">{{'TruckNumber' | translate}}</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" maxlength="70" ng-model="trucksInput" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12  form-horizontal">
+                        <div class="pull-right mt-10 mr-10">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">{{'Cancel' | translate}}</button>
+                            <button type="button" class="btn btn-green" ng-click="PrintEntryExitCertificate()">{{'SaveAndPrint' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'../Account/LoadView?path=~/Views/Shared/_ModalPopup.cshtml'"></div>
+</div>
+<div>
+    <div id="attachments" class="modal" tabindex="-1" role="dialog" aria-labelledby="TradeModel" data-backdrop="static">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="panel-heading">
+                    <span>{{'Attachments' | translate}}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;height:250px">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:9%;">{{'FileName' | translate}}</th>
+                                    <th style="width:9%;">{{'View' | translate}}</th>
+                                </tr>
+                            </thead>
+
+                            <tr dir-paginate="gridItem in delegateAttachmentList | itemsPerPage: attachmentListParam.pageSize" total-items="totalDelegateItem" current-page="attachmentListParam.pageNumber" pagination-id="delegateAttachListPagination">
+                                <td>{{gridItem.FilePath}}</td>
+                                <td><a title="{{'Show'|translate}}" ng-click="isGoingToDelete = false;Message='';downloadDelegateDocument(gridItem)"><i class="fa fa-download"></i></a></td>
+                            </tr>
+
+                            <tr class="no-records" ng-if="delegateAttachmentList == null || delegateAttachmentList.length == 0"><td colspan="12">{{'NoItems' | translate}}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-12 pagination" ng-hide="delegateAttachmentList == null || delegateAttachmentList.length == 0">
+                        <dir-pagination-controls pagination-id="delegateAttachListPagination" direction-links="true" boundary-links="true"
+                                                 on-page-change="loadDelegateMoreRecords(newPageNumber)">
+                        </dir-pagination-controls>
+                        <span class="col-md-3 pull-right" ng-if="delegateAttachmentList.length > 0"><strong>{{'total' | translate}} : <span class="num">{{totalDelegateItem}}</span></strong></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12">
+                        <div class="pull-right mt-20">
+                            <a class="btn btn-green alwaysEnabled" data-dismiss="modal" ng-click="closeAttachmentPopup()">{{'Close' | translate}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="oggModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" ng-click="closeModalPopUp()">&times;</button>
+                    <h5 class="modal-title bold">{{'Approvals' | translate}} - {{'JobNumber' | translate}} : {{SelectedJobNumber}}</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt20 mb20" style="overflow-y:auto;">
+                        <table id="authorityTable" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{'OGA'|translate}}</th>
+                                    <th>{{'Status'|translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color:black">
+                                <tr ng-if="AuthorityStatus.ADFCA_BTN_VISIBLE=='SHOW' || AuthorityStatus.ADFCA_STATUS">
+                                    <td>{{'ADFCA'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.ADFCA_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.ADFCA_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.ZONE_BTN_VISIBLE=='SHOW' || AuthorityStatus.ZONE_STATUS">
+                                    <td>{{'IDB'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.ZONE_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.ZONE_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.ETIHAD_BTN_VISIBLE=='SHOW' || AuthorityStatus.ETIHAD_STATUS">
+                                    <td>{{'Etihad'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.ETIHAD_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.ETIHAD_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.ESMA_BTN_VISIBLE=='SHOW' || AuthorityStatus.ESMA_STATUS">
+                                    <td>{{'ESMA'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.ESMA_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.ESMA_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.MOFA_BTN_VISIBLE=='SHOW' || AuthorityStatus.MOFA_STATUS">
+                                    <td>{{'MOFA'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.MOFA_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.MOFA_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.FANR_BTN_VISIBLE=='SHOW' || AuthorityStatus.FANR_STATUS">
+                                    <td>{{'FANR'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.FANR_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.FANR_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.MOEW_BTN_VISIBLE=='SHOW' || AuthorityStatus.MOEW_STATUS">
+                                    <td>{{'MOEW'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.MOEW_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.MOEW_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.ADNOC_BTN_VISIBLE=='SHOW' || AuthorityStatus.ADNOC_STATUS">
+                                    <td>{{'OilCompany'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.ADNOC_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.ADNOC_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.FREEZONES_BTN_VISIBLE=='SHOW' || AuthorityStatus.FREEZONES_STATUS">
+                                    <td>{{'FreeZone'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.FREEZONES_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.FREEZONES_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="AuthorityStatus.CUSTOMS_BTN_VISIBLE=='SHOW' || AuthorityStatus.CUSTOMS_STATUS">
+                                    <td>{{'Customs'|translate}}</td>
+                                    <td ng-if="language == 'en'">{{AuthorityStatus.CUSTOMS_STATUS}}</td>
+                                    <td ng-if="language == 'ae'">{{AuthorityStatus.CUSTOMS_STATUS_A}}</td>
+                                </tr>
+                                <tr ng-if="!((AuthorityStatus.ADFCA_BTN_VISIBLE=='SHOW' || AuthorityStatus.ADFCA_STATUS) ||
+                                            (AuthorityStatus.ZONE_BTN_VISIBLE=='SHOW' || AuthorityStatus.ZONE_STATUS) ||
+                                            (AuthorityStatus.ETIHAD_BTN_VISIBLE=='SHOW' || AuthorityStatus.ETIHAD_STATUS) ||
+                                            (AuthorityStatus.ESMA_BTN_VISIBLE=='SHOW' || AuthorityStatus.ESMA_STATUS) ||
+                                            (AuthorityStatus.MOFA_BTN_VISIBLE=='SHOW' || AuthorityStatus.MOFA_STATUS) ||
+                                            (AuthorityStatus.FANR_BTN_VISIBLE=='SHOW' || AuthorityStatus.FANR_STATUS) ||
+                                            (AuthorityStatus.MOEW_BTN_VISIBLE=='SHOW' || AuthorityStatus.MOEW_STATUS) ||
+                                            (AuthorityStatus.ADNOC_BTN_VISIBLE=='SHOW' || AuthorityStatus.ADNOC_STATUS) ||
+                                            (AuthorityStatus.FREEZONES_BTN_VISIBLE=='SHOW' || AuthorityStatus.FREEZONES_STATUS) ||
+                                            (AuthorityStatus.CUSTOMS_BTN_VISIBLE=='SHOW' || AuthorityStatus.CUSTOMS_STATUS))">
+                                    <td colspan="2">{{'NoRecords' | translate}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default text-center alwaysEnabled" id="WarningModalOnForm4" data-dismiss="modal">{{'Close' | translate}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("[data-toggle=tooltip]").tooltip();
+    $("#alpaca-select2").alpaca({
+        "postRender": function (control) {
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
+        }
+    });
+</script>

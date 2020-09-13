@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://moonstorm.github.io/trNgGrid/release/trNgGrid.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+    <!--<script src="http://moonstorm.github.io/trNgGrid/release/trNgGrid.js"></script>-->
+    <script src="Scripts/AngularScripts/directives/trNgGrid.js"></script>
+    <script>
+        angular
+       .module('myApp', ['trNgGrid'])
+       .controller("MainCtrl", ["$scope", function ($scope) {
+           debugger;
+           $scope.test = "Company Name";
+
+           $scope.myItems = [{ name: "Moroni", age: 50, Number: 43 },
+                    { name: "Tiancum", age: 43, Number: 43 },
+                    { name: "Jacob", age: 27, Number: 27 },
+                    { name: "Nephi", age: 29, Number: 29 },
+                    { name: "Enos", age: 99, Number: 99 }];
+
+       }]);
+    </script>
+</head>
+<body ng-app="myApp">
+    <div ng-controller="MainCtrl">
+        <div>
+            Test  {{test}}
+        </div>
+        <table tr-ng-grid='' items='myItems'>
+            <thead>
+                <tr>
+                    <th field-name='name' display-name={{test}}>
+                    </th>
+                    <th field-name='age' display-name="Age"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>
